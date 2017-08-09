@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "580498000192",
+    "firebase_url": "https://mureok-b0def.firebaseio.com",
+    "project_id": "mureok-b0def",
+    "storage_bucket": "mureok-b0def.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:580498000192:android:587508659a4ca7d5",
+        "android_client_info": {
+          "package_name": "com.example.totoroto.mureok"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "580498000192-kp7mhheis1lgb2ku4fnnfaa33tgkoeq5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.totoroto.mureok",
+            "certificate_hash": "7f8b5ed77c2f3b8451cf3ac70ef3f60168e54864"
+          }
+        },
+        {
+          "client_id": "580498000192-qnoi1i4rqtij2ha73b32qh90mk99uitf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT3k0YPhSkUkaAW7yDf8sWM0kD2rA3y94"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "580498000192-qnoi1i4rqtij2ha73b32qh90mk99uitf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

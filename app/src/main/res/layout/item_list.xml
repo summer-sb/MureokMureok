@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="5dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/listItem_tvDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:text="@string/_2017_01_01"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/listItem_iv"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:src="@mipmap/ic_launcher"
+                android:visibility="gone"
+                android:layout_below="@+id/listItem_tvDate"
+                />
+
+            <TextView
+                android:id="@+id/listItem_tvContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/listItem_iv"
+                android:text="@string/initContents" />
+
+            <Button
+                android:id="@+id/listItem_btnShare"
+                android:layout_width="108dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/listItem_tvContent"
+                android:text="@string/share" />
+
+            <Button
+                android:id="@+id/listItem_btnModify"
+                android:layout_width="108dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/listItem_btnShare"
+                android:layout_toEndOf="@+id/listItem_btnShare"
+                android:text="@string/modify" />
+
+            <Button
+                android:id="@+id/listItem_btnDelete"
+                android:layout_width="108dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/listItem_btnShare"
+                android:layout_toEndOf="@+id/listItem_btnModify"
+                android:text="@string/delete" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

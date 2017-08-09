@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.totoroto.mureok.JoinActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email"
+        android:id="@+id/tvJoinEmail"
+        android:layout_marginTop="180dp"
+        android:layout_marginStart="40dp"
+        />
+
+    <EditText
+        android:id="@+id/etJoinEmail"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvJoinPassword"
+        android:layout_toEndOf="@+id/tvJoinEmail" />
+    <Button
+        android:id="@+id/btnDuplicate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/duplicate"
+        android:layout_toEndOf="@+id/etJoinEmail"
+        android:layout_alignBaseline="@+id/tvJoinEmail"
+        />
+    <TextView
+        android:id="@+id/tvJoinPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvJoinEmail"
+        android:layout_alignEnd="@+id/tvJoinEmail"
+        android:layout_marginTop="30dp"
+        android:text="@string/password"
+        />
+
+    <EditText
+        android:id="@+id/etJoinPassword"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvJoinPassword"
+        android:layout_below="@+id/tvJoinEmail"
+        android:layout_toEndOf="@+id/tvJoinPassword"
+        />
+
+    <TextView
+        android:id="@+id/tvJoinPwCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvJoinPassword"
+        android:layout_alignEnd="@+id/tvJoinPassword"
+        android:layout_marginTop="30dp"
+        android:text="@string/checkPW"
+        />
+
+    <EditText
+        android:id="@+id/etJoinCheckPassword"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvJoinPwCheck"
+        android:layout_below="@+id/tvJoinPassword"
+        android:layout_toEndOf="@+id/tvJoinPwCheck"
+        />
+
+    <TextView
+        android:id="@+id/tvNotifyCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/repPW"
+        android:layout_marginLeft="160dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/tvJoinPwCheck"
+        />
+    <TextView
+        android:id="@+id/tvJoinNickName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nickname"
+        android:layout_below="@+id/tvNotifyCheck"
+        android:layout_alignEnd="@+id/tvJoinPassword"
+        android:layout_marginTop="20dp"
+        />
+    <EditText
+        android:id="@+id/etJoinNickName"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/tvJoinNickName"
+        android:layout_alignBaseline="@+id/tvJoinNickName"
+        />
+
+    <Button
+        android:id="@+id/btnJoinCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvJoinNickName"
+        android:text="@string/cancel"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="60dp"
+        />
+
+
+    <Button
+        android:id="@+id/btnJoinComplete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ok"
+        android:layout_marginStart="60dp"
+        android:layout_alignBaseline="@+id/btnJoinCancel"
+        android:layout_toEndOf="@+id/btnJoinCancel"
+        />
+</RelativeLayout>

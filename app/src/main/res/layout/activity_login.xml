@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.totoroto.mureok.LoginActivity"
+    >
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email"
+        android:layout_marginTop="160dp"
+        />
+
+    <EditText
+        android:id="@+id/etLoginEmail"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/tvEmail"
+        android:layout_alignBaseline="@id/tvEmail"
+        android:maxLines="1"
+        android:text="bbb@naver.com"
+        />
+
+    <TextView
+        android:id="@+id/tvPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/password"
+        android:layout_below="@+id/tvEmail"
+        android:layout_marginTop="30dp"
+        />
+
+    <EditText
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/etLoginPW"
+        android:layout_toEndOf="@+id/tvPassword"
+        android:layout_alignBaseline="@id/tvPassword"
+        android:maxLines="1"
+        android:text="bbbbbb"
+        />
+
+    <Button
+        android:id="@+id/btnNonMember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="비회원으로 입장"
+        android:layout_below="@+id/tvPassword"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnLogin"
+        android:text="@string/login"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/btnNonMember"
+        android:layout_alignBaseline="@+id/btnNonMember"
+        android:layout_marginStart="40dp"
+         />
+
+    <CheckBox
+        android:id="@+id/cbAutoLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rememberId"
+        android:layout_below="@+id/btnNonMember"
+        android:layout_alignLeft="@+id/btnLogin"
+        android:layout_marginTop="12dp"
+        />
+
+    <Button
+        android:id="@+id/btnGoogleLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/googleLogin"
+        android:layout_below="@+id/cbAutoLogin"
+        android:layout_centerHorizontal="true"
+        />
+
+    <Button
+        android:id="@+id/btnJoin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/join"
+        android:layout_below="@+id/btnGoogleLogin"
+        android:layout_centerHorizontal="true"
+        />
+
+    <Button
+        android:id="@+id/btnSearchPW"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/findPW"
+        android:layout_below="@+id/btnJoin"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout>

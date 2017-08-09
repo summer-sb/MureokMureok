@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/etWaterDate"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:maxLength="2"
+        android:text="@string/zero"
+        android:layout_marginStart="100dp"
+        android:textSize="30sp"
+        />
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/perDate"
+        android:layout_alignBaseline="@+id/etWaterDate"
+        android:layout_toEndOf="@+id/etWaterDate"
+        android:textSize="30sp"
+        />
+    <TextView
+        android:id="@+id/tvExplain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timePicker"
+        android:text="@string/timeWater"
+        android:layout_alignStart="@+id/timePicker"
+        />
+    <Button
+        android:id="@+id/btnCancel_water"
+        android:layout_marginTop="20dp"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvExplain"
+        android:text="@string/cancel" />
+    <Button
+        android:id="@+id/btnOK_water"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnCancel_water"
+        android:layout_toEndOf="@+id/btnCancel_water"
+        android:text="@string/ok" />
+
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:timePickerMode="spinner"
+        android:layout_below="@+id/etWaterDate"
+        />
+
+
+</RelativeLayout>
