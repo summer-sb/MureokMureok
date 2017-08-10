@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -26,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ListFragment extends Fragment implements View.OnClickListener{
+public class ListFragment extends Fragment implements View.OnClickListener {
     private final int REQ_GALLERY_PICTURE = 1;
     private final String TAG = "LF";
     private String imgPath;
@@ -44,7 +45,7 @@ public class ListFragment extends Fragment implements View.OnClickListener{
     private FirebaseDB firebaseDB;
 
 
-    public static ListFragment newInstance(){
+    public static ListFragment newInstance() {
         return new ListFragment();
     }
 
@@ -71,11 +72,11 @@ public class ListFragment extends Fragment implements View.OnClickListener{
     }
 
     private void init(View view) {
-        recyclerView = (RecyclerView)view.findViewById(R.id.listRecycler);
-        ivImg = (ImageView)view.findViewById(R.id.iv_listInput);
-        etInput = (EditText)view.findViewById(R.id.et_listInput);
-        btnReset = (Button)view.findViewById(R.id.btnReset_listInput);
-        btnAdd = (Button)view.findViewById(R.id.btnAdd_listInput);
+        recyclerView = (RecyclerView) view.findViewById(R.id.listRecycler);
+        ivImg = (ImageView) view.findViewById(R.id.iv_listInput);
+        etInput = (EditText) view.findViewById(R.id.et_listInput);
+        btnReset = (Button) view.findViewById(R.id.btnReset_listInput);
+        btnAdd = (Button) view.findViewById(R.id.btnAdd_listInput);
 
         ivImg.setOnClickListener(this); //이미지 버튼 클릭-> 사진 추가
         btnReset.setOnClickListener(this);
@@ -86,16 +87,21 @@ public class ListFragment extends Fragment implements View.OnClickListener{
     }
 
     private void addItemFunc() {
-        long ctm = System.currentTimeMillis();
-        Date currentDate = new Date(ctm);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateFormat));
+        if (!etInput.getText().toString().equals("")) {
 
-        ListData tmpListData = new ListData(dateFormat.format(currentDate), imgPath, etInput.getText().toString(), false);
-        mListDatas.add(tmpListData);
-        firebaseDB.writeNewListData(tmpListData);
+            long ctm = System.currentTimeMillis();
+            Date currentDate = new Date(ctm);
+            SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateFormat));
 
-        listAdapter.notifyDataSetChanged();
-        aboutBtnReset(); //추가하고 입력 item clear
+            ListData tmpListData = new ListData(dateFormat.format(currentDate), imgPath, etInput.getText().toString(), false);
+
+            mListDatas.add(tmpListData);
+            firebaseDB.writeNewListData(tmpListData);
+            listAdapter.notifyDataSetChanged();
+            aboutBtnReset(); //입력 item clear
+        }else{
+            Toast.makeText(getActivity(), "내용을 입력해 주세요.",Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -105,7 +111,7 @@ public class ListFragment extends Fragment implements View.OnClickListener{
                 imgPath = data.getData().toString(); //이미지의 uri
                 Glide.with(getContext())
                         .load(data.getData())
-                        .override(1000,1000)
+                        .override(1000, 1000)
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(ivImg);
@@ -123,13 +129,14 @@ public class ListFragment extends Fragment implements View.OnClickListener{
     }
 
     private void aboutBtnReset() {
+        imgPath = null;
         ivImg.setImageResource(R.drawable.ic_img_placeholder);
         etInput.setText("");
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnReset_listInput:
                 aboutBtnReset();
                 break;

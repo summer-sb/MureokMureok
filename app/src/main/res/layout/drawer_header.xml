@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:background="@color/colorPrimaryDark"
+    android:gravity="bottom"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civProfile_navi"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/ic_launcher_round"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        />
+
+    <TextView
+        android:id="@+id/tvProfile_navi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/civProfile_navi"
+        android:layout_above="@+id/tvEmail_navi"
+        android:text="닉네임"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="8dp"
+        />
+
+    <TextView
+        android:id="@+id/tvEmail_navi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/civProfile_navi"
+        android:layout_alignBottom="@+id/civProfile_navi"
+        android:layout_alignStart="@+id/tvProfile_navi"
+        android:text="aaa@gmail.com"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        />
+
+
+</RelativeLayout>

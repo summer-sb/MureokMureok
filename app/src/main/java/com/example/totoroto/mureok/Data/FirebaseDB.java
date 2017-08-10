@@ -1,6 +1,5 @@
 package com.example.totoroto.mureok.Data;
 
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.totoroto.mureok.List.ListAdapter;
@@ -29,6 +28,28 @@ public class FirebaseDB {
         User user = new User(email, nickName);
         //Uid == primary key
         mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
+    }
+
+    public User readUserProfile(){
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        final User temp = new User();
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                temp.setUserEmail(user.getUserEmail());
+                temp.setNickName(user.getNickName());
+                Log.d(TAG, "in Listener :" +temp.getUserEmail() +"|" + temp.getNickName());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        Log.d(TAG, "out Listener :" +temp.getUserEmail() +"|" + temp.getNickName());
+        return temp;
     }
 
     public void writeNewManageData(ManageData mData) {
@@ -125,6 +146,16 @@ public class FirebaseDB {
         });
     }
 
+    public void shareListData(String key, boolean isShare){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference manageRef =  mRootRef.child("users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("listData").child(key);
+
+        Map<String, Object> shareUpdate = new HashMap<String, Object>();
+        shareUpdate.put("/isShare", isShare);
+        manageRef.updateChildren(shareUpdate);
+    }
     public void deleteListData(String key){
         mRootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference manageRef =  mRootRef.child("users")

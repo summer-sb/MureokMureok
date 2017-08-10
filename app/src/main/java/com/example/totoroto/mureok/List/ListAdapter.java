@@ -1,6 +1,7 @@
 package com.example.totoroto.mureok.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,11 +19,13 @@ import java.util.ArrayList;
 public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     private Context context;
     private ArrayList<ListData> mListDatas;
+    private FirebaseDB firebaseDB;
 
     @Override
     public ListViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
+        firebaseDB = new FirebaseDB();
 
         View view = inflater.inflate(R.layout.item_list, viewGroup, false);
 
@@ -36,7 +39,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
         holder.tvDate.setText(listData.date);
         holder.tvContents.setText(listData.contents);
 
-
+        if(listData.imgPath != null) {
             try {
                 holder.ivImage.setVisibility(View.VISIBLE);
 
@@ -49,14 +52,34 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
 
+        holder.btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = holder.getAdapterPosition();
+                boolean isShare = mListDatas.get(pos).getisShare();
+                if (pos != RecyclerView.NO_POSITION) {
+                    if (isShare) { //ON -> OFF
+                        isShare = false;
+                        mListDatas.get(pos).setisShare(false);
+                        holder.btnShare.setBackgroundResource(android.R.drawable.btn_default);
+                    } else { //OFF ->ON
+                        isShare = true;
+                        mListDatas.get(pos).setisShare(true);
+                        holder.btnShare.setBackgroundResource(R.color.colorPrimary);
+                    }
+                    notifyDataSetChanged();
+                    firebaseDB.shareListData(mListDatas.get(pos).getFirebaseKey(), isShare);
+                }
+            }
+        });
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int pos = holder.getAdapterPosition();
 
-                if(pos != RecyclerView.NO_POSITION){
-                    FirebaseDB firebaseDB = new FirebaseDB();
+                if (pos != RecyclerView.NO_POSITION) {
                     firebaseDB.deleteListData(mListDatas.get(pos).getFirebaseKey());
                     mListDatas.remove(pos);
 
@@ -72,7 +95,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
         return (mListDatas != null) ? mListDatas.size() : 0;
     }
 
-    public void setListDatas(ArrayList<ListData> listDatas){
+    public void setListDatas(ArrayList<ListData> listDatas) {
         mListDatas = listDatas;
     }
 }

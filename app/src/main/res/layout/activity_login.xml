@@ -22,7 +22,7 @@
         android:layout_toEndOf="@+id/tvEmail"
         android:layout_alignBaseline="@id/tvEmail"
         android:maxLines="1"
-        android:text="bbb@naver.com"
+        android:text="sss@naver.com"
         />
 
     <TextView
@@ -41,7 +41,7 @@
         android:layout_toEndOf="@+id/tvPassword"
         android:layout_alignBaseline="@id/tvPassword"
         android:maxLines="1"
-        android:text="bbbbbb"
+        android:text="ssssss"
         />
 
     <Button

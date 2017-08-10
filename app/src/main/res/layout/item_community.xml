@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/userInfoLayout"
+        android:background="@color/colorPrimary"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civUserProfile_community"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher_round"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/colorGray"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvNickName_community"
+            android:layout_toEndOf="@+id/civUserProfile_community"
+            android:text="홍길동"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDate_community"
+            android:text="@string/_2017_01_01"
+            android:layout_alignStart="@+id/tvNickName_community"
+            android:layout_alignBottom="@+id/civUserProfile_community"
+            android:layout_below="@+id/tvNickName_community"
+            android:textColor="@android:color/white"
+            />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/ivPicture_community"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_below="@+id/userInfoLayout"
+        />
+
+    <TextView
+        android:id="@+id/tvContents_community"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="오늘도 행운목에 물을 주었다^^"
+        android:layout_below="@+id/ivPicture_community"
+        />
+    <Button
+        android:id="@+id/btnLike_community"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="좋아요"
+        android:layout_below="@+id/tvContents_community"
+        />
+
+    <Button
+        android:id="@+id/btnComment_community"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="댓글 달기"
+        android:layout_toEndOf="@+id/btnLike_community"
+        android:layout_alignBaseline="@+id/btnLike_community"
+        />
+
+    <Button
+        android:id="@+id/btnShare_community"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="링크 공유하기"
+        android:layout_toEndOf="@+id/btnComment_community"
+        android:layout_alignBaseline="@+id/btnLike_community"
+        />
+</RelativeLayout>

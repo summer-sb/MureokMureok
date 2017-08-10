@@ -13,7 +13,7 @@ public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     public TextView tvContents;
     public ImageView ivImage;
 
-    private Button btnShare;
+    public Button btnShare;
     private Button btnModify;
     public Button btnDelete;
 
@@ -31,20 +31,20 @@ public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         btnModify = (Button)itemView.findViewById(R.id.listItem_btnModify);
         btnDelete = (Button)itemView.findViewById(R.id.listItem_btnDelete);
 
-        btnShare.setOnClickListener(this);
         btnModify.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.listItem_btnShare:
-                //TODO: ListData- isShare true
-                break;
             case R.id.listItem_btnModify:
                 break;
             default:
                 //
         }
+    }
+
+    private void aboutBtnShare() {
+
     }
 }

@@ -56,7 +56,7 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
             holder.btnSetWater.setBackgroundResource(R.color.colorPrimary);
             holder.btnSetWater.setText(R.string.alarmOn);
         }else{
-            holder.btnSetWater.setBackgroundColor(Color.GRAY);
+            holder.btnSetWater.setBackgroundResource(android.R.drawable.btn_default);
             holder.btnSetWater.setText(R.string.alarmOff);
         }
 

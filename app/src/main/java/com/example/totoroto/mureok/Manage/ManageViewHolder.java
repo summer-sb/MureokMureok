@@ -34,13 +34,13 @@ public class ManageViewHolder extends RecyclerView.ViewHolder implements View.On
 
     private int waterCount;
 
-    public ManageViewHolder(final View itemView) {
+    public ManageViewHolder(View itemView) {
         super(itemView);
 
-        init();
+        init(itemView);
     }
 
-    private void init() {
+    private void init(View itemView) {
         iv_pImg = (ImageView) itemView.findViewById(R.id.iv_pImg_m);
         tv_pName = (TextView) itemView.findViewById(R.id.tv_pName_m);
         tv_pRealName = (TextView) itemView.findViewById(R.id.tv_pRealName_m);
