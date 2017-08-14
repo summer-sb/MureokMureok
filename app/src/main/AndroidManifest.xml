@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".JoinActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".Main.MainActivity" />
         <activity android:name=".PlantTip.TipActivity" />
 
         <receiver android:name=".Alarm.AlarmBroadCast" />

@@ -27,23 +27,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ListFragment extends Fragment implements View.OnClickListener {
-    private final int REQ_GALLERY_PICTURE = 1;
-    private final String TAG = "LF";
-    private String imgPath;
+public class ListFragment extends Fragment  {
+    private final int REQ_GALLERY_PICTURE  = 100;
+    private final String TAG = "SOLBIN";
+    public static String imgPath;
 
     private ListAdapter listAdapter;
     private LinearLayoutManager layoutManager;
     private ArrayList<ListData> mListDatas;
-
-    private ImageView ivImg;
-    private Button btnReset;
-    private Button btnAdd;
-    private EditText etInput;
     private RecyclerView recyclerView;
+    private ImageView imgView;
 
     private FirebaseDB firebaseDB;
-
 
     public static ListFragment newInstance() {
         return new ListFragment();
@@ -56,9 +51,22 @@ public class ListFragment extends Fragment implements View.OnClickListener {
 
         init(view);
         aboutRecycler();
+        createCardView();
+
         firebaseDB.readListData(mListDatas, listAdapter);
 
         return view;
+    }
+
+    private void createCardView() {
+        Log.d(TAG, "itemCnt: "+String.valueOf(listAdapter.getItemCount()));
+        if(listAdapter.getItemCount() == 0){
+            ListData tmpListData = new ListData();
+
+            mListDatas.add(tmpListData);
+            firebaseDB.writeNewListData(tmpListData);
+            listAdapter.notifyDataSetChanged();
+        }
     }
 
     private void aboutRecycler() {
@@ -66,90 +74,36 @@ public class ListFragment extends Fragment implements View.OnClickListener {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
-        listAdapter = new ListAdapter();
         listAdapter.setListDatas(mListDatas);
         recyclerView.setAdapter(listAdapter);
     }
 
     private void init(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.listRecycler);
-        ivImg = (ImageView) view.findViewById(R.id.iv_listInput);
-        etInput = (EditText) view.findViewById(R.id.et_listInput);
-        btnReset = (Button) view.findViewById(R.id.btnReset_listInput);
-        btnAdd = (Button) view.findViewById(R.id.btnAdd_listInput);
 
-        ivImg.setOnClickListener(this); //이미지 버튼 클릭-> 사진 추가
-        btnReset.setOnClickListener(this);
-        btnAdd.setOnClickListener(this);
-
+        listAdapter = new ListAdapter();
         mListDatas = new ArrayList<>();
         firebaseDB = new FirebaseDB();
     }
 
-    private void addItemFunc() {
-        if (!etInput.getText().toString().equals("")) {
-
-            long ctm = System.currentTimeMillis();
-            Date currentDate = new Date(ctm);
-            SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateFormat));
-
-            ListData tmpListData = new ListData(dateFormat.format(currentDate), imgPath, etInput.getText().toString(), false);
-
-            mListDatas.add(tmpListData);
-            firebaseDB.writeNewListData(tmpListData);
-            listAdapter.notifyDataSetChanged();
-            aboutBtnReset(); //입력 item clear
-        }else{
-            Toast.makeText(getActivity(), "내용을 입력해 주세요.",Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQ_GALLERY_PICTURE && resultCode == Activity.RESULT_OK) {
+        Log.d(TAG, "listfragment onactivityResult");
+
+        if (requestCode == REQ_GALLERY_PICTURE  && resultCode == Activity.RESULT_OK) {
             try {
+                imgView = (ImageView)recyclerView.findViewHolderForAdapterPosition(0).itemView.findViewById(R.id.iv_listInput);
                 imgPath = data.getData().toString(); //이미지의 uri
+
                 Glide.with(getContext())
-                        .load(data.getData())
+                        .load(imgPath)
                         .override(1000, 1000)
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(ivImg);
+                        .into(imgView);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
-    private void LoadPicture() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQ_GALLERY_PICTURE);
-    }
-
-    private void aboutBtnReset() {
-        imgPath = null;
-        ivImg.setImageResource(R.drawable.ic_img_placeholder);
-        etInput.setText("");
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnReset_listInput:
-                aboutBtnReset();
-                break;
-            case R.id.btnAdd_listInput:
-                addItemFunc();
-                break;
-            case R.id.iv_listInput:
-                LoadPicture();
-                break;
-            default:
-                //
-        }
-    }
-
-
 }

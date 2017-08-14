@@ -1,93 +1,256 @@
 package com.example.totoroto.mureok.List;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.totoroto.mureok.Community.CommunityFragment;
 import com.example.totoroto.mureok.Data.FirebaseDB;
 import com.example.totoroto.mureok.Data.ListData;
+import com.example.totoroto.mureok.Main.MainActivity;
 import com.example.totoroto.mureok.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
+import static com.example.totoroto.mureok.List.ListFragment.imgPath;
+
+
+public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    public static final String TAG = "SOLBIN";
+    public static final int VIEWTYPE_CARD = 0;
+    public static final int VIEWTYPE_LIST = 1;
+    public static final int REQ_GALLERY_LIST = 100;
+
     private Context context;
     private ArrayList<ListData> mListDatas;
     private FirebaseDB firebaseDB;
 
     @Override
-    public ListViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return VIEWTYPE_CARD;
+        }
+        return VIEWTYPE_LIST;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         firebaseDB = new FirebaseDB();
 
-        View view = inflater.inflate(R.layout.item_list, viewGroup, false);
-
-        return new ListViewHolder(view);
+        if (viewType == VIEWTYPE_CARD) {
+            View itemView = inflater.inflate(R.layout.item_list_card,
+                    viewGroup, false);
+            return new ListCardViewHolder(itemView);
+        } else {
+            View itemView = inflater.inflate(R.layout.item_list,
+                    viewGroup, false);
+            return new ListViewHolder(itemView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(final ListViewHolder holder, int position) {
-        ListData listData = mListDatas.get(position);
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
-        holder.tvDate.setText(listData.date);
-        holder.tvContents.setText(listData.contents);
+        if (holder.getItemViewType() == VIEWTYPE_CARD) {
 
-        if(listData.imgPath != null) {
-            try {
-                holder.ivImage.setVisibility(View.VISIBLE);
+            ((ListCardViewHolder) holder).btnAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    aboutBtnAdd(holder);
+                }
+            });
 
-                Glide.with(context)
-                        .load(Uri.parse(listData.imgPath))
-                        .override(3500, 1500)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(holder.ivImage);
-            } catch (Exception e) {
-                e.printStackTrace();
+            ((ListCardViewHolder) holder).btnReset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    aboutBtnReset(holder);
+                }
+            });
+
+            ((ListCardViewHolder) holder).iv_listInput.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    aboutImgClick(holder);
+                }
+            });
+        } else if (holder.getItemViewType() == VIEWTYPE_LIST) {
+            ListData listData = mListDatas.get(position);
+
+            ((ListViewHolder) holder).tvDate.setText(listData.date);
+            ((ListViewHolder) holder).tvContents.setText(listData.contents);
+
+            if (listData.imgPath != null) {
+                try {
+                    ((ListViewHolder) holder).ivImage.setVisibility(View.VISIBLE);
+
+                    Glide.with(context)
+                            .load(Uri.parse(listData.imgPath))
+                            .override(3500, 1500)
+                            .centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .into(((ListViewHolder) holder).ivImage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
 
-        holder.btnShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int pos = holder.getAdapterPosition();
-                boolean isShare = mListDatas.get(pos).getisShare();
-                if (pos != RecyclerView.NO_POSITION) {
-                    if (isShare) { //ON -> OFF
-                        isShare = false;
-                        mListDatas.get(pos).setisShare(false);
-                        holder.btnShare.setBackgroundResource(android.R.drawable.btn_default);
-                    } else { //OFF ->ON
-                        isShare = true;
-                        mListDatas.get(pos).setisShare(true);
-                        holder.btnShare.setBackgroundResource(R.color.colorPrimary);
+            ((ListViewHolder) holder).btnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = (holder).getAdapterPosition();
+                    aboutShareDialog(holder, pos);
+
+                }
+            });
+            ((ListViewHolder) holder).btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = holder.getAdapterPosition();
+
+                    if (pos != RecyclerView.NO_POSITION) {
+                        firebaseDB.deleteListData(mListDatas.get(pos).getFirebaseKey());
+                        mListDatas.remove(pos);
+
+                        notifyItemChanged(pos);
+                        notifyItemRangeChanged(pos, mListDatas.size());
                     }
-                    notifyDataSetChanged();
-                    firebaseDB.shareListData(mListDatas.get(pos).getFirebaseKey(), isShare);
                 }
-            }
-        });
-        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            });
+        }
+    }
+
+    private void aboutShareDialog(final RecyclerView.ViewHolder holder, final int position) {
+        ListShareDialog shareDialog = new ListShareDialog();
+
+        shareDialog.setSelectShareResult(new ListShareDialog.SelectShareResult() {
             @Override
-            public void onClick(View v) {
-                int pos = holder.getAdapterPosition();
+            public void getResult(int selectId) {
+                switch (selectId) {
+                    case R.id.radioFlower:
+                        mListDatas.get(position).setRadioFlower(true);
+                        mListDatas.get(position).setisShare(true);
+                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        break;
+                    case R.id.radioHerb:
+                        mListDatas.get(position).setRadioHerb(true);
+                        mListDatas.get(position).setisShare(true);
+                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        break;
+                    case R.id.radioCactus:
+                        mListDatas.get(position).setRadioCactus(true);
+                        mListDatas.get(position).setisShare(true);
+                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        break;
+                    case R.id.radioVegetable:
+                        mListDatas.get(position).setRadioVegetable(true);
+                        mListDatas.get(position).setisShare(true);
+                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        break;
+                    case R.id.radioTree:
+                        mListDatas.get(position).setRadioTree(true);
+                        mListDatas.get(position).setisShare(true);
+                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        break;
+                    case -1: //click btn cancel
+                        Log.d(TAG, "click btn cancel");
+                        mListDatas.get(position).setisShare(false);
+                        ((ListViewHolder) holder).btnShare.setBackgroundResource(android.R.drawable.btn_default);
 
-                if (pos != RecyclerView.NO_POSITION) {
-                    firebaseDB.deleteListData(mListDatas.get(pos).getFirebaseKey());
-                    mListDatas.remove(pos);
-
-                    notifyItemChanged(pos);
-                    notifyItemRangeChanged(pos, mListDatas.size());
+                        mListDatas.get(position).setRadioFlower(false);
+                        mListDatas.get(position).setRadioHerb(false);
+                        mListDatas.get(position).setRadioCactus(false);
+                        mListDatas.get(position).setRadioVegetable(false);
+                        mListDatas.get(position).setRadioTree(false);
+                        break;
+                    default:
+                        Toast.makeText(context, "카테고리를 선택해 주세요.", Toast.LENGTH_SHORT).show();
+                }
+                notifyDataSetChanged();
+                if(mListDatas.get(position).getisShare()) {
+                    sendCommunity(mListDatas.get(position));
+                    firebaseDB.updateListShareData(mListDatas.get(position).getFirebaseKey(), mListDatas.get(position));
                 }
             }
         });
+
+        FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
+        shareDialog.show(fm, "shareDialog");
+    }
+
+    private void sendCommunity(ListData listData) {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        CommunityFragment communityFragment = new CommunityFragment();
+        MainActivity activity = (MainActivity)context;
+        FragmentManager manager = activity.getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        Bundle bundle = new Bundle(3);
+        try {
+            bundle.putString("userProfilePhoto", fUser.getPhotoUrl().toString());
+            bundle.putString("userNickName", fUser.getDisplayName());
+            bundle.putParcelable("sharedListData", listData);
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+        communityFragment.setArguments(bundle);
+        transaction.replace(R.id.mainFrameLayout, communityFragment).commit();
+    }
+
+    private void aboutImgClick(RecyclerView.ViewHolder holder) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        ((Activity) context).startActivityForResult(intent, REQ_GALLERY_LIST);
+        Log.d(TAG, "adapter startActivityForResult");
+    }
+
+    private void aboutBtnReset(RecyclerView.ViewHolder holder) {
+        imgPath = null;
+        ((ListCardViewHolder) holder).iv_listInput.setImageResource(R.drawable.ic_img_placeholder);
+        ((ListCardViewHolder) holder).et_listInput.setText("");
+    }
+
+    private void aboutBtnAdd(RecyclerView.ViewHolder holder) {
+        if (!((ListCardViewHolder) holder).et_listInput.getText().toString().equals("") &&
+                imgPath != null) {
+
+            long ctm = System.currentTimeMillis();
+            Date currentDate = new Date(ctm);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm");
+
+            ListData tmpListData = new ListData(dateFormat.format(currentDate), imgPath, ((ListCardViewHolder) holder).et_listInput.getText().toString(), false
+                    , false, false, false, false, false);
+            mListDatas.add(tmpListData);
+            firebaseDB.writeNewListData(tmpListData);
+            notifyDataSetChanged();
+            aboutBtnReset(holder); //입력 item clear
+            Log.d(TAG, "adapter itemCnt:" + String.valueOf(getItemCount()));
+            Log.d(TAG, String.valueOf(getItemCount()));
+
+        } else {
+            Toast.makeText(context, "사진과 내용을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -98,4 +261,5 @@ public class ListAdapter extends RecyclerView.Adapter<ListViewHolder> {
     public void setListDatas(ArrayList<ListData> listDatas) {
         mListDatas = listDatas;
     }
+
 }

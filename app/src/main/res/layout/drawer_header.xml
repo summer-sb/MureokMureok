@@ -10,7 +10,7 @@
         android:id="@+id/civProfile_navi"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@mipmap/ic_launcher_round"
+        android:src="@color/colorGray"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         />
@@ -21,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/civProfile_navi"
         android:layout_above="@+id/tvEmail_navi"
-        android:text="닉네임"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:layout_marginBottom="4dp"
@@ -35,7 +34,6 @@
         android:layout_toEndOf="@+id/civProfile_navi"
         android:layout_alignBottom="@+id/civProfile_navi"
         android:layout_alignStart="@+id/tvProfile_navi"
-        android:text="aaa@gmail.com"
         android:textSize="20sp"
         android:textColor="@android:color/white"
         />

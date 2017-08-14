@@ -28,7 +28,7 @@ import com.example.totoroto.mureok.R;
 import java.util.Calendar;
 
 public class AddPlantDialog extends DialogFragment implements View.OnClickListener{
-    private final int REQ_GALLERY_PICTURE = 1;
+    private final int REQ_GALLERY_MANAGE = 100;
     private String pName;
     private String pRealName;
     private String pDate;
@@ -109,10 +109,14 @@ public class AddPlantDialog extends DialogFragment implements View.OnClickListen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) { //about get Gallery image
-        if (requestCode == REQ_GALLERY_PICTURE && resultCode == Activity.RESULT_OK) {
+      Log.d("SOLBIN", "addplantdialog onActivityResult");
+      //  super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d("SOLBIN", "req:"+requestCode + "res:"+resultCode);
+        if (requestCode == REQ_GALLERY_MANAGE && resultCode == Activity.RESULT_OK) {
             try {
                 pPicture = data.getData().toString(); //이미지의 uri
-
+                Log.d("SOLBIN", pPicture);
                  Glide.with(getContext())
                         .load(data.getData())
                         .override(600,600)
@@ -126,10 +130,11 @@ public class AddPlantDialog extends DialogFragment implements View.OnClickListen
     }
 
     private void aboutPicture() { //about get Gallery image
+        Log.d("SOLBIN","click btn picture load");
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQ_GALLERY_PICTURE);
+        startActivityForResult(intent, REQ_GALLERY_MANAGE);
     }
 
     private void aboutBtnCalendar() {

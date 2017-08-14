@@ -1,10 +1,12 @@
-package com.example.totoroto.mureok;
+package com.example.totoroto.mureok.Main;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,22 +17,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.totoroto.mureok.Community.CommunityFragment;
-import com.example.totoroto.mureok.Data.FirebaseDB;
-import com.example.totoroto.mureok.Data.User;
-import com.example.totoroto.mureok.List.ListFragment;
 import com.example.totoroto.mureok.Manage.ManageFragment;
+import com.example.totoroto.mureok.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
-    private final String TAG = "FDB";
+    private final String TAG = "SOLBIN";
 
     private TabLayout tabLayout;
+    private ViewPager viewPager;
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView tvNickName;
     private TextView tvEmail;
-    private FirebaseDB firebaseDB;
+    private CircleImageView civProfilePicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,23 +47,16 @@ public class MainActivity extends AppCompatActivity {
         aboutNavi();
     }
 
-    private void aboutNavi() {
-        //navigation header
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
-/*
-        while(tmpUser.getUserEmail() == null) {
-            tmpUser = firebaseDB.readUserProfile();
-        }
-*/
-        try {
-            User tmpUser = firebaseDB.readUserProfile();
-            tvEmail.setText(tmpUser.getUserEmail());
-            Log.d(TAG, "Main: "+tmpUser.getUserEmail() + "|" + tmpUser.getNickName());
-            tvNickName.setText(tmpUser.getNickName());
-        }catch (Exception e){
-            e.printStackTrace();
-            tvNickName.setText("");
-        }
+    private void aboutNavi() {
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -85,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             drawerLayout.openDrawer(GravityCompat.START);
+
+            //navigation header
+            FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+            if(fUser != null) {
+                tvEmail.setText(fUser.getEmail());
+                tvNickName.setText(fUser.getDisplayName());
+                civProfilePicture.setImageURI(fUser.getPhotoUrl());
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -107,27 +112,14 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_community));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL); //너비를 모두 같게 표시
 
+        TabAdapter tabAdapter = new TabAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(tabAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
-                Fragment selectFragment = null;
-                switch (position) {
-                    case 0:
-                        selectFragment = ManageFragment.newInstance();
-                        break;
-                    case 1:
-                        selectFragment = ListFragment.newInstance();
-                        break;
-                    case 2:
-                        selectFragment = CommunityFragment.newInstance();
-                        break;
-                    default:
-                        //
-                }
-                //선택된 프래그먼트로 replace 해준다.
-                getSupportFragmentManager().beginTransaction().replace(R.id.mainFrameLayout, selectFragment).commit();
-
+                viewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
@@ -138,11 +130,11 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-
     }
 
     private void init() {
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        viewPager = (ViewPager)findViewById(R.id.viewPager);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigationView = (NavigationView) findViewById(R.id.navigationView);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -150,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
         View header = navigationView.getHeaderView(0);
         tvNickName = (TextView) header.findViewById(R.id.tvProfile_navi);
         tvEmail = (TextView) header.findViewById(R.id.tvEmail_navi);
-
-        firebaseDB = new FirebaseDB();
+        civProfilePicture = (CircleImageView) header.findViewById(R.id.civProfile_navi);
     }
 }

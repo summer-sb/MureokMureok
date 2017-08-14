@@ -26,6 +26,14 @@ public class WaterAlarmDialog extends DialogFragment implements View.OnClickList
     private Button btnCancel;
     private Button btnOK;
 
+    public interface DialogResult{
+        void apply(int perDate, int hour, int minute, String AM_PM);
+    }
+
+    public void setDialogResult(DialogResult dialogResult){
+        mDialogResult = dialogResult;
+    }
+
     public WaterAlarmDialog() {
     }
 
@@ -37,15 +45,6 @@ public class WaterAlarmDialog extends DialogFragment implements View.OnClickList
 
         return view;
     }
-
-    public interface DialogResult{
-        void apply(int perDate, int hour, int minute, String AM_PM);
-    }
-
-    public void setDialogResult(DialogResult dialogResult){
-        mDialogResult = dialogResult;
-    }
-
 
     private void aboutAlarmDate() {
         //며칠 마다

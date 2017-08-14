@@ -1,6 +1,7 @@
 package com.example.totoroto.mureok;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -69,6 +71,13 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+                    // 유저 프로필 설정.
+                    UserProfileChangeRequest profileChange = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(etJoinNickName.getText().toString())
+                            .setPhotoUri(Uri.parse("android.resource://com.example.totoroto.mureok/" + R.drawable.ic_profile_default))
+                            .build();
+                    user.updateProfile(profileChange);
+
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
@@ -106,15 +115,17 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                             Toast.makeText(getApplicationContext(), R.string.joinFailed,
                                     Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "createUserWithEmail:not Complete:" + !task.isSuccessful());
-                        }
-                        //가입을 성공한 경우 db를 생성하고
-                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-                        firebaseDB.writeNewUser(userEmail, userNickName);
-                        //로그인 액티비티로 이동한다.
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        finish();
+                        }else {
+                            //가입을 성공한 경우 db를 생성하고
+                            Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
+                            firebaseDB.writeNewUser(userEmail, userNickName);
+                            //로그인 액티비티로 이동한다.
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                            intent.putExtra("nickName", userNickName);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                 });
     }

@@ -10,13 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.totoroto.mureok.Main.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private EditText etEmail;
@@ -31,7 +30,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private final static String TAG = "LoginActivity";
     private String userEmail;
     private String userPassword;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,14 +39,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         currentUserState();
     }
 
-
     private void currentUserState() {//로그인 상태 변화에 응답->현재어떤사용자가로그인중인지
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
@@ -71,12 +67,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(getApplicationContext(), R.string.loginFailed,
                                     Toast.LENGTH_SHORT).show();
-                        }
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                        }else {
+                            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                        //로그인 성공하면 메인 액티비티로 이동
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
+                            //로그인 성공하면 메인 액티비티로 이동
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
                     }
                 });
     }

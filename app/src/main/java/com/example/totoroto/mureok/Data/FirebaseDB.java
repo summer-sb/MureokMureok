@@ -2,6 +2,7 @@ package com.example.totoroto.mureok.Data;
 
 import android.util.Log;
 
+import com.example.totoroto.mureok.Community.CommunityAdapter;
 import com.example.totoroto.mureok.List.ListAdapter;
 import com.example.totoroto.mureok.Manage.ManageAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,51 +31,29 @@ public class FirebaseDB {
         mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
     }
 
-    public User readUserProfile(){
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        final User temp = new User();
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                temp.setUserEmail(user.getUserEmail());
-                temp.setNickName(user.getNickName());
-                Log.d(TAG, "in Listener :" +temp.getUserEmail() +"|" + temp.getNickName());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        Log.d(TAG, "out Listener :" +temp.getUserEmail() +"|" + temp.getNickName());
-        return temp;
-    }
-
     public void writeNewManageData(ManageData mData) {
         mRootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference userIdRef =  mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        DatabaseReference userIdRef = mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         String manageKey = userIdRef.child("manageData").push().getKey();
 
         Map<String, Object> manageDataUpdate = new HashMap<String, Object>();
-        manageDataUpdate.put("/manageData/"+manageKey, mData);
+        manageDataUpdate.put("/manageData/" + manageKey, mData);
         mData.setFirebaseKey(manageKey); //파이어베이스 키 저장
 
         userIdRef.updateChildren(manageDataUpdate);
     }
 
-    public void readManageData(final ArrayList<ManageData> manageDatas, final ManageAdapter mAdapter){
+    public void readManageData(final ArrayList<ManageData> manageDatas, final ManageAdapter mAdapter) {
         firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference manageRef = FirebaseDatabase.getInstance().getReference().child("users")
-        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("manageData");
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("manageData");
 
-        Log.d(TAG, "CurrentUser:"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Log.d(TAG, "CurrentUser:" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         manageRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 manageDatas.clear();
-                for(DataSnapshot s : dataSnapshot.getChildren()){
+                for (DataSnapshot s : dataSnapshot.getChildren()) {
                     ManageData mData = s.getValue(ManageData.class);
                     manageDatas.add(mData);
                 }
@@ -88,9 +67,9 @@ public class FirebaseDB {
         });
     }
 
-    public void updateManageAlarmData(String key, ManageData mData){
+    public void updateManageAlarmData(String key, ManageData mData) {
         mRootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference manageRef =  mRootRef.child("users")
+        DatabaseReference manageRef = mRootRef.child("users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("manageData").child(key);
 
@@ -104,9 +83,9 @@ public class FirebaseDB {
         manageRef.updateChildren(alarmUpdate);
     }
 
-    public void deleteManageData(String key){
+    public void deleteManageData(String key) {
         mRootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference manageRef =  mRootRef.child("users")
+        DatabaseReference manageRef = mRootRef.child("users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("manageData").child(key);
         manageRef.removeValue();
@@ -114,26 +93,44 @@ public class FirebaseDB {
 
     public void writeNewListData(ListData listData) {
         mRootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference userIdRef =  mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        DatabaseReference userIdRef = mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         String listkey = userIdRef.child("listData").push().getKey();
 
         Map<String, Object> listDataUpdate = new HashMap<String, Object>();
-        listDataUpdate.put("/listData/"+listkey, listData);
+        listDataUpdate.put("/listData/" + listkey, listData);
         listData.setFirebaseKey(listkey);
 
         userIdRef.updateChildren(listDataUpdate);
     }
-    public void readListData(final ArrayList<ListData> listDatas, final ListAdapter listAdapter){
+
+    public void updateListShareData(String key, ListData listData) {
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference listRef = mRootRef.child("users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("listData").child(key);
+
+        Map<String, Object> isShareUpdate = new HashMap<String, Object>();
+        isShareUpdate.put("/isShare", listData.getisShare());
+        isShareUpdate.put("/radioFlower", listData.isRadioFlower());
+        isShareUpdate.put("/radioHerb", listData.isRadioHerb());
+        isShareUpdate.put("/radioCactus", listData.isRadioCactus());
+        isShareUpdate.put("/radioVegetable", listData.isRadioVegetable());
+        isShareUpdate.put("/radioTree", listData.isRadioTree());
+
+        listRef.updateChildren(isShareUpdate);
+    }
+
+    public void readListData(final ArrayList<ListData> listDatas, final ListAdapter listAdapter) {
         firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference listRef = FirebaseDatabase.getInstance().getReference().child("users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("listData");
 
-        Log.d(TAG, "CurrentUser:"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Log.d(TAG, "CurrentUser:" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         listRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 listDatas.clear();
-                for(DataSnapshot s : dataSnapshot.getChildren()){
+                for (DataSnapshot s : dataSnapshot.getChildren()) {
                     ListData mListData = s.getValue(ListData.class);
                     listDatas.add(mListData);
                 }
@@ -146,21 +143,80 @@ public class FirebaseDB {
         });
     }
 
-    public void shareListData(String key, boolean isShare){
+    public void deleteListData(String key) {
         mRootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference manageRef =  mRootRef.child("users")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("listData").child(key);
-
-        Map<String, Object> shareUpdate = new HashMap<String, Object>();
-        shareUpdate.put("/isShare", isShare);
-        manageRef.updateChildren(shareUpdate);
-    }
-    public void deleteListData(String key){
-        mRootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference manageRef =  mRootRef.child("users")
+        DatabaseReference manageRef = mRootRef.child("users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("listData").child(key);
         manageRef.removeValue();
     }
+
+    public void writeNewCommunityData(CommunityData cData){
+            mRootRef = FirebaseDatabase.getInstance().getReference();
+            DatabaseReference communityRef = mRootRef.child("community");
+            String communityKey = communityRef.push().getKey();
+
+            Map<String, Object> communityData = new HashMap<String, Object>();
+            communityData.put("/communityData/" + communityKey, cData);
+
+            communityRef.updateChildren(communityData);
+    }
+
+    public void readCommunityData(final ArrayList<CommunityData> cDatas, final CommunityAdapter cAdapter, final int typeCategory){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference cRef = mRootRef.child("community").child("communityData");
+
+
+        cRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                cDatas.clear();
+
+                if(typeCategory == 0 ) {
+                    for (DataSnapshot s : dataSnapshot.getChildren()) {
+                        CommunityData mData = s.getValue(CommunityData.class);
+                        cDatas.add(mData);
+                    }
+                }else if(typeCategory == 1) {
+                    for (DataSnapshot s : dataSnapshot.getChildren()) {
+                        CommunityData mData = s.getValue(CommunityData.class);
+
+                        if (mData.getTypeCategory() == 1) {
+                            cDatas.add(mData);
+                        }
+                    }
+                }else if(typeCategory == 2) {
+                    for (DataSnapshot s : dataSnapshot.getChildren()) {
+                        CommunityData mData = s.getValue(CommunityData.class);
+
+                        if (mData.getTypeCategory() == 2) {
+                            cDatas.add(mData);
+                        }
+                    }
+                }else if(typeCategory == 3) {
+                    for (DataSnapshot s : dataSnapshot.getChildren()) {
+                        CommunityData mData = s.getValue(CommunityData.class);
+
+                        if (mData.getTypeCategory() == 3) {
+                            cDatas.add(mData);
+                        }
+                    }
+                }else if(typeCategory == 4) {
+                    for (DataSnapshot s : dataSnapshot.getChildren()) {
+                        CommunityData mData = s.getValue(CommunityData.class);
+
+                        if (mData.getTypeCategory() == 4) {
+                            cDatas.add(mData);
+                        }
+                    }
+                }
+                cAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+
 }

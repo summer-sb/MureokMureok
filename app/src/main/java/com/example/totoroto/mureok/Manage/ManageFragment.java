@@ -63,7 +63,6 @@ public class ManageFragment extends Fragment {
     private void addItemFunc() {
 
         fBtnAdd_m.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
@@ -83,7 +82,6 @@ public class ManageFragment extends Fragment {
                 });
             }
         });
-
     }
 
 }

@@ -4,13 +4,18 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/userInfoLayout"
-        android:background="@color/colorPrimary"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="5dp"
         >
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/userInfoLayout"
+        android:background="@color/colorAccent"
+        >
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/civUserProfile_community"
             android:layout_width="wrap_content"
@@ -23,8 +28,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tvNickName_community"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/civUserProfile_community"
-            android:text="홍길동"
             android:textStyle="bold"
             android:textColor="@android:color/white"
             />
@@ -39,44 +45,50 @@
             android:textColor="@android:color/white"
             />
     </RelativeLayout>
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="58dp"
+        >
     <ImageView
         android:id="@+id/ivPicture_community"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:layout_below="@+id/userInfoLayout"
         />
 
     <TextView
         android:id="@+id/tvContents_community"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="오늘도 행운목에 물을 주었다^^"
         android:layout_below="@+id/ivPicture_community"
+        android:layout_marginTop="4dp"
         />
     <Button
         android:id="@+id/btnLike_community"
-        android:layout_width="wrap_content"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:text="좋아요"
+        android:text="@string/like"
         android:layout_below="@+id/tvContents_community"
         />
 
     <Button
         android:id="@+id/btnComment_community"
-        android:layout_width="wrap_content"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:text="댓글 달기"
+        android:text="@string/comment"
         android:layout_toEndOf="@+id/btnLike_community"
         android:layout_alignBaseline="@+id/btnLike_community"
         />
 
     <Button
         android:id="@+id/btnShare_community"
-        android:layout_width="wrap_content"
+        android:layout_width="108dp"
         android:layout_height="wrap_content"
-        android:text="링크 공유하기"
+        android:text="@string/linkShare"
         android:layout_toEndOf="@+id/btnComment_community"
         android:layout_alignBaseline="@+id/btnLike_community"
         />
+    </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 </RelativeLayout>

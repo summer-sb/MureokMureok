@@ -1,32 +1,30 @@
-package com.example.totoroto.mureok.Community;
-
-/**
- * Created by Totoroto on 2017-08-10.
- */
+package com.example.totoroto.mureok.Data;
 
 public class CommunityData {
-    public int imgProfile;
+    public String imgProfile;
     public String nickName;
     public String date;
-    public int imgPicture;
+    public String imgPicture;
     public String contents;
+    public int typeCategory;
 
     public CommunityData() {
     }
 
-    public CommunityData(int imgProfile, String nickName, String date, int imgPicture, String contents){
+    public CommunityData(String imgProfile, String nickName, String date, String imgPicture, String contents, int typeCategory){
         this.imgProfile = imgProfile;
         this.nickName = nickName;
         this.date = date;
         this.imgPicture = imgPicture;
         this.contents = contents;
+        this.typeCategory = typeCategory;
     }
 
-    public int getImgProfile() {
+    public String getImgProfile() {
         return imgProfile;
     }
 
-    public void setImgProfile(int imgProfile) {
+    public void setImgProfile(String imgProfile) {
         this.imgProfile = imgProfile;
     }
 
@@ -46,11 +44,11 @@ public class CommunityData {
         this.date = date;
     }
 
-    public int getImgPicture() {
+    public String getImgPicture() {
         return imgPicture;
     }
 
-    public void setImgPicture(int imgPicture) {
+    public void setImgPicture(String imgPicture) {
         this.imgPicture = imgPicture;
     }
 
@@ -60,5 +58,13 @@ public class CommunityData {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public int getTypeCategory() {
+        return typeCategory;
+    }
+
+    public void setTypeCategory(int typeCategory) {
+        this.typeCategory = typeCategory;
     }
 }

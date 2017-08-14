@@ -40,11 +40,7 @@ public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             case R.id.listItem_btnModify:
                 break;
             default:
-                //
         }
     }
 
-    private void aboutBtnShare() {
-
-    }
 }
