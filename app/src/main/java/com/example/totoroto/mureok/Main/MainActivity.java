@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.totoroto.mureok.Manage.ManageFragment;
 import com.example.totoroto.mureok.R;
@@ -51,7 +52,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-            fragment.onActivityResult(requestCode, resultCode, data);
+            try {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(), "다시 시도 해주세요.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

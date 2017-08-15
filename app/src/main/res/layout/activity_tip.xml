@@ -45,12 +45,14 @@
             android:layout_alignBaseline="@+id/etTipSearch"
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@+id/etTipSearch"
-            android:text="@string/search" />
+            android:text="검색"
+            />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerTip"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/btnSearch"/>
+            android:layout_below="@+id/btnSearch"
+            />
     </RelativeLayout>
 </RelativeLayout>

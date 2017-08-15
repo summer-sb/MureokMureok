@@ -3,13 +3,15 @@ package com.example.totoroto.mureok.Data;
 public class TipData {
     public int pCode;
     public String pRealName;
+    public String pImage;
 
     public TipData(){
     }
 
-    public TipData(int pCode, String pRealName) {
+    public TipData(int pCode, String pRealName, String pImage) {
         this.pCode = pCode;
         this.pRealName = pRealName;
+        this.pImage = pImage;
     }
 
     public int getpCode() {
@@ -26,5 +28,13 @@ public class TipData {
 
     public void setpRealName(String pRealName) {
         this.pRealName = pRealName;
+    }
+
+    public String getpImage() {
+        return pImage;
+    }
+
+    public void setpImage(String pImage) {
+        this.pImage = pImage;
     }
 }

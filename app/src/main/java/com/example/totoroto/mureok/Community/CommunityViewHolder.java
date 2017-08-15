@@ -1,11 +1,17 @@
 package com.example.totoroto.mureok.Community;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.totoroto.mureok.R;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -15,6 +21,14 @@ public class CommunityViewHolder extends RecyclerView.ViewHolder{
     public TextView tvNickName;
     public TextView tvDate;
     public TextView tvContents;
+    public Button exBtnComment;
+    public ExpandableLayout exLayoutComment;
+
+    //comment(expandable layout) item
+    public Button btnClose_comment;
+    public Button btnSend_comment;
+    public EditText etComment;
+    public RecyclerView commentRecyclerView;
 
     public CommunityViewHolder(View itemView) {
         super(itemView);
@@ -28,6 +42,12 @@ public class CommunityViewHolder extends RecyclerView.ViewHolder{
         tvNickName = (TextView)v.findViewById(R.id.tvNickName_community);
         tvDate = (TextView)v.findViewById(R.id.tvDate_community);
         tvContents = (TextView)v.findViewById(R.id.tvContents_community);
+        exBtnComment = (Button)v.findViewById(R.id.exBtnComment_community);
 
+        exLayoutComment = (ExpandableLayout)v.findViewById(R.id.exLayoutComment);
+        btnClose_comment = (Button)v.findViewById(R.id.btnClose_comment);
+        btnSend_comment = (Button)v.findViewById(R.id.btnSend_comment);
+        etComment = (EditText)v.findViewById(R.id.etComment);
+        commentRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerView_comment);
     }
 }

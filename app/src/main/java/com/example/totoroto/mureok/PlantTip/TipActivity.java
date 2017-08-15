@@ -41,13 +41,12 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
     private final String TAG_WATER_WINTER = "watercycleWinterCode";
 
     private final int numOfRows = 216;
-    private HashMap<Integer, String> map;
+    private ArrayList<TipData> tempLists;
     private ArrayList<TipData> mTipDatas;
 
     private RecyclerView recyclerTip;
     private TipAdapter tipAdapter;
     private LinearLayoutManager layoutManager;
-    private Button btnSearch;
     private Button btnBack;
 
 
@@ -59,6 +58,19 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
         init();
         aboutRecycler();
         aboutTipDetail();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getPlantListData();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        aboutMapListData();
+                    }
+                });
+            }
+        }).start();
     }
 
     private void aboutTipDetail() {
@@ -66,14 +78,14 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
         recyclerTip.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
                 recyclerTip, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(View view, final int position) {
                 final int plantCode = mTipDatas.get(position).getpCode();
                 Log.d(TAG, "pCode" + plantCode + "|position" + position);
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        getPlantDetailData(plantCode);
+                        getPlantDetailData(plantCode, position);
                     }
                 }).start();
 
@@ -81,7 +93,7 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
         }));
     }
 
-    private void getPlantDetailData(int pCode) {
+    private void getPlantDetailData(int pCode, int position) {
         //1.
         String queryUrl = "http://api.nongsaro.go.kr/service/garden/gardenDtl"
                 + "?apiKey=" + API_KEY + "&cntntsNo=" + pCode;
@@ -146,6 +158,7 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
                     //detail 액티비티로 객체 보내기
                     Intent intent = new Intent(getApplicationContext(), TipDetailActivity.class);
                     intent.putExtra(INTENT_STR, tipDetailData);
+                    intent.putExtra("plantImage", mTipDatas.get(position).getpImage());
                     startActivity(intent);
                 }
             }
@@ -156,10 +169,7 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
 
     private void init() {
         recyclerTip = (RecyclerView)findViewById(R.id.recyclerTip);
-        btnSearch = (Button)findViewById(R.id.btnSearch);
         btnBack = (Button)findViewById(R.id.btnBack_tip);
-
-        btnSearch.setOnClickListener(this);
         btnBack.setOnClickListener(this);
         mTipDatas = new ArrayList<>();
     }
@@ -181,22 +191,6 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnSearch:
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getPlantListData();
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                aboutMapListData();
-                            }
-                        });
-                    }
-                }).start();
-                break;
             case R.id.btnBack_tip:
                 finish();
                 break;
@@ -204,9 +198,10 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     public void getPlantListData() {
-        map = new HashMap<Integer, String>();
+        tempLists = new ArrayList<>();
         int pNo = 0;
         String pName = "";
+        String pImage = "";
 
         String queryUrl = "http://api.nongsaro.go.kr/service/garden/gardenList"
                 + "?apiKey=" + API_KEY + "&numOfRows=" + numOfRows;
@@ -236,7 +231,11 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
                         } else if (tag.equals("cntntsSj")) { //식물명
                             xpp.next();
                             pName = xpp.getText();
-                            map.put(pNo, pName);
+                        }else if(tag.equals("rtnStreFileNm")){ //이미지 파일 경로
+                            xpp.next();
+                            pImage = xpp.getText();
+                            TipData data = new TipData(pNo, pName, pImage);
+                            tempLists.add(data);
                         }
 
                         break;
@@ -250,6 +249,7 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void aboutMapListData() {
+        /*
         Iterator<Integer> iter = map.keySet().iterator();
         while (iter.hasNext()) {
             int key = iter.next();
@@ -258,6 +258,12 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
             TipData tData = new TipData(key, value);
             mTipDatas.add(tData);
         }
+        */
+        for(int i=0; i<tempLists.size(); i++){
+            TipData tData = new TipData(tempLists.get(i).getpCode(), tempLists.get(i).getpRealName(), tempLists.get(i).getpImage());
+            mTipDatas.add(tData);
+        }
+
         tipAdapter.notifyDataSetChanged();
     }
 }

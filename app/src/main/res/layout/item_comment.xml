@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civUserProrile_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher_round"
+        />
+    <TextView
+        android:id="@+id/tvUserName_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="임솔빈"
+        android:textStyle="bold"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/civUserProrile_comment" />
+
+    <TextView
+        android:id="@+id/tvComment_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/tvUserName_comment"
+        android:layout_marginStart="10dp"
+        android:layout_centerVertical="true"
+        android:layout_alignBottom="@+id/tvUserName_comment"
+        android:textStyle="bold"
+        android:text="너무 귀여우엉엉더러덩덩덩궁궁"
+        />
+
+    <TextView
+        android:id="@+id/tvDate_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2017.01.01 00:00"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/civUserProrile_comment"
+        />
+</RelativeLayout>

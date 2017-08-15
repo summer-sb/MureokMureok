@@ -70,6 +70,12 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+        if(getItemCount() == 0){
+            ListData tmpListData = new ListData();
+
+            mListDatas.add(tmpListData);
+            notifyDataSetChanged();
+        }
 
         if (holder.getItemViewType() == VIEWTYPE_CARD) {
 
@@ -122,6 +128,15 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
                 }
             });
+
+            ((ListViewHolder) holder).btnModify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = (holder).getAdapterPosition();
+                    aboutBtnModify(holder, pos);
+                }
+            });
+
             ((ListViewHolder) holder).btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -137,6 +152,10 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 }
             });
         }
+    }
+
+    private void aboutBtnModify(RecyclerView.ViewHolder holder, int position) {
+
     }
 
     private void aboutShareDialog(final RecyclerView.ViewHolder holder, final int position) {

@@ -2,6 +2,7 @@ package com.example.totoroto.mureok.Data;
 
 import android.util.Log;
 
+import com.example.totoroto.mureok.Community.CommentData;
 import com.example.totoroto.mureok.Community.CommunityAdapter;
 import com.example.totoroto.mureok.List.ListAdapter;
 import com.example.totoroto.mureok.Manage.ManageAdapter;
@@ -156,28 +157,34 @@ public class FirebaseDB {
             DatabaseReference communityRef = mRootRef.child("community");
             String communityKey = communityRef.push().getKey();
 
-            Map<String, Object> communityData = new HashMap<String, Object>();
-            communityData.put("/communityData/" + communityKey, cData);
+            Map<String, Object> communityUpdate = new HashMap<String, Object>();
+        communityUpdate.put("/communityData/" + communityKey, cData);
+            cData.setFirebaseKey(communityKey);
 
-            communityRef.updateChildren(communityData);
+            communityRef.updateChildren(communityUpdate);
+    }
+
+    public void writeNewCommentData(String key, CommentData commentData){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference communityRef = mRootRef.child("community").child("communityData");
+        String commentKey = communityRef.push().getKey();
+
+        Map<String, Object> communityData = new HashMap<String, Object>();
+        communityData.put("/"+key+"/commentData/"+commentKey, commentData);
+
+        communityRef.updateChildren(communityData);
     }
 
     public void readCommunityData(final ArrayList<CommunityData> cDatas, final CommunityAdapter cAdapter, final int typeCategory){
         mRootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference cRef = mRootRef.child("community").child("communityData");
 
-
         cRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 cDatas.clear();
 
-                if(typeCategory == 0 ) {
-                    for (DataSnapshot s : dataSnapshot.getChildren()) {
-                        CommunityData mData = s.getValue(CommunityData.class);
-                        cDatas.add(mData);
-                    }
-                }else if(typeCategory == 1) {
+               if(typeCategory == 1) {
                     for (DataSnapshot s : dataSnapshot.getChildren()) {
                         CommunityData mData = s.getValue(CommunityData.class);
 
@@ -209,7 +216,20 @@ public class FirebaseDB {
                             cDatas.add(mData);
                         }
                     }
-                }
+                }else if(typeCategory == 5) {
+                    for (DataSnapshot s : dataSnapshot.getChildren()) {
+                        CommunityData mData = s.getValue(CommunityData.class);
+
+                        if (mData.getTypeCategory() == 5) {
+                            cDatas.add(mData);
+                        }
+                    }
+                }else{
+                   for (DataSnapshot s : dataSnapshot.getChildren()) {
+                       CommunityData mData = s.getValue(CommunityData.class);
+                       cDatas.add(mData);
+                   }
+               }
                 cAdapter.notifyDataSetChanged();
             }
             @Override

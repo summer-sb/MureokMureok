@@ -1,6 +1,7 @@
 package com.example.totoroto.mureok.Data;
 
 public class CommunityData {
+    public String firebaseKey;
     public String imgProfile;
     public String nickName;
     public String date;
@@ -11,6 +12,7 @@ public class CommunityData {
     public CommunityData() {
     }
 
+
     public CommunityData(String imgProfile, String nickName, String date, String imgPicture, String contents, int typeCategory){
         this.imgProfile = imgProfile;
         this.nickName = nickName;
@@ -18,6 +20,14 @@ public class CommunityData {
         this.imgPicture = imgPicture;
         this.contents = contents;
         this.typeCategory = typeCategory;
+    }
+
+    public String getFirebaseKey() {
+        return firebaseKey;
+    }
+
+    public void setFirebaseKey(String firebaseKey) {
+        this.firebaseKey = firebaseKey;
     }
 
     public String getImgProfile() {

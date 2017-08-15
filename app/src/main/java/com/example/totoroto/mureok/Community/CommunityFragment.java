@@ -1,5 +1,6 @@
 package com.example.totoroto.mureok.Community;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -18,6 +19,10 @@ import com.example.totoroto.mureok.Data.FirebaseDB;
 import com.example.totoroto.mureok.Data.ListData;
 import com.example.totoroto.mureok.R;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
+import org.w3c.dom.Comment;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,16 +31,12 @@ public class CommunityFragment extends Fragment{
     public static final String TAG = "SOLBIN";
     private FirebaseDB firebaseDB;
     private TabLayout tabLayoutCategory;
+    //about community recycler view
+    private LinearLayoutManager layoutManager;
+    private CommunityAdapter cAdapter;
+    private ArrayList<CommunityData> mCommunityDatas;
     private RecyclerView cRecyclerView;
 
-    private CommunityAdapter cAdapter;
-    private LinearLayoutManager layoutManager;
-
-    private ArrayList<CommunityData> mCommunityDatas;
-    private String mProfilePath;
-    private String mNickName;
-    private String mPicture;
-    private String mContents;
     private final int SELECT_FLOWER = 1;
     private final int SELECT_HERB = 2;
     private final int SELECT_CACTUS = 3;
@@ -57,7 +58,7 @@ public class CommunityFragment extends Fragment{
 
         init(view);
         aboutTab();
-        aboutSetRecycler();
+        aboutSetCommunityRecycler();
 
         if(getArguments() != null) {
             aboutItemAdd();
@@ -66,6 +67,7 @@ public class CommunityFragment extends Fragment{
 
         return view;
     }
+
 
     private void aboutItemAdd() {
         int typeCateGory;
@@ -105,9 +107,8 @@ public class CommunityFragment extends Fragment{
         cAdapter.notifyDataSetChanged();
     }
 
-    private void aboutSetRecycler() {
+    private void aboutSetCommunityRecycler() {
         cRecyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
         cRecyclerView.setLayoutManager(layoutManager);
 
         cAdapter = new CommunityAdapter();
@@ -116,11 +117,14 @@ public class CommunityFragment extends Fragment{
     }
 
     private void init(View v) {
-        mCommunityDatas = new ArrayList<>();
         firebaseDB = new FirebaseDB();
-
+        layoutManager = new LinearLayoutManager(getActivity());
         tabLayoutCategory = (TabLayout)v.findViewById(R.id.tabLayoutCategory);
+
+        mCommunityDatas = new ArrayList<>();
+
         cRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerCommunity);
+
     }
 
     private void aboutTab() {
@@ -138,9 +142,7 @@ public class CommunityFragment extends Fragment{
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()){
-                    case 0:
-                        firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 0);
-                        break;
+                    //case 0: 전체
                     case 1:
                         firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 1);
                         break;
@@ -153,12 +155,13 @@ public class CommunityFragment extends Fragment{
                     case 4:
                         firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 4);
                         break;
+                    default:
+                        firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 0);
                 }
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
             }
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 

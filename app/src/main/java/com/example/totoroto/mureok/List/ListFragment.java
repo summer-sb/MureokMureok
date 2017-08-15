@@ -51,22 +51,10 @@ public class ListFragment extends Fragment  {
 
         init(view);
         aboutRecycler();
-        createCardView();
 
         firebaseDB.readListData(mListDatas, listAdapter);
 
         return view;
-    }
-
-    private void createCardView() {
-        Log.d(TAG, "itemCnt: "+String.valueOf(listAdapter.getItemCount()));
-        if(listAdapter.getItemCount() == 0){
-            ListData tmpListData = new ListData();
-
-            mListDatas.add(tmpListData);
-            firebaseDB.writeNewListData(tmpListData);
-            listAdapter.notifyDataSetChanged();
-        }
     }
 
     private void aboutRecycler() {

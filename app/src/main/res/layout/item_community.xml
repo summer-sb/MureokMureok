@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cardView_community"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         app:cardCornerRadius="5dp"
-        >
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_centerHorizontal="true">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:id="@+id/userInfoLayout"
         android:background="@color/colorAccent"
         >
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/civUserProfile_community"
             android:layout_width="wrap_content"
@@ -72,7 +78,7 @@
         />
 
     <Button
-        android:id="@+id/btnComment_community"
+        android:id="@+id/exBtnComment_community"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
         android:text="@string/comment"
@@ -85,10 +91,55 @@
         android:layout_width="108dp"
         android:layout_height="wrap_content"
         android:text="@string/linkShare"
-        android:layout_toEndOf="@+id/btnComment_community"
+        android:layout_toEndOf="@+id/exBtnComment_community"
         android:layout_alignBaseline="@+id/btnLike_community"
         />
     </RelativeLayout>
+        <net.cachapa.expandablelayout.ExpandableLayout
+            android:id="@+id/exLayoutComment"
+            android:layout_width="match_parent"
+            android:layout_height="595dp"
+            android:background="@android:color/white"
+            app:el_duration="1000"
+            app:el_expanded="false"
+            app:el_parallax="0.5"
+            >
+            <Button
+                android:id="@+id/btnClose_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:text="닫기"
+                />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp"
+                >
+            </android.support.v7.widget.RecyclerView>
 
+            <EditText
+                android:id="@+id/etComment"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="2dp"
+                android:layout_gravity="bottom|start"
+                />
+            <Button
+                android:id="@+id/btnSend_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/etComment"
+                android:layout_toEndOf="@+id/etComment"
+                android:layout_alignEnd="@+id/btnClose_comment"
+                android:text="보내기"
+                android:layout_gravity="bottom|end"
+                />
+        </net.cachapa.expandablelayout.ExpandableLayout>
     </android.support.v7.widget.CardView>
+
 </RelativeLayout>

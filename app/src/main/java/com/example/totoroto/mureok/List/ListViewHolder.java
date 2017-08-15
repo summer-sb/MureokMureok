@@ -8,13 +8,13 @@ import android.widget.TextView;
 
 import com.example.totoroto.mureok.R;
 
-public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class ListViewHolder extends RecyclerView.ViewHolder{
     public TextView tvDate;
     public TextView tvContents;
     public ImageView ivImage;
 
     public Button btnShare;
-    private Button btnModify;
+    public Button btnModify;
     public Button btnDelete;
 
     public ListViewHolder(View itemView) {
@@ -30,17 +30,7 @@ public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         btnShare = (Button)itemView.findViewById(R.id.listItem_btnShare);
         btnModify = (Button)itemView.findViewById(R.id.listItem_btnModify);
         btnDelete = (Button)itemView.findViewById(R.id.listItem_btnDelete);
-
-        btnModify.setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.listItem_btnModify:
-                break;
-            default:
-        }
-    }
 
 }

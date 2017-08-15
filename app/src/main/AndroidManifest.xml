@@ -24,7 +24,7 @@
 
         <receiver android:name=".Alarm.AlarmBroadCast" />
 
-        <activity android:name=".PlantTip.TipDetailActivity"/>
+        <activity android:name=".PlantTip.TipDetailActivity" />
     </application>
 
 </manifest>
