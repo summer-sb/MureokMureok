@@ -35,6 +35,7 @@ import static com.example.totoroto.mureok.List.ListFragment.imgPath;
 
 public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public static final String TAG = "SOLBIN";
+    private final int NUM_CANCEL = -1; //공유 취소
     public static final int VIEWTYPE_CARD = 0;
     public static final int VIEWTYPE_LIST = 1;
     public static final int REQ_GALLERY_LIST = 100;
@@ -78,7 +79,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
 
         if (holder.getItemViewType() == VIEWTYPE_CARD) {
-
             ((ListCardViewHolder) holder).btnAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -104,6 +104,12 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
             ((ListViewHolder) holder).tvDate.setText(listData.date);
             ((ListViewHolder) holder).tvContents.setText(listData.contents);
+
+            if(listData.getisShare()){
+                ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+            }else{
+                ((ListViewHolder) holder).btnShare.setBackgroundResource(android.R.drawable.btn_default);
+            }
 
             if (listData.imgPath != null) {
                 try {
@@ -154,11 +160,37 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
     }
 
-    private void aboutBtnModify(RecyclerView.ViewHolder holder, int position) {
+    private void aboutBtnModify(RecyclerView.ViewHolder holder, final int position) {
+        final ListModifyDialog modifyDialog = new ListModifyDialog();
 
+        Bundle args = new Bundle(2);    //pass data to dialog fragment
+        args.putString("listImagePath", mListDatas.get(position).getImgPath());
+        args.putString("listContents", mListDatas.get(position).getContents());
+        modifyDialog.setArguments(args);
+
+        FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
+        modifyDialog.show(fm, "modifyDialog");
+        //apply changed item
+
+        modifyDialog.setDialogResult(new ListModifyDialog.ModifyDialogResult() {
+            @Override
+            public void apply(String imgPath, String contents) {
+                long ctm = System.currentTimeMillis();
+                Date currentDate = new Date(ctm);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm");
+
+                mListDatas.get(position).setDate(dateFormat.format(currentDate));
+                mListDatas.get(position).setImgPath(imgPath);
+                mListDatas.get(position).setContents(contents);
+                notifyDataSetChanged();
+
+                firebaseDB.updateListData(mListDatas.get(position).getFirebaseKey(), mListDatas.get(position));
+            }
+        });
     }
 
     private void aboutShareDialog(final RecyclerView.ViewHolder holder, final int position) {
+
         ListShareDialog shareDialog = new ListShareDialog();
 
         shareDialog.setSelectShareResult(new ListShareDialog.SelectShareResult() {
@@ -190,7 +222,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                         mListDatas.get(position).setisShare(true);
                         ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
                         break;
-                    case -1: //click btn cancel
+                    case NUM_CANCEL: //click btn cancel
                         Log.d(TAG, "click btn cancel");
                         mListDatas.get(position).setisShare(false);
                         ((ListViewHolder) holder).btnShare.setBackgroundResource(android.R.drawable.btn_default);
@@ -200,14 +232,18 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                         mListDatas.get(position).setRadioCactus(false);
                         mListDatas.get(position).setRadioVegetable(false);
                         mListDatas.get(position).setRadioTree(false);
+
                         break;
                     default:
                         Toast.makeText(context, "카테고리를 선택해 주세요.", Toast.LENGTH_SHORT).show();
                 }
                 notifyDataSetChanged();
+                firebaseDB.updateListShareData(mListDatas.get(position).getFirebaseKey(), mListDatas.get(position));
+
                 if(mListDatas.get(position).getisShare()) {
                     sendCommunity(mListDatas.get(position));
-                    firebaseDB.updateListShareData(mListDatas.get(position).getFirebaseKey(), mListDatas.get(position));
+                }else{//공유가 false이면
+                    firebaseDB.deleteCommunityData(mListDatas.get(position).getFirebaseKey());
                 }
             }
         });

@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 fragment.onActivityResult(requestCode, resultCode, data);
             }catch (Exception e){
-                Toast.makeText(getApplicationContext(), "다시 시도 해주세요.", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
         }
     }

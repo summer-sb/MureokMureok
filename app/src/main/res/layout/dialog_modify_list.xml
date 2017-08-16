@@ -1,7 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
+    <TextView
+        android:id="@+id/tvExplain_modifyDialog"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="리스트 내용을 수정합니다"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorGray"
+        android:gravity="center"
+        />
+
+    <ImageView
+        android:id="@+id/iv_modifyDialog"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_below="@+id/tvExplain_modifyDialog"
+        android:src="@mipmap/ic_launcher"
+        />
+    <EditText
+        android:id="@+id/et_modifyDialog"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/iv_modifyDialog"
+        />
+    <Button
+        android:id="@+id/btnCancel_modifyDialog"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:layout_below="@+id/et_modifyDialog"
+        />
+    <Button
+        android:id="@+id/btnOK_modifyDialog"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/ok"
+        android:layout_toEndOf="@+id/btnCancel_modifyDialog"
+        android:layout_alignBaseline="@+id/btnCancel_modifyDialog"
+        />
 
 </RelativeLayout>

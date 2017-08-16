@@ -71,12 +71,12 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
             e.printStackTrace();
         }
 
-        if(!itemData.pAM_PM.equals("")) {
-            holder.tv_pWaterDate.setText("" + itemData.pPerDate + "일 후 " + itemData.pHour + " : " + itemData.pMinute
+        WaterAlarm waterAlarm = new WaterAlarm(context);
+        if(!itemData.pAM_PM.equals("")) { //알람이 설정되어 있으면
+            holder.tv_pWaterDate.setText("" + itemData.pPerDate + "일 마다 " + itemData.pHour + " : " + itemData.pMinute
                     + itemData.pAM_PM + " 에 물을 줍니다.");
 
-            WaterAlarm waterAlarm = new WaterAlarm(context);
-            waterAlarm.Alarm(itemData.pHour, itemData.pMinute);
+            waterAlarm.Alarm(itemData.pPerDate, itemData.pHour, itemData.pMinute);
         }else{
             holder.tv_pWaterDate.setText("");
         }

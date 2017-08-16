@@ -94,6 +94,7 @@
         android:layout_toEndOf="@+id/exBtnComment_community"
         android:layout_alignBaseline="@+id/btnLike_community"
         />
+
     </RelativeLayout>
         <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/exLayoutComment"

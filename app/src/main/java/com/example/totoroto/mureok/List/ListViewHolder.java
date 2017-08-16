@@ -1,10 +1,12 @@
 package com.example.totoroto.mureok.List;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.totoroto.mureok.R;
 
@@ -17,7 +19,7 @@ public class ListViewHolder extends RecyclerView.ViewHolder{
     public Button btnModify;
     public Button btnDelete;
 
-    public ListViewHolder(View itemView) {
+    public ListViewHolder(final View itemView) {
         super(itemView);
 
         init();

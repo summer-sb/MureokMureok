@@ -47,6 +47,13 @@ public class AddPlantDialog extends DialogFragment implements View.OnClickListen
     private TextView tv_pDate;
     private ImageView iv_pPicture;
 
+    public interface DialogResult{ //about waterset dialog
+        void apply(String picture, String name, String realName, String enrollDate);
+    }
+
+    public void setDialogResult(DialogResult dialogResult){
+        mDialogResult = dialogResult;
+    }
     public AddPlantDialog() {
     }
 
@@ -79,14 +86,6 @@ public class AddPlantDialog extends DialogFragment implements View.OnClickListen
                 +calendar.get(Calendar.DAY_OF_MONTH));
     }
 
-    public interface DialogResult{ //about waterset dialog
-        void apply(String picture, String name, String realName, String enrollDate);
-    }
-
-    public void setDialogResult(DialogResult dialogResult){
-        mDialogResult = dialogResult;
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -109,14 +108,11 @@ public class AddPlantDialog extends DialogFragment implements View.OnClickListen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) { //about get Gallery image
-      Log.d("SOLBIN", "addplantdialog onActivityResult");
-      //  super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("SOLBIN", "req:"+requestCode + "res:"+resultCode);
         if (requestCode == REQ_GALLERY_MANAGE && resultCode == Activity.RESULT_OK) {
             try {
                 pPicture = data.getData().toString(); //이미지의 uri
-                Log.d("SOLBIN", pPicture);
+
                  Glide.with(getContext())
                         .load(data.getData())
                         .override(600,600)
@@ -130,7 +126,6 @@ public class AddPlantDialog extends DialogFragment implements View.OnClickListen
     }
 
     private void aboutPicture() { //about get Gallery image
-        Log.d("SOLBIN","click btn picture load");
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

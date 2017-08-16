@@ -74,8 +74,7 @@ public class CommunityFragment extends Fragment{
         ListData listData = getArguments().getParcelable("sharedListData");
         String imagePath = listData.getImgPath();
         String contents = listData.getContents();
-
-        Log.d(TAG, "contents: "+contents);
+        String listFirebaseKey = listData.getFirebaseKey();
 
         if(listData.isRadioFlower()){
             typeCateGory = SELECT_FLOWER;
@@ -100,10 +99,10 @@ public class CommunityFragment extends Fragment{
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm");
         //아이템 추가
         CommunityData cData = new CommunityData(profilePhoto, nickName, dateFormat.format(currentDate),
-                                                imagePath, contents, typeCateGory);
+                                                imagePath, contents, typeCateGory, 0);
 
         mCommunityDatas.add(cData);
-        firebaseDB.writeNewCommunityData(cData);
+        firebaseDB.writeNewCommunityData(cData, listFirebaseKey);
         cAdapter.notifyDataSetChanged();
     }
 

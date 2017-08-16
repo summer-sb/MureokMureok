@@ -18,8 +18,6 @@ import com.example.totoroto.mureok.R;
 
 
 public class WaterAlarmDialog extends DialogFragment implements View.OnClickListener{
-    private final String TAG = "SW";
-
     private DialogResult mDialogResult;
     private TimePicker tpAlarm;
     private EditText etWaterDate;
@@ -60,8 +58,7 @@ public class WaterAlarmDialog extends DialogFragment implements View.OnClickList
         }else{
             AM_PM = "PM";
         }
-        Log.d(TAG, "perDate:"+mPerDate+"|hour:"+mHour+"|min:"+mMinute+"|AMPM:"+AM_PM);
-        Log.d(TAG, "dialogresult: " + mDialogResult);
+
         mDialogResult.apply(mPerDate, mHour, mMinute, AM_PM);
         dismiss();
     }
@@ -75,13 +72,11 @@ public class WaterAlarmDialog extends DialogFragment implements View.OnClickList
             case R.id.btnOK_water:
                 aboutAlarmDate();
                 break;
-            default:
-                //
         }
     }
 
     private void aboutBtnCancel() {
-        mDialogResult.apply(0, 0, 0, "");
+        mDialogResult.apply(-1, 0, 0, "");
         dismiss();
     }
 

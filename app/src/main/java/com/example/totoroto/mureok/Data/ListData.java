@@ -132,6 +132,7 @@ public class ListData implements Parcelable{
         arrRadio[0] = isRadioFlower();  arrRadio[1] = isRadioHerb();    arrRadio[2] = isRadioCactus();
         arrRadio[3] = isRadioVegetable();   arrRadio[4] = isRadioTree();
 
+        dest.writeString(firebaseKey);
         dest.writeString(imgPath);
         dest.writeString(contents);
         dest.writeByte((byte) (isRadioFlower() ? 1 : 0));
@@ -142,6 +143,7 @@ public class ListData implements Parcelable{
     }
 
     private void readFromParcel(Parcel in){
+        firebaseKey = in.readString();
         imgPath = in.readString();
         contents = in.readString();
 

@@ -76,8 +76,14 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
         holder.tvDate.setText(communityData.date);
         holder.tvContents.setText(communityData.contents);
 
-        aboutCommentFunc(holder, position);
+        holder.btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
+
+        aboutCommentFunc(holder, position);
     }
 
     @Override
@@ -85,20 +91,23 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
         return mDatas.size();
     }
 
-    private void aboutCommentFunc(final CommunityViewHolder holder, final int position) {
+    private void aboutCommentFunc(final CommunityViewHolder holder, final int position) { //아이템 포지션에 따라
         final TabLayout  mainTab = (TabLayout)((AppCompatActivity)context).findViewById(R.id.tabLayout);
         final TabLayout communityTab = (TabLayout)((AppCompatActivity) context).findViewById(R.id.tabLayoutCategory);
         final ViewPager viewPager = (ViewPager)((AppCompatActivity) context).findViewById(R.id.viewPager);
+
         holder.exBtnComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(!holder.exLayoutComment.isExpanded()) {
+                    setCommentRecycler(holder);
+                    firebaseDB.readCommentData(mDatas.get(position).getFirebaseKey(), commentDatas, commentAdapter); //댓글을 읽어온다.
+
                     ((AppCompatActivity)context).getSupportActionBar().hide();
                     mainTab.setVisibility(View.GONE);
                     communityTab.setVisibility(View.GONE);
                     holder.exLayoutComment.expand(); //댓글 창을 펼친다.
-                }
+                 }
 
                 viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() { //뷰페이저 이동하면 화면X
                     @Override
@@ -125,15 +134,14 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
                 long ctm = System.currentTimeMillis();
                 Date currentDate = new Date(ctm);
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm");
-                setCommentRecycler(holder);
+                //setCommentRecycler(holder);
 
                 CommentData cData = new CommentData(fUser.getPhotoUrl().toString() ,fUser.getDisplayName(),
                         holder.etComment.getText().toString() ,dateFormat.format(currentDate));
                 //param : imagePath, userName, comment, current date
-                commentDatas.add(cData); ////TODO 데이터 저장 타입 바꿔야할듯 position-Objects
-                firebaseDB.writeNewCommentData(mDatas.get(position).getFirebaseKey(), cData);
+                commentDatas.add(cData);
 
-                commentAdapter.notifyDataSetChanged();
+                firebaseDB.writeNewCommentData(mDatas.get(position).getFirebaseKey(), cData);
             }
         });
 

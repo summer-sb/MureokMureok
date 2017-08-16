@@ -48,7 +48,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
         holder.tvComment.setText(cData.getComment());
         holder.tvDate.setText(cData.getDate());
 
-        Log.d("SOLBIN","commentCnt:"+String.valueOf(getItemCount()));
+      //  Log.d("SOLBIN","commentCnt:"+String.valueOf(getItemCount()));
     }
 
     @Override

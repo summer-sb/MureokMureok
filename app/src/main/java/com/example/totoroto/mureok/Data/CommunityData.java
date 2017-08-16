@@ -8,18 +8,21 @@ public class CommunityData {
     public String imgPicture;
     public String contents;
     public int typeCategory;
+    public int numLike;
 
     public CommunityData() {
     }
 
 
-    public CommunityData(String imgProfile, String nickName, String date, String imgPicture, String contents, int typeCategory){
+    public CommunityData(String imgProfile, String nickName, String date, String imgPicture, String contents,
+                         int typeCategory,int numLike){
         this.imgProfile = imgProfile;
         this.nickName = nickName;
         this.date = date;
         this.imgPicture = imgPicture;
         this.contents = contents;
         this.typeCategory = typeCategory;
+        this.numLike = numLike;
     }
 
     public String getFirebaseKey() {
@@ -76,5 +79,13 @@ public class CommunityData {
 
     public void setTypeCategory(int typeCategory) {
         this.typeCategory = typeCategory;
+    }
+
+    public int getNumLike() {
+        return numLike;
+    }
+
+    public void setNumLike(int numLike) {
+        this.numLike = numLike;
     }
 }
