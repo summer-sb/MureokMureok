@@ -13,6 +13,11 @@ import java.util.ArrayList;
 
 public class TipAdapter extends RecyclerView.Adapter<TipViewHolder> {
     private ArrayList<TipData> mTipDatas;
+
+    public void setTipDatas(ArrayList<TipData> pDatas){
+        mTipDatas = pDatas;
+    }
+
     @Override
     public TipViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -33,9 +38,5 @@ public class TipAdapter extends RecyclerView.Adapter<TipViewHolder> {
     @Override
     public int getItemCount() {
         return (mTipDatas != null) ? mTipDatas.size() : 0;
-    }
-
-    public void setTipDatas(ArrayList<TipData> pDatas){
-        mTipDatas = pDatas;
     }
 }

@@ -17,7 +17,7 @@ public class AlarmBroadCast extends BroadcastReceiver {
         NotificationManager notificationmanager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, ManageAdapter.class), PendingIntent.FLAG_UPDATE_CURRENT);
-
+        //param2 : unique
         Notification.Builder builder = new Notification.Builder(context);
         builder.setSmallIcon(R.mipmap.ic_launcher).setTicker("Mureok").setWhen(System.currentTimeMillis())
                 .setNumber(1).setContentText("물을 줄 시간이에요!")

@@ -6,14 +6,12 @@ public class ManageData {
     pName : 식물 애칭
     pRealName : 식물 이름
     pEnrollDate : 등록일
-    pWaterCnt : 물 준 횟수
      */
     public String firebaseKey;
     public String pImg;
     public String pName;
     public String pRealName;
     public String pEnrollDate;
-    public int pWaterCnt;
     public boolean pIsAlarm;
 
     /*
@@ -28,13 +26,12 @@ public class ManageData {
     public ManageData() {
     }
 
-    public ManageData(String pImg, String pName, String pRealName, String pEnrollDate, int pWaterCnt, boolean isAlarm,
+    public ManageData(String pImg, String pName, String pRealName, String pEnrollDate, boolean isAlarm,
                       int perDate, int hour, int minute, String AM_PM){
         this.pImg = pImg;
         this.pName = pName;
         this.pRealName = pRealName;
         this.pEnrollDate = pEnrollDate;
-        this.pWaterCnt = pWaterCnt;
         this.pIsAlarm =isAlarm;
 
         this.pPerDate = perDate;
@@ -81,14 +78,6 @@ public class ManageData {
 
     public void setpEnrollDate(String pEnrollDate) {
         this.pEnrollDate = pEnrollDate;
-    }
-
-    public int getpWaterCnt() {
-        return pWaterCnt;
-    }
-
-    public void setpWaterCnt(int pWaterCnt) {
-        this.pWaterCnt = pWaterCnt;
     }
 
     public boolean getpIsAlarm() {

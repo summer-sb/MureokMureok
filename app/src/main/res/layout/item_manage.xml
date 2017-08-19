@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/iv_pImg_m"
-        android:text="@string/pName"
+        android:text="@string/plantFriendly"
         android:textSize="20sp"
         />
 
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_pName_m"
             android:layout_toEndOf="@+id/iv_pImg_m"
-            android:text="@string/pRealName"
+            android:text="@string/plantName"
             android:textSize="20sp"
             />
     <TextView
@@ -67,44 +67,16 @@
         />
 
     <Button
-        android:id="@+id/btnMinus_m"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:text = "@string/minus"
-        android:layout_toEndOf="@+id/btnCalendar_m"
-        android:layout_alignBaseline="@+id/btnCalendar_m"
-        android:layout_marginStart="30dp"
-        />
-
-    <TextView
-        android:id="@+id/tvWater"
+        android:id="@+id/btnWater_m"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cntWater"
-        android:layout_toEndOf="@+id/btnMinus_m"
-        android:layout_alignBaseline="@+id/btnCalendar_m"
-        android:textSize="20sp"
-        />
-        <TextView
-            android:id="@+id/tvWaterCnt_m"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/tvWater"
-            android:layout_toEndOf="@+id/tvWater"
-            android:textSize="20sp"
-            android:text = "@string/zero"
-            />
-    <Button
-        android:id="@+id/btnPlus_m"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:text="@string/plus"
-        android:layout_toEndOf="@+id/tvWaterCnt_m"
+        android:text="물 OFF"
+        android:layout_toEndOf="@+id/btnCalendar_m"
         android:layout_alignBaseline="@+id/btnCalendar_m"
         />
 
         <Button
-            android:id="@+id/btnSetWater_m"
+            android:id="@+id/btnWaterAlarm_m"
             android:layout_width="104dp"
             android:layout_height="wrap_content"
 
@@ -118,8 +90,8 @@
             android:layout_height="wrap_content"
 
             android:text="@string/tipPlant"
-            android:layout_toEndOf="@+id/btnSetWater_m"
-            android:layout_alignBaseline="@id/btnSetWater_m"
+            android:layout_toEndOf="@+id/btnWaterAlarm_m"
+            android:layout_alignBaseline="@id/btnWaterAlarm_m"
             />
 
         <Button
@@ -127,7 +99,7 @@
             android:layout_width="104dp"
             android:layout_height="wrap_content"
             android:text="@string/delete"
-            android:layout_alignBaseline="@id/btnSetWater_m"
+            android:layout_alignBaseline="@id/btnWaterAlarm_m"
             android:layout_toEndOf="@+id/btnTip_m"
             />
     </RelativeLayout>

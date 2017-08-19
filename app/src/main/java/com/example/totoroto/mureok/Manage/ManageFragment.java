@@ -7,15 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.totoroto.mureok.Data.FirebaseDB;
+import com.example.totoroto.mureok.Data.FirebaseDBHelper;
 import com.example.totoroto.mureok.Data.ManageData;
 import com.example.totoroto.mureok.R;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 
@@ -26,7 +24,7 @@ public class ManageFragment extends Fragment {
     private ManageAdapter mAdapter;
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<ManageData> mItemDatas;
-    private FirebaseDB firebaseDB;
+    private FirebaseDBHelper firebaseDBHelper;
 
     public static ManageFragment newInstance() {
         return new ManageFragment();
@@ -40,11 +38,11 @@ public class ManageFragment extends Fragment {
 
         fBtnAdd_m = (FloatingActionButton)view.findViewById(R.id.fBtnAdd_m);
         mRecyclerView = (RecyclerView)view.findViewById(R.id.mRecyclerView);
-        firebaseDB = new FirebaseDB();
+        firebaseDBHelper = new FirebaseDBHelper();
 
         addItemFunc();
         aboutSetRecycler();
-        firebaseDB.readManageData(mItemDatas, mAdapter);
+        firebaseDBHelper.readManageData(mItemDatas, mAdapter);
 
         return view;
     }
@@ -72,10 +70,10 @@ public class ManageFragment extends Fragment {
                 addDialog.setDialogResult(new AddPlantDialog.DialogResult() {
                     @Override
                     public void apply(String picture, String name, String realName, String date) {
-                        ManageData manageData = new ManageData(picture, name, realName, date, 0,
+                        ManageData manageData = new ManageData(picture, name, realName, date,
                                 false, 0, 0, 0, "");
                         mItemDatas.add(manageData);
-                        firebaseDB.writeNewManageData(manageData);
+                        firebaseDBHelper.writeNewManageData(manageData);
 
                         mAdapter.notifyDataSetChanged();
                     }

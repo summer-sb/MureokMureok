@@ -1,27 +1,21 @@
 package com.example.totoroto.mureok.Community;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.totoroto.mureok.Data.CommunityData;
-import com.example.totoroto.mureok.Data.FirebaseDB;
+import com.example.totoroto.mureok.Data.FirebaseDBHelper;
+import com.example.totoroto.mureok.Data.FirebaseStorageHelper;
 import com.example.totoroto.mureok.Data.ListData;
 import com.example.totoroto.mureok.R;
-
-import net.cachapa.expandablelayout.ExpandableLayout;
-
-import org.w3c.dom.Comment;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +23,9 @@ import java.util.Date;
 
 public class CommunityFragment extends Fragment{
     public static final String TAG = "SOLBIN";
-    private FirebaseDB firebaseDB;
+    private FirebaseDBHelper firebaseDBHelper;
+    private FirebaseStorageHelper firebaseStorageHelper;
+
     private TabLayout tabLayoutCategory;
     //about community recycler view
     private LinearLayoutManager layoutManager;
@@ -63,7 +59,8 @@ public class CommunityFragment extends Fragment{
         if(getArguments() != null) {
             aboutItemAdd();
         }
-        firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 0);
+        firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 0);
+
 
         return view;
     }
@@ -93,6 +90,11 @@ public class CommunityFragment extends Fragment{
         String profilePhoto = getArguments().getString("userProfilePhoto");
         String nickName = getArguments().getString("userNickName");
 
+        //파이어베이스 저장소에 이미지 저장
+        firebaseStorageHelper.imageUpload(imagePath, listFirebaseKey);
+        firebaseStorageHelper.profileUpload(profilePhoto, listFirebaseKey);
+
+
         //현재 시간(공유한 시간)
         long ctm = System.currentTimeMillis();
         Date currentDate = new Date(ctm);
@@ -102,7 +104,7 @@ public class CommunityFragment extends Fragment{
                                                 imagePath, contents, typeCateGory, 0);
 
         mCommunityDatas.add(cData);
-        firebaseDB.writeNewCommunityData(cData, listFirebaseKey);
+        firebaseDBHelper.writeNewCommunityData(cData, listFirebaseKey);
         cAdapter.notifyDataSetChanged();
     }
 
@@ -116,14 +118,14 @@ public class CommunityFragment extends Fragment{
     }
 
     private void init(View v) {
-        firebaseDB = new FirebaseDB();
+        firebaseDBHelper = new FirebaseDBHelper();
+        firebaseStorageHelper = new FirebaseStorageHelper();
+
         layoutManager = new LinearLayoutManager(getActivity());
         tabLayoutCategory = (TabLayout)v.findViewById(R.id.tabLayoutCategory);
 
         mCommunityDatas = new ArrayList<>();
-
         cRecyclerView = (RecyclerView)v.findViewById(R.id.recyclerCommunity);
-
     }
 
     private void aboutTab() {
@@ -143,19 +145,19 @@ public class CommunityFragment extends Fragment{
                 switch (tab.getPosition()){
                     //case 0: 전체
                     case 1:
-                        firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 1);
+                        firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 1);
                         break;
                     case 2:
-                        firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 2);
+                        firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 2);
                         break;
                     case 3:
-                        firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 3);
+                        firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 3);
                         break;
                     case 4:
-                        firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 4);
+                        firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 4);
                         break;
                     default:
-                        firebaseDB.readCommunityData(mCommunityDatas, cAdapter, 0);
+                        firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 0);
                 }
             }
             @Override

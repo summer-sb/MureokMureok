@@ -1,4 +1,4 @@
-package com.example.totoroto.mureok.Community;
+package com.example.totoroto.mureok.Data;
 
 
 public class CommentData {

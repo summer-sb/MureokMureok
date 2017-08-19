@@ -6,9 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.totoroto.mureok.Data.TipData;
 import com.example.totoroto.mureok.Data.TipDetailData;
@@ -24,6 +27,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public class TipActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "TipPlant";
@@ -48,7 +52,7 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
     private TipAdapter tipAdapter;
     private LinearLayoutManager layoutManager;
     private Button btnBack;
-
+    private EditText etTipSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +75,36 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
                 });
             }
         }).start();
+
+        aboutEditTextSearch();
+    }
+
+    private void aboutEditTextSearch() {
+        etTipSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                s = s.toString().toLowerCase();
+
+                ArrayList<TipData> filteredLists = new ArrayList<>();
+
+                for(int i=0; i<mTipDatas.size(); i++){
+                    String str = mTipDatas.get(i).getpRealName(); //식물 이름
+                    if(str.contains(s)){
+                        filteredLists.add(mTipDatas.get(i));
+                    }
+                }
+                tipAdapter.setTipDatas(filteredLists);
+                tipAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
     }
 
     private void aboutTipDetail() {
@@ -170,9 +204,12 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
     private void init() {
         recyclerTip = (RecyclerView)findViewById(R.id.recyclerTip);
         btnBack = (Button)findViewById(R.id.btnBack_tip);
+        etTipSearch = (EditText)findViewById(R.id.etTipSearch);
+
         btnBack.setOnClickListener(this);
         mTipDatas = new ArrayList<>();
     }
+
     private void aboutRecycler() {
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerTip.setHasFixedSize(true);
@@ -249,16 +286,6 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void aboutMapListData() {
-        /*
-        Iterator<Integer> iter = map.keySet().iterator();
-        while (iter.hasNext()) {
-            int key = iter.next();
-            String value = map.get(key);
-            // Log.d("SOLBIN", "key:" + key + " value:" + value + "\n");
-            TipData tData = new TipData(key, value);
-            mTipDatas.add(tData);
-        }
-        */
         for(int i=0; i<tempLists.size(); i++){
             TipData tData = new TipData(tempLists.get(i).getpCode(), tempLists.get(i).getpRealName(), tempLists.get(i).getpImage());
             mTipDatas.add(tData);

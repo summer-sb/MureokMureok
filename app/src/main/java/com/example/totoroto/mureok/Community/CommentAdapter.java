@@ -3,13 +3,13 @@ package com.example.totoroto.mureok.Community;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.totoroto.mureok.Data.CommentData;
 import com.example.totoroto.mureok.R;
 
 import java.util.ArrayList;
@@ -48,7 +48,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
         holder.tvComment.setText(cData.getComment());
         holder.tvDate.setText(cData.getDate());
 
-      //  Log.d("SOLBIN","commentCnt:"+String.valueOf(getItemCount()));
     }
 
     @Override

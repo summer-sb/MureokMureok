@@ -1,12 +1,15 @@
 package com.example.totoroto.mureok.Data;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.totoroto.mureok.Community.CommentAdapter;
-import com.example.totoroto.mureok.Community.CommentData;
 import com.example.totoroto.mureok.Community.CommunityAdapter;
 import com.example.totoroto.mureok.List.ListAdapter;
 import com.example.totoroto.mureok.Manage.ManageAdapter;
+import com.example.totoroto.mureok.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,12 +21,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FirebaseDB {
+public class FirebaseDBHelper {
     private final String TAG = "SOLBIN";
     private DatabaseReference mRootRef;
     private FirebaseDatabase firebaseDatabase;
 
-    public FirebaseDB() {
+    private IsLikeResult isLikeResult;
+    private IsWaterDateResult mDateResult;
+
+    public interface IsLikeResult {
+        void success();
+    }
+    public void setIsLikeResult(IsLikeResult result){
+        isLikeResult = result;
+    }
+
+    public interface IsWaterDateResult{
+        void apply(ArrayList<String> waterDate);
+    }
+    public void setIswWaterDateResult(IsWaterDateResult dateResult){
+        mDateResult = dateResult;
+    }
+
+    public FirebaseDBHelper() {
     }
 
     public void writeNewUser(String email, String nickName) {
@@ -50,8 +70,7 @@ public class FirebaseDB {
         DatabaseReference manageRef = FirebaseDatabase.getInstance().getReference().child("users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("manageData");
 
-        Log.d(TAG, "CurrentUser:" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-        manageRef.addValueEventListener(new ValueEventListener() {
+         manageRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 manageDatas.clear();
@@ -93,6 +112,46 @@ public class FirebaseDB {
         manageRef.removeValue();
     }
 
+    public void isWaterCalendarManageData(String key, String date, boolean isWater){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference manageRef = mRootRef.child("users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("manageData").child(key);
+
+        if(isWater){
+            manageRef.child("/waterDate").child(date).setValue(date);//2017-01-11
+        }else{
+            manageRef.child("/waterDate").child(date).removeValue();
+        }
+    }
+
+    public void readWaterCalendarManageData(String positionKey){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference manageRef = mRootRef.child("users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("manageData").child(positionKey);
+
+        manageRef.child("/waterDate").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> dataList = new ArrayList<>();
+
+                dataList.clear();
+                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                    dataList.add(childSnapshot.getKey()); //date를 받아와서 배열에 저장
+                }
+               // try {
+                    mDateResult.apply(dataList); //인터페이스로 전달
+               // }catch (Exception e){
+               //     e.printStackTrace();
+               // }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
     public void writeNewListData(ListData listData) {
         mRootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIdRef = mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -179,9 +238,54 @@ public class FirebaseDB {
 
         Map<String, Object> communityUpdate = new HashMap<String, Object>();
         communityUpdate.put("/communityData/" + listFirebaseKey, cData);
-        cData.setFirebaseKey(listFirebaseKey);
 
+        cData.setFirebaseKey(listFirebaseKey);
         communityRef.updateChildren(communityUpdate);
+    }
+
+    public boolean updateNumLikeData(String uid,String positionKey, int numLike, boolean isLike){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference cRef = mRootRef.child("community").child("communityData").child(positionKey);
+
+        if(isLike) {
+            cRef.child("/likeUsers").child(uid).setValue(uid);
+
+            Map<String, Object> cInfoUpdate = new HashMap<String, Object>();
+            cInfoUpdate.put("/numLike", numLike);
+            cRef.updateChildren(cInfoUpdate);
+
+            return true;
+        }else{
+            cRef.child("/likeUsers").child(uid).removeValue(); //좋아요한 유저에서 삭제
+
+            Map<String, Object> cInfoUpdate = new HashMap<String, Object>(); //좋아요-1
+            cInfoUpdate.put("/numLike", numLike);
+            cRef.updateChildren(cInfoUpdate);
+
+            return false;
+        }
+    }
+
+    public void isLikeCommunityData(String positionKey, final String uid){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference cRef = mRootRef.child("community").child("communityData").child(positionKey);
+
+        cRef.child("likeUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                    String userKey = childSnapshot.getKey();
+
+                    if(userKey.equals(uid)){
+                        isLikeResult.success();
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     public void readCommunityData(final ArrayList<CommunityData> cDatas, final CommunityAdapter cAdapter, final int typeCategory) {

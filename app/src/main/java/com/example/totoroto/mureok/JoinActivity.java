@@ -11,16 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.totoroto.mureok.Data.FirebaseDB;
-import com.example.totoroto.mureok.Data.User;
+import com.example.totoroto.mureok.Data.FirebaseDBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class JoinActivity extends AppCompatActivity implements View.OnClickListener{
     private EditText etJoinEmail;
@@ -32,7 +29,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDB firebaseDB;
+    private FirebaseDBHelper firebaseDBHelper;
 
     private String userEmail;
     private String userPassword;
@@ -88,7 +85,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
-        firebaseDB = new FirebaseDB();
+        firebaseDBHelper = new FirebaseDBHelper();
         mAuth = FirebaseAuth.getInstance();
         etJoinEmail = (EditText)findViewById(R.id.etJoinEmail);
         etJoinPassword = (EditText)findViewById(R.id.etJoinPassword);
@@ -119,7 +116,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                             //가입을 성공한 경우 db를 생성하고
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                            firebaseDB.writeNewUser(userEmail, userNickName);
+                            firebaseDBHelper.writeNewUser(userEmail, userNickName);
                             //로그인 액티비티로 이동한다.
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             intent.putExtra("nickName", userNickName);

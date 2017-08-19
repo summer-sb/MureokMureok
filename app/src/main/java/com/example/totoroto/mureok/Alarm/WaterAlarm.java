@@ -20,32 +20,22 @@ public class WaterAlarm {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmBroadCast.class);
 
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
+        int alarmKey = perDate*hour*minute*10;
+        PendingIntent sender = PendingIntent.getBroadcast(context, alarmKey, intent, 0);
 
         Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), hour, minute, 0);
 
-        //알람 시간 설정
-        if(perDate == 0){
-            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), hour, minute, 0);
-            Log.d("SOLBIN","perdate 0");
-        }
-        else {
-            int oneDay = 24 * 60 * 60 * 1000; //24시간
-            Log.d("SOLBIN","oneday*perdate:"+oneDay*perDate);
-            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * perDate, sender);
-        }
-
-        /*
-        if(Build.VERSION.SDK_INT >= 23) {
-            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+        if(perDate == -1){
+            am.cancel(sender);
+        }else if(perDate > 0) {
+            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    1000 * 60 * 60 * 24 * perDate, sender);
         }else{
-            if(Build.VERSION.SDK_INT >= 19){
-                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-            }else{
-                am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-            }
+            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+           // am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),1000 * 60, sender);
         }
-        */
     }
 
 }

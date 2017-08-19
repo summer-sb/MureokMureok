@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navi_item_shares:
                         break;
                     case R.id.navi_item_myInfo:
+                        moveInfoActivity();
                         break;
                     case R.id.navi_item_send_opinion:
                         break;
@@ -81,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void moveInfoActivity() {
+        //TODO : 인포 화면으로 이동한다.
     }
 
     @Override

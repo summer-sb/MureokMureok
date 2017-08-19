@@ -10,9 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
-import com.example.totoroto.mureok.Data.FirebaseDB;
+import com.example.totoroto.mureok.Data.FirebaseDBHelper;
 import com.example.totoroto.mureok.R;
 
 public class ListShareDialog extends DialogFragment implements View.OnClickListener{
@@ -25,7 +24,7 @@ public class ListShareDialog extends DialogFragment implements View.OnClickListe
     private RadioButton radioVegetable;
     private RadioButton radioTree;
 
-    private FirebaseDB firebaseDB;
+    private FirebaseDBHelper firebaseDBHelper;
     private int selectId;
     private SelectShareResult mShareResult;
     private final int NUM_CANCEL = -1;
@@ -61,7 +60,7 @@ public class ListShareDialog extends DialogFragment implements View.OnClickListe
     }
 
     private void init(View view) {
-        firebaseDB = new FirebaseDB();
+        firebaseDBHelper = new FirebaseDBHelper();
 
         btnCancel = (Button)view.findViewById(R.id.btnCancel_selectShare);
         btnOk = (Button)view.findViewById(R.id.btnOK_selectShare);

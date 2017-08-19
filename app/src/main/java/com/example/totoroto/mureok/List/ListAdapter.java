@@ -19,7 +19,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.totoroto.mureok.Community.CommunityFragment;
-import com.example.totoroto.mureok.Data.FirebaseDB;
+import com.example.totoroto.mureok.Data.FirebaseDBHelper;
+import com.example.totoroto.mureok.Data.FirebaseStorageHelper;
 import com.example.totoroto.mureok.Data.ListData;
 import com.example.totoroto.mureok.Main.MainActivity;
 import com.example.totoroto.mureok.R;
@@ -42,7 +43,8 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
     private ArrayList<ListData> mListDatas;
-    private FirebaseDB firebaseDB;
+    private FirebaseDBHelper firebaseDBHelper;
+    private FirebaseStorageHelper firebaseStorageHelper;
 
     @Override
     public int getItemViewType(int position) {
@@ -56,7 +58,8 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        firebaseDB = new FirebaseDB();
+        firebaseDBHelper = new FirebaseDBHelper();
+        firebaseStorageHelper = new FirebaseStorageHelper();
 
         if (viewType == VIEWTYPE_CARD) {
             View itemView = inflater.inflate(R.layout.item_list_card,
@@ -149,7 +152,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     int pos = holder.getAdapterPosition();
 
                     if (pos != RecyclerView.NO_POSITION) {
-                        firebaseDB.deleteListData(mListDatas.get(pos).getFirebaseKey());
+                        firebaseDBHelper.deleteListData(mListDatas.get(pos).getFirebaseKey());
                         mListDatas.remove(pos);
 
                         notifyItemChanged(pos);
@@ -184,7 +187,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 mListDatas.get(position).setContents(contents);
                 notifyDataSetChanged();
 
-                firebaseDB.updateListData(mListDatas.get(position).getFirebaseKey(), mListDatas.get(position));
+                firebaseDBHelper.updateListData(mListDatas.get(position).getFirebaseKey(), mListDatas.get(position));
             }
         });
     }
@@ -238,12 +241,14 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                         Toast.makeText(context, "카테고리를 선택해 주세요.", Toast.LENGTH_SHORT).show();
                 }
                 notifyDataSetChanged();
-                firebaseDB.updateListShareData(mListDatas.get(position).getFirebaseKey(), mListDatas.get(position));
+                firebaseDBHelper.updateListShareData(mListDatas.get(position).getFirebaseKey(), mListDatas.get(position));
 
                 if(mListDatas.get(position).getisShare()) {
                     sendCommunity(mListDatas.get(position));
-                }else{//공유가 false이면
-                    firebaseDB.deleteCommunityData(mListDatas.get(position).getFirebaseKey());
+                }else{//공유가 false이면 커뮤니티에서 지우고 저장소에도 지워준다.
+                    firebaseStorageHelper.imageDelete(mListDatas.get(position).getFirebaseKey());
+                    firebaseStorageHelper.profileDelete(mListDatas.get(position).getFirebaseKey());
+                    firebaseDBHelper.deleteCommunityData(mListDatas.get(position).getFirebaseKey());
                 }
             }
         });
@@ -297,7 +302,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             ListData tmpListData = new ListData(dateFormat.format(currentDate), imgPath, ((ListCardViewHolder) holder).et_listInput.getText().toString(), false
                     , false, false, false, false, false);
             mListDatas.add(tmpListData);
-            firebaseDB.writeNewListData(tmpListData);
+            firebaseDBHelper.writeNewListData(tmpListData);
             notifyDataSetChanged();
             aboutBtnReset(holder); //입력 item clear
             Log.d(TAG, "adapter itemCnt:" + String.valueOf(getItemCount()));

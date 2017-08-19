@@ -3,7 +3,6 @@ package com.example.totoroto.mureok.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,20 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.totoroto.mureok.Data.FirebaseDB;
+import com.example.totoroto.mureok.Data.FirebaseDBHelper;
 import com.example.totoroto.mureok.Data.ListData;
 import com.example.totoroto.mureok.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ListFragment extends Fragment  {
     private final int REQ_GALLERY_PICTURE  = 100;
@@ -38,7 +32,7 @@ public class ListFragment extends Fragment  {
     private RecyclerView recyclerView;
     private ImageView imgView;
 
-    private FirebaseDB firebaseDB;
+    private FirebaseDBHelper firebaseDBHelper;
 
     public static ListFragment newInstance() {
         return new ListFragment();
@@ -52,7 +46,7 @@ public class ListFragment extends Fragment  {
         init(view);
         aboutRecycler();
 
-        firebaseDB.readListData(mListDatas, listAdapter);
+        firebaseDBHelper.readListData(mListDatas, listAdapter);
 
         return view;
     }
@@ -71,7 +65,7 @@ public class ListFragment extends Fragment  {
 
         listAdapter = new ListAdapter();
         mListDatas = new ArrayList<>();
-        firebaseDB = new FirebaseDB();
+        firebaseDBHelper = new FirebaseDBHelper();
     }
 
     @Override

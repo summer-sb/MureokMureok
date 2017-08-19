@@ -3,7 +3,6 @@ package com.example.totoroto.mureok.Manage;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,12 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class CalendarDialog extends DialogFragment {
-    private final String TAG = "CD";
     private MaterialCalendarView mCalendarView;
+    private ArrayList<String> waterDateArray;
 
     public CalendarDialog() {
     }
@@ -27,31 +27,27 @@ public class CalendarDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_calendar, container);
 
-        mCalendarView = (MaterialCalendarView)view.findViewById(R.id.calendarView);
+        waterDateArray = new ArrayList<>();
+        mCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
+
         aboutSetCalendar();
-        aboutWaterCnt();
+        aboutWaterDate();
         return view;
     }
 
     private void aboutSetCalendar() {
         mCalendarView.state().edit()
                 .setFirstDayOfWeek(Calendar.SUNDAY)
-                .setMinimumDate(CalendarDay.from(2017,0,1))
+                .setMinimumDate(CalendarDay.from(2017, 0, 1))
                 .setMaximumDate(CalendarDay.from(2025, 11, 31))
                 .setCalendarDisplayMode(CalendarMode.MONTHS)
                 .commit();
     }
 
-    private void aboutWaterCnt() {
+    private void aboutWaterDate() {
         Bundle mArgs = getArguments();
-        int mWaterCnt = mArgs.getInt("waterCount");
-        Log.d("CD", "waterCount: "+ mWaterCnt);
+        waterDateArray = mArgs.getStringArrayList("waterDateArray");
 
-        //물 카운트 수가 1이상이면 파란원 표시
-        if(mWaterCnt > 0){
-            mCalendarView.addDecorator(new EventDecorator(getContext()));
-        }else{
-            //compactCalendar.setCurrentDayBackgroundColor(Color.RED);
-        }
+        mCalendarView.addDecorator(new EventDecorator(getContext(), waterDateArray));
     }
 }

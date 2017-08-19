@@ -21,8 +21,11 @@ public class CommunityViewHolder extends RecyclerView.ViewHolder{
     public TextView tvNickName;
     public TextView tvDate;
     public TextView tvContents;
+    public TextView tvNumLike;
+
     public Button btnLike;
     public Button exBtnComment;
+    public Button btnShare;
     public ExpandableLayout exLayoutComment;
 
     //comment(expandable layout) item
@@ -43,7 +46,9 @@ public class CommunityViewHolder extends RecyclerView.ViewHolder{
         tvNickName = (TextView)v.findViewById(R.id.tvNickName_community);
         tvDate = (TextView)v.findViewById(R.id.tvDate_community);
         tvContents = (TextView)v.findViewById(R.id.tvContents_community);
+        tvNumLike = (TextView)v.findViewById(R.id.tvNumLike_community);
         btnLike = (Button)v.findViewById(R.id.btnLike_community);
+        btnShare = (Button)v.findViewById(R.id.btnShare_community);
         exBtnComment = (Button)v.findViewById(R.id.exBtnComment_community);
 
         exLayoutComment = (ExpandableLayout)v.findViewById(R.id.exLayoutComment);
