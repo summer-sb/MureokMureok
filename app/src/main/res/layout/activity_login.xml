@@ -76,7 +76,7 @@
         />
 
     <Button
-        android:id="@+id/btnGoogleLogin"
+        android:id="@+id/btnGoogleJoin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/googleLogin"

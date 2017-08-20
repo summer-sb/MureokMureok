@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button btnLogin;
     private Button btnJoin;
     private Button btnNonMember;
+    private Button btnGoogleJoin;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -91,6 +92,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent intent = new Intent(getApplicationContext(), JoinActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.btnGoogleJoin:
+                break;
             case R.id.btnNonMember:
                 intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
@@ -117,11 +120,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin = (Button)findViewById(R.id.btnLogin);
         btnJoin = (Button)findViewById(R.id.btnJoin);
         btnNonMember = (Button)findViewById(R.id.btnNonMember);
+        btnGoogleJoin = (Button)findViewById(R.id.btnGoogleLogin);
 
         mAuth = FirebaseAuth.getInstance();
 
         btnLogin.setOnClickListener(this);
         btnJoin.setOnClickListener(this);
         btnNonMember.setOnClickListener(this);
+        btnGoogleJoin.setOnClickListener(this);
     }
 }

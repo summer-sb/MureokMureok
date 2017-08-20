@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
     private FirebaseStorageHelper firebaseStorageHelper;
 
     private boolean isAdd;
+    private Uri shareUri;
     private ArrayList<CommentData> commentDatas;
     private ArrayList<CommunityData> mDatas;
 
@@ -59,15 +61,13 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
 
     @Override
     public void onBindViewHolder(final CommunityViewHolder holder, final int position) {
-      //  firebaseDBHelper = new FirebaseDBHelper();
-      //  firebaseStorageHelper = new FirebaseStorageHelper();
-
         final CommunityData communityData = mDatas.get(position);
 
         firebaseStorageHelper.imageDownLoad(communityData.getFirebaseKey());
         firebaseStorageHelper.setStorageImageResult(new FirebaseStorageHelper.StorageImageResult() {
             @Override
             public void applyImage(Uri uri) {
+                shareUri = uri;
                 Glide.with(context)
                         .load(uri)
                         .override(3500, 1500)
@@ -81,7 +81,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
         firebaseStorageHelper.setStorageProfileResult(new FirebaseStorageHelper.StorageProfileResult() {
             @Override
             public void applyProfile(Uri uri) {
-                Glide.with(context)
+               Glide.with(context)
                         .load(uri)
                         .override(150, 150)
                         .centerCrop()
@@ -134,8 +134,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
             KakaoLink kakaoLink = KakaoLink.getKakaoLink(context);
             KakaoTalkLinkMessageBuilder kakaoBuilder = kakaoLink.createKakaoTalkLinkMessageBuilder();
 
-            String url = mDatas.get(position).getImgPicture();
-            kakaoBuilder.addImage(url, 81, 143);
+            kakaoBuilder.addImage(shareUri.toString(), 81, 81); //가로 세로는 80보다 커야한다.
             kakaoBuilder.addText(mDatas.get(position).getContents());
             kakaoBuilder.addAppButton("앱 실행 혹은 다운로드");
             kakaoLink.sendMessage(kakaoBuilder, context);
@@ -144,7 +143,6 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
             e.printStackTrace();
         }
     }
-
 
     private void aboutCommentFunc(final CommunityViewHolder holder, final int position) { //아이템 포지션에 따라
         final ViewPager viewPager = (ViewPager)((AppCompatActivity) context).findViewById(R.id.viewPager);

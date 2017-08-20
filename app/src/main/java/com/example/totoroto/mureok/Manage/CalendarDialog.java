@@ -3,6 +3,7 @@ package com.example.totoroto.mureok.Manage;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +18,18 @@ import java.util.Calendar;
 
 public class CalendarDialog extends DialogFragment {
     private MaterialCalendarView mCalendarView;
-    private ArrayList<String> waterDateArray;
+    private ArrayList<String> arrDate;
 
     public CalendarDialog() {
     }
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_calendar, container);
 
-        waterDateArray = new ArrayList<>();
+        arrDate = new ArrayList<>();
         mCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
 
         aboutSetCalendar();
@@ -46,8 +48,14 @@ public class CalendarDialog extends DialogFragment {
 
     private void aboutWaterDate() {
         Bundle mArgs = getArguments();
-        waterDateArray = mArgs.getStringArrayList("waterDateArray");
-
-        mCalendarView.addDecorator(new EventDecorator(getContext(), waterDateArray));
+        arrDate.clear();///
+        arrDate = mArgs.getStringArrayList("waterDateArray");
+/*
+        for(int i=0; i<arrDate.size(); i++){
+            Log.d("SOLBIN", "arrDate:"+arrDate.get(i)+"\n");
+        }
+*/
+        mCalendarView.addDecorator(new EventDecorator(getContext(), arrDate));
     }
+
 }

@@ -3,6 +3,7 @@ package com.example.totoroto.mureok.Manage;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.example.totoroto.mureok.R;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -17,15 +18,16 @@ public class EventDecorator implements DayViewDecorator{
     private Drawable drawable;
     private ArrayList<CalendarDay> selectDay;
 
-    public EventDecorator(Context context, ArrayList<String> waterDateArray) {
+    public EventDecorator(Context context, ArrayList<String> arrDate) {
         selectDay = new ArrayList<>();
         final SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일");
 
       try {
-           for (int i = 0; i < waterDateArray.size(); i++) {
-               selectDay.add(CalendarDay.from(format.parse(waterDateArray.get(i))));
+           for (int i = 0; i < arrDate.size(); i++) {
+               selectDay.add(CalendarDay.from(format.parse(arrDate.get(i))));
            }
-       }catch (ParseException e){
+
+       }catch (Exception e){
            e.printStackTrace();
        }
         drawable = ContextCompat.getDrawable(context, R.drawable.first_day_month);

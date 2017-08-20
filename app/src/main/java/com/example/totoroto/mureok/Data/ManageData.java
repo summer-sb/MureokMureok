@@ -12,6 +12,7 @@ public class ManageData {
     public String pName;
     public String pRealName;
     public String pEnrollDate;
+
     public boolean pIsAlarm;
 
     /*

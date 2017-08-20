@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,15 @@ import com.example.totoroto.mureok.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
     private final String TAG = "SOLBIN";
-    private int waterCount;
-    private ArrayList<String> waterDateArray;
+    private Map<String, ArrayList<String>> map;
 
     private FirebaseDBHelper firebaseDBHelper;
     private ArrayList<ManageData> mItems;
@@ -38,7 +43,7 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
     public ManageViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         context = viewGroup.getContext();
         firebaseDBHelper = new FirebaseDBHelper();
-        waterDateArray = new ArrayList<>();
+        map = new LinkedHashMap<String, ArrayList<String>>();
 
         int layoutForManageItem = R.layout.item_manage;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -55,14 +60,14 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         holder.tv_pName.setText(itemData.pName);
         holder.tv_pRealName.setText(itemData.pRealName);
         holder.tv_pEnrollDate.setText(itemData.pEnrollDate);
-        aboutWaterText(holder, itemData);
-        readWaterCalendar(itemData);
+        aboutAlarmText(holder, itemData);
 
         if (itemData.pIsAlarm) { //알람이 설정되어 있으면
-            holder.btnAlarm.setBackgroundResource(R.color.colorPrimary);
+            holder.btnAlarm.setBackgroundResource(R.drawable.ic_alarm_on);
             holder.btnAlarm.setText(R.string.alarmOn);
+
         } else {
-            holder.btnAlarm.setBackgroundResource(android.R.drawable.btn_default);
+            holder.btnAlarm.setBackgroundResource(R.drawable.ic_alarm_off);
             holder.btnAlarm.setText(R.string.alarmOff);
         }
 
@@ -81,13 +86,6 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
             @Override
             public void onClick(View v) {
                 aboutWaterDialog(holder);
-
-                WaterAlarm waterAlarm = new WaterAlarm(context);
-                if (!itemData.getpAM_PM().equals("")) {
-                    waterAlarm.Alarm(itemData.pPerDate, itemData.pHour, itemData.pMinute);
-                } else {
-                    waterAlarm.Alarm(itemData.pPerDate, itemData.pHour, itemData.pMinute); //itemData.pPerDate = -1(Cancel)
-                }
             }
         });
 
@@ -117,13 +115,18 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         holder.btnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //물을 준 경우, 날짜를 달력에 표시하기 위해 데이터를 보낸다.
                 Context context = v.getContext();
-                CalendarDialog cDialog = new CalendarDialog();
+                Bundle args = new Bundle();
 
-                //오늘 물을 준 경우, 오늘 날짜를 달력에 표시하기 위해 데이터를 보낸다
-                Bundle args = new Bundle(1);
-                cDialog.setArguments(args); //send waterCount -> calendar
-                args.putStringArrayList("waterDateArray", waterDateArray);
+                aboutWaterDateResult(itemData);
+
+                //TODO: 지금 adapter->set인데 set->adapter로 해야 제대로 달력 적용됨
+                Log.d(TAG, "adapter Array:"+itemData.getFirebaseKey()+"|"+map.get(itemData.getFirebaseKey()));
+                args.putStringArrayList("waterDateArray", map.get(itemData.getFirebaseKey()));
+
+                CalendarDialog cDialog = new CalendarDialog();
+                cDialog.setArguments(args); //send waterDateArray -> calendar
 
                 FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
                 cDialog.show(fm, "CalendarDialog");
@@ -132,14 +135,22 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
 
     }
 
-    private void readWaterCalendar(ManageData itemData) {
+    private void aboutWaterDateResult(final ManageData itemData) {
         firebaseDBHelper.readWaterCalendarManageData(itemData.getFirebaseKey()); //달력에 물 줬던 날 표시
-        firebaseDBHelper.setIswWaterDateResult(new FirebaseDBHelper.IsWaterDateResult() {
+        firebaseDBHelper.setWaterDateResult(new FirebaseDBHelper.WaterDateResult() {
             @Override
             public void apply(ArrayList<String> waterDate) {
-                waterDateArray.clear();
+
+                if(map.containsKey(itemData.getFirebaseKey())) {
+                    map.get(itemData.getFirebaseKey()).clear();
+                }
                 for (int i = 0; i < waterDate.size(); i++) {
-                    waterDateArray.add(waterDate.get(i));
+                    if(!map.containsKey(itemData.getFirebaseKey())) {
+                        map.put(itemData.getFirebaseKey(), new ArrayList<String>());
+                    }
+
+                    map.get(itemData.getFirebaseKey()).add(waterDate.get(i));
+                    Log.d(TAG, "setResult waterArray:"+map.get(itemData.getFirebaseKey()));
                 }
             }
         });
@@ -153,16 +164,19 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         if (holder.btnWater.getText().toString().equals("물 ON")) { //ON->OFF
             firebaseDBHelper.isWaterCalendarManageData(itemData.getFirebaseKey(), dateFormat.format(currentDate), false);
             holder.btnWater.setText("물 OFF");
+            map.get(itemData.getFirebaseKey()).remove(dateFormat.format(currentDate));
         } else { //OFF->ON
             firebaseDBHelper.isWaterCalendarManageData(itemData.getFirebaseKey(), dateFormat.format(currentDate), true);
             holder.btnWater.setText("물 ON");
         }
     }
 
-    private void aboutWaterText(ManageViewHolder holder, ManageData itemData) {
+    private void aboutAlarmText(ManageViewHolder holder, ManageData itemData) {
         if (!itemData.pAM_PM.equals("")) { //알람이 설정되어 있으면
-            holder.tv_pWaterDate.setText("" + itemData.pPerDate + "일 마다 " + itemData.pHour + " : " + itemData.pMinute
+            holder.tv_pWaterDate.setText("" + itemData.pHour + " : " + itemData.pMinute
                     + itemData.pAM_PM + " 에 물을 줍니다.");
+
+            // Log.d(TAG, "hour:"+itemData.pHour +"|min:" + itemData.pMinute);
         } else {
             holder.tv_pWaterDate.setText("");
         }
@@ -175,16 +189,20 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         waterDialog.setDialogResult(new WaterAlarmDialog.DialogResult() {
             @Override
             public void apply(int perDate, int hour, int minute, String AM_PM) {
-                if (!AM_PM.equals("")) {
-                    itemData.setpIsAlarm(true);
-                } else {
-                    itemData.setpIsAlarm(false);
-                }
                 itemData.setpPerDate(perDate);
                 itemData.setpHour(hour);
                 itemData.setpMinute(minute);
                 itemData.setpAM_PM(AM_PM);
+                if (!AM_PM.equals("")) {
+                    itemData.setpIsAlarm(true);
+
+                } else {
+                    itemData.setpIsAlarm(false);
+                }
                 notifyDataSetChanged();
+
+                WaterAlarm waterAlarm = new WaterAlarm(context);
+                waterAlarm.Alarm(itemData.getpPerDate(), itemData.getpRealName(), itemData.getpName() ,itemData.getpHour(), itemData.getpMinute());
 
                 firebaseDBHelper.updateManageAlarmData(itemData.getFirebaseKey(), itemData);
             }

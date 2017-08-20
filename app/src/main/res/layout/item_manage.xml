@@ -10,98 +10,94 @@
         app:cardCornerRadius="5dp"
         android:layout_margin="8dp"
         >
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/itemLayout_m"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-    <ImageView
-        android:id="@+id/iv_pImg_m"
-        android:layout_width="150dp"
-        android:layout_height="90dp"
-        android:src="@drawable/ic_img_placeholder"
-        />
 
-    <TextView
-        android:id="@+id/tv_pName_m"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/iv_pImg_m"
-        android:text="@string/plantFriendly"
-        android:textSize="20sp"
-        />
+        <RelativeLayout
+            android:id="@+id/itemLayout_m"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_pRealName_m"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_pName_m"
-            android:layout_toEndOf="@+id/iv_pImg_m"
-            android:text="@string/plantName"
-            android:textSize="20sp"
-            />
-    <TextView
-        android:id="@+id/tvEnrollDate_m"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_pRealName_m"
-        android:layout_alignStart="@+id/tv_pName_m"
-        android:text="@string/_2000_00_00"
-        android:textSize="18sp"
-        />
-    <TextView
-        android:id="@+id/tvWaterDate_m"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/iv_pImg_m"
-        android:textSize="18sp"
-        />
+            <ImageView
+                android:id="@+id/iv_pImg_m"
+                android:layout_width="220dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_img_placeholder" />
 
-    <Button
-        android:id="@+id/btnCalendar_m"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvWaterDate_m"
-        android:text="@string/calendar"
-        />
+            <TextView
+                android:id="@+id/tv_pName_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_pImg_m"
+                android:layout_toEndOf="@+id/tv_pRealName_m"
+                android:text="@string/plantFriendly"
+                android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/btnWater_m"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="물 OFF"
-        android:layout_toEndOf="@+id/btnCalendar_m"
-        android:layout_alignBaseline="@+id/btnCalendar_m"
-        />
+            <TextView
+                android:id="@+id/tv_pRealName_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_pImg_m"
+                android:text="@string/plantName"
+                android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/btnWaterAlarm_m"
-            android:layout_width="104dp"
-            android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/tvEnrollDate_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_pName_m"
+                android:layout_alignParentEnd="true"
+                android:text="@string/_2000_00_00"
+                android:maxLines="1"
+                android:textSize="18sp" />
 
-            android:text="@string/alarmOff"
-            android:layout_below="@+id/btnCalendar_m"
-            />
+            <TextView
+                android:id="@+id/tvWaterDate_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnWaterAlarm_m"
+                android:layout_toEndOf="@+id/btnWaterAlarm_m"
+                android:textSize="18sp" />
 
-        <Button
-            android:id="@+id/btnTip_m"
-            android:layout_width="104dp"
-            android:layout_height="wrap_content"
+            <Button
+                android:id="@+id/btnCalendar_m"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_below="@+id/tv_pRealName_m"
+                android:background="@drawable/ic_calendar" />
 
-            android:text="@string/tipPlant"
-            android:layout_toEndOf="@+id/btnWaterAlarm_m"
-            android:layout_alignBaseline="@id/btnWaterAlarm_m"
-            />
+            <Button
+                android:id="@+id/btnWater_m"
+                android:layout_width="64dp"
+                android:layout_height="80dp"
+                android:layout_alignTop="@+id/iv_pImg_m"
+                android:layout_toRightOf="@+id/iv_pImg_m"
+                android:background="@drawable/ic_water_off"
+                android:text="물 OFF" />
 
-        <Button
-            android:id="@+id/btnDelete_m"
-            android:layout_width="104dp"
-            android:layout_height="wrap_content"
-            android:text="@string/delete"
-            android:layout_alignBaseline="@id/btnWaterAlarm_m"
-            android:layout_toEndOf="@+id/btnTip_m"
-            />
-    </RelativeLayout>
+            <Button
+                android:id="@+id/btnWaterAlarm_m"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignTop="@+id/btnCalendar_m"
+                android:layout_toEndOf="@+id/btnCalendar_m"
+                android:background="@drawable/ic_alarm_off"
+                android:layout_marginStart="10dp"
+                />
+
+            <Button
+                android:id="@+id/btnTip_m"
+                android:layout_width="104dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/btnWaterAlarm_m"
+                android:layout_alignBaseline="@+id/btnWaterAlarm_m"
+                android:text="@string/tipPlant" />
+
+            <Button
+                android:id="@+id/btnDelete_m"
+                android:layout_width="104dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/btnTip_m"
+                android:layout_toEndOf="@+id/btnTip_m"
+                android:text="@string/delete" />
+        </RelativeLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

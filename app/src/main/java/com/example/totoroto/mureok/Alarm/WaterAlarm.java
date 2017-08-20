@@ -16,25 +16,35 @@ public class WaterAlarm {
         this.context = context;
     }
 
-    public void Alarm(int perDate, int hour, int minute){
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    public void Alarm(int perDate, String realName,String name, int hour, int minute){
+        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmBroadCast.class);
+        intent.putExtra("pRealName", realName);
+        intent.putExtra("pName", name);
 
-        int alarmKey = perDate*hour*minute*10;
-        PendingIntent sender = PendingIntent.getBroadcast(context, alarmKey, intent, 0);
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), hour, minute, 0);
+        //알람시간 calendar에 set해주기
+        long currentTime = System.currentTimeMillis();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), hour,minute, 0);
 
-        if(perDate == -1){
-            am.cancel(sender);
-        }else if(perDate > 0) {
-            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                    1000 * 60 * 60 * 24 * perDate, sender);
+        long settingTime = calendar.getTimeInMillis();
+
+        if(currentTime > settingTime){
+            settingTime += 1000*60*60*24;
+        }
+
+        if(perDate != -1) {
+            //알람 예약
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, settingTime, sender);
+            } else {
+                am.set(AlarmManager.RTC_WAKEUP, settingTime, sender);
+            }
+            am.setRepeating(AlarmManager.RTC_WAKEUP, settingTime, AlarmManager.INTERVAL_DAY, sender);
         }else{
-            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-           // am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),1000 * 60, sender);
+            am.cancel(sender);
         }
     }
 

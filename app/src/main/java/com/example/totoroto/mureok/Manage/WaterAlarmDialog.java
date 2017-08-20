@@ -46,7 +46,7 @@ public class WaterAlarmDialog extends DialogFragment implements View.OnClickList
 
     private void aboutAlarmDate() {
         //며칠 마다
-        int mPerDate = Integer.valueOf(etWaterDate.getText().toString());
+        int mPerDate = 0;
 
         //시간
         int mHour = tpAlarm.getHour();

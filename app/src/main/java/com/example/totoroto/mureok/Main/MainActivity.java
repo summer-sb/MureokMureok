@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.totoroto.mureok.LoginActivity;
 import com.example.totoroto.mureok.Manage.ManageFragment;
 import com.example.totoroto.mureok.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -77,11 +78,20 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navi_item_send_opinion:
                         break;
                     case R.id.navi_item_logout:
+                        aboutLogout();
                         break;
                 }
                 return true;
             }
         });
+    }
+
+    private void aboutLogout() {
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        fAuth.signOut();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        Toast.makeText(getApplicationContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     private void moveInfoActivity() {

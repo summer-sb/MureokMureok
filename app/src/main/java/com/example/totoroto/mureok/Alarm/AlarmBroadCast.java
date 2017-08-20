@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.example.totoroto.mureok.Manage.ManageAdapter;
 import com.example.totoroto.mureok.R;
@@ -17,10 +18,14 @@ public class AlarmBroadCast extends BroadcastReceiver {
         NotificationManager notificationmanager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, ManageAdapter.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        String pRealName = intent.getStringExtra("pRealName");
+        String pName = intent.getStringExtra("pName");
+
         //param2 : unique
         Notification.Builder builder = new Notification.Builder(context);
-        builder.setSmallIcon(R.mipmap.ic_launcher).setTicker("Mureok").setWhen(System.currentTimeMillis())
-                .setNumber(1).setContentText("물을 줄 시간이에요!")
+        builder.setSmallIcon(R.mipmap.ic_launcher).setTicker("무럭무럭").setWhen(System.currentTimeMillis())
+                .setContentTitle(pRealName+"("+pName+")").setContentText("물 줄 시간이에요!")
                 .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setContentIntent(pendingIntent).setAutoCancel(true);
 
         notificationmanager.notify(1, builder.build());
