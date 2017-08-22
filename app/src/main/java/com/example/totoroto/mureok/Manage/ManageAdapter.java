@@ -117,16 +117,14 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
             public void onClick(View v) {
                 //물을 준 경우, 날짜를 달력에 표시하기 위해 데이터를 보낸다.
                 Context context = v.getContext();
-                Bundle args = new Bundle();
 
                 aboutWaterDateResult(itemData);
 
-                //TODO: 지금 adapter->set인데 set->adapter로 해야 제대로 달력 적용됨
+                //TODO: 지금 adapter->set인데 set->adapter로 되야
                 Log.d(TAG, "adapter Array:"+itemData.getFirebaseKey()+"|"+map.get(itemData.getFirebaseKey()));
-                args.putStringArrayList("waterDateArray", map.get(itemData.getFirebaseKey()));
 
                 CalendarDialog cDialog = new CalendarDialog();
-                cDialog.setArguments(args); //send waterDateArray -> calendar
+                cDialog.setArguments(aboutWaterDateResult(itemData)); //send waterDateArray -> calendar
 
                 FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
                 cDialog.show(fm, "CalendarDialog");
@@ -135,7 +133,9 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
 
     }
 
-    private void aboutWaterDateResult(final ManageData itemData) {
+    private Bundle aboutWaterDateResult(final ManageData itemData) {
+        final Bundle args = new Bundle();
+
         firebaseDBHelper.readWaterCalendarManageData(itemData.getFirebaseKey()); //달력에 물 줬던 날 표시
         firebaseDBHelper.setWaterDateResult(new FirebaseDBHelper.WaterDateResult() {
             @Override
@@ -149,11 +149,14 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
                         map.put(itemData.getFirebaseKey(), new ArrayList<String>());
                     }
 
-                    map.get(itemData.getFirebaseKey()).add(waterDate.get(i));
+                    map.get(itemData.getFirebaseKey()).add(waterDate.get(i)); //맵에 어레이를 추가한다.
                     Log.d(TAG, "setResult waterArray:"+map.get(itemData.getFirebaseKey()));
+                    args.putStringArrayList("waterDateArray", map.get(itemData.getFirebaseKey()));
+
                 }
             }
         });
+        return args;
     }
 
     private void aboutWaterButton(ManageViewHolder holder, ManageData itemData) {

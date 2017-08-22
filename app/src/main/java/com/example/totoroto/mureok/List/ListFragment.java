@@ -70,7 +70,6 @@ public class ListFragment extends Fragment  {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "listfragment onactivityResult");
 
         if (requestCode == REQ_GALLERY_PICTURE  && resultCode == Activity.RESULT_OK) {
             try {

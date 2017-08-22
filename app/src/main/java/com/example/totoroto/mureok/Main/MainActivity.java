@@ -18,6 +18,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.totoroto.mureok.Info.InfoActivity;
 import com.example.totoroto.mureok.LoginActivity;
 import com.example.totoroto.mureok.Manage.ManageFragment;
 import com.example.totoroto.mureok.R;
@@ -95,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void moveInfoActivity() {
-        //TODO : 인포 화면으로 이동한다.
+        Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -108,7 +112,11 @@ public class MainActivity extends AppCompatActivity {
             if(fUser != null) {
                 tvEmail.setText(fUser.getEmail());
                 tvNickName.setText(fUser.getDisplayName());
-                civProfilePicture.setImageURI(fUser.getPhotoUrl());
+                Glide.with(getApplicationContext())
+                        .load(fUser.getPhotoUrl())
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(civProfilePicture);
             }
             return true;
         }

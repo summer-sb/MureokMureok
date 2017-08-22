@@ -50,18 +50,33 @@ public class FirebaseDBHelper {
         mDateResult = dateResult;
     }
 
-    public void setIsWater(IsWater isWater) {
+  /*  public void setIsWater(IsWater isWater) {
         mIsWater = isWater;
     }
-
+*/
     public FirebaseDBHelper() {
     }
 
-    public void writeNewUser(String email, String nickName) {
+    public void writeNewUser(String email, String nickName, String profileImgPath) {
         mRootRef = FirebaseDatabase.getInstance().getReference();
-        User user = new User(email, nickName);
+
+        User user = new User(email, nickName, profileImgPath);
         //Uid == primary key
         mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
+    }
+
+    public void updateUserProfile(String nickName, String profileImgPath){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("nickName").setValue(nickName);
+
+        mRootRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("profileImgPath").setValue(profileImgPath);
+    }
+
+    public void removeUser(String uid){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        mRootRef.child("users").child(uid).removeValue();
     }
 
     public void writeNewManageData(ManageData mData) {
@@ -151,7 +166,6 @@ public class FirebaseDBHelper {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     dataList.add(childSnapshot.getKey()); //date를 받아와서 배열에 저장
                 }
-                //if(dataList.size() != 0) {
                     mDateResult.apply(dataList); //인터페이스로 전달
 
             }

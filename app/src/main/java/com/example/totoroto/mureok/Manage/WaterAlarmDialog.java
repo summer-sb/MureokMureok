@@ -20,7 +20,7 @@ import com.example.totoroto.mureok.R;
 public class WaterAlarmDialog extends DialogFragment implements View.OnClickListener{
     private DialogResult mDialogResult;
     private TimePicker tpAlarm;
-    private EditText etWaterDate;
+   // private EditText etWaterDate;
     private Button btnCancel;
     private Button btnOK;
 
@@ -81,7 +81,7 @@ public class WaterAlarmDialog extends DialogFragment implements View.OnClickList
     }
 
     private void init(View v) {
-        etWaterDate = (EditText) v.findViewById(R.id.etWaterDate);
+        //etWaterDate = (EditText) v.findViewById(R.id.etWaterDate);
         tpAlarm = (TimePicker) v.findViewById(R.id.timePicker);
         btnCancel = (Button)v.findViewById(R.id.btnCancel_water);
         btnOK = (Button)v.findViewById(R.id.btnOK_water);

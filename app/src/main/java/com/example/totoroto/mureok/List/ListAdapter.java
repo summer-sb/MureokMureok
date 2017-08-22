@@ -3,6 +3,7 @@ package com.example.totoroto.mureok.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -34,7 +35,7 @@ import java.util.Date;
 import static com.example.totoroto.mureok.List.ListFragment.imgPath;
 
 
-public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final String TAG = "SOLBIN";
     private final int NUM_CANCEL = -1; //공유 취소
     public static final int VIEWTYPE_CARD = 0;
@@ -45,6 +46,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private ArrayList<ListData> mListDatas;
     private FirebaseDBHelper firebaseDBHelper;
     private FirebaseStorageHelper firebaseStorageHelper;
+    private boolean isFilter = false;
 
     @Override
     public int getItemViewType(int position) {
@@ -73,8 +75,8 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        if(getItemCount() == 0){
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        if (getItemCount() == 0) {
             ListData tmpListData = new ListData();
 
             mListDatas.add(tmpListData);
@@ -102,15 +104,28 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     aboutImgClick(holder);
                 }
             });
+
+            ((ListCardViewHolder) holder).btnFilter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    aboutFilterDialog((ListCardViewHolder) holder);
+                }
+            });
+            if(isFilter){
+                ((ListCardViewHolder) holder).btnFilter.setBackgroundResource(R.color.colorPrimary);
+            }else{
+                ((ListCardViewHolder) holder).btnFilter.setBackgroundResource(android.R.drawable.btn_default);
+            }
+
         } else if (holder.getItemViewType() == VIEWTYPE_LIST) {
             ListData listData = mListDatas.get(position);
 
             ((ListViewHolder) holder).tvDate.setText(listData.date);
             ((ListViewHolder) holder).tvContents.setText(listData.contents);
 
-            if(listData.getisShare()){
+            if (listData.getisShare()) {
                 ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
-            }else{
+            } else {
                 ((ListViewHolder) holder).btnShare.setBackgroundResource(android.R.drawable.btn_default);
             }
 
@@ -134,7 +149,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 public void onClick(View v) {
                     int pos = (holder).getAdapterPosition();
                     aboutShareDialog(holder, pos);
-
+                    isFilter = false;
                 }
             });
 
@@ -152,6 +167,12 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     int pos = holder.getAdapterPosition();
 
                     if (pos != RecyclerView.NO_POSITION) {
+
+                        if (mListDatas.get(pos).getisShare()) {//갤러리에서 삭제하면 공유 중인 경우, 커뮤니티에서도 지워줘야 한다.
+                            firebaseStorageHelper.imageDelete(mListDatas.get(pos).getFirebaseKey());
+                            firebaseStorageHelper.profileDelete(mListDatas.get(pos).getFirebaseKey());
+                            firebaseDBHelper.deleteCommunityData(mListDatas.get(pos).getFirebaseKey());
+                        }
                         firebaseDBHelper.deleteListData(mListDatas.get(pos).getFirebaseKey());
                         mListDatas.remove(pos);
 
@@ -161,6 +182,57 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 }
             });
         }
+    }
+
+    private void aboutFilterDialog(final ListCardViewHolder holder) {
+
+        final ArrayList<ListData> mFilteredDatas = new ArrayList<>();
+        mFilteredDatas.clear();
+
+        ListFilterDialog filterDialog = new ListFilterDialog();
+        FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
+        filterDialog.show(fm, "listFilterDialog");
+
+        filterDialog.setFilterResult(new ListFilterDialog.FilterDialogResult() {
+            @Override
+            public void apply(int year, int month, int day) {
+                String str = "";
+                if (month < 10) { //다이얼로그에서 date정보를 가져온다.
+                    str += year + "년 0" + month + "월 " + day + "일";
+                } else {
+                    str += year + "년 " + month + "월 " + day + "일";
+                }
+
+                for (int pos = 1; pos < mListDatas.size(); pos++) { //pos 0 : cardview
+                    String[] tempArr = mListDatas.get(pos).getDate().split(" ");
+
+                    if (str.equals(tempArr[0]+" "+tempArr[1]+" "+tempArr[2])) {//날짜가 같으면
+                        mFilteredDatas.add(mListDatas.get(pos));
+                    }
+                }
+
+                if (mFilteredDatas.size() != 0) {
+                    isFilter = true;
+
+                    notifyItemRangeRemoved(0, getItemCount());
+                    mListDatas.clear();
+
+                    ListData tmpListData = new ListData();  //모두 삭제했기때문에 카드뷰 다시 만들어주기..
+                    mListDatas.add(tmpListData);
+
+                    for (int i = 0; i < mFilteredDatas.size(); i++) {
+                        mListDatas.add(mFilteredDatas.get(i));
+                    }
+                    notifyItemRangeInserted(0, mListDatas.size()); //카드뷰(pos 0)빼고 내용 리프레시
+
+                }else {
+                    isFilter = false;
+                   // Toast.makeText(context, "해당 날짜에 기록이 없습니다", Toast.LENGTH_SHORT).show();
+                    firebaseDBHelper.readListData(mListDatas, ListAdapter.this);
+                    notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     private void aboutBtnModify(RecyclerView.ViewHolder holder, final int position) {
@@ -226,7 +298,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                         ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
                         break;
                     case NUM_CANCEL: //click btn cancel
-                        Log.d(TAG, "click btn cancel");
                         mListDatas.get(position).setisShare(false);
                         ((ListViewHolder) holder).btnShare.setBackgroundResource(android.R.drawable.btn_default);
 
@@ -243,9 +314,9 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 notifyDataSetChanged();
                 firebaseDBHelper.updateListShareData(mListDatas.get(position).getFirebaseKey(), mListDatas.get(position));
 
-                if(mListDatas.get(position).getisShare()) {
+                if (mListDatas.get(position).getisShare()) {
                     sendCommunity(mListDatas.get(position));
-                }else{//공유가 false이면 커뮤니티에서 지우고 저장소에도 지워준다.
+                } else {//공유가 false이면 커뮤니티에서 지우고 저장소에도 지워준다.
                     firebaseStorageHelper.imageDelete(mListDatas.get(position).getFirebaseKey());
                     firebaseStorageHelper.profileDelete(mListDatas.get(position).getFirebaseKey());
                     firebaseDBHelper.deleteCommunityData(mListDatas.get(position).getFirebaseKey());
@@ -261,7 +332,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
 
         CommunityFragment communityFragment = new CommunityFragment();
-        MainActivity activity = (MainActivity)context;
+        MainActivity activity = (MainActivity) context;
         FragmentManager manager = activity.getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
@@ -270,7 +341,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             bundle.putString("userProfilePhoto", fUser.getPhotoUrl().toString());
             bundle.putString("userNickName", fUser.getDisplayName());
             bundle.putParcelable("sharedListData", listData);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
         communityFragment.setArguments(bundle);
@@ -282,7 +353,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         ((Activity) context).startActivityForResult(intent, REQ_GALLERY_LIST);
-        Log.d(TAG, "adapter startActivityForResult");
     }
 
     private void aboutBtnReset(RecyclerView.ViewHolder holder) {
@@ -305,8 +375,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             firebaseDBHelper.writeNewListData(tmpListData);
             notifyDataSetChanged();
             aboutBtnReset(holder); //입력 item clear
-            Log.d(TAG, "adapter itemCnt:" + String.valueOf(getItemCount()));
-            Log.d(TAG, String.valueOf(getItemCount()));
 
         } else {
             Toast.makeText(context, "사진과 내용을 입력해 주세요.", Toast.LENGTH_SHORT).show();

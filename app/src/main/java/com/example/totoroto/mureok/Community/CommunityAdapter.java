@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
+public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> {
     private CommentAdapter commentAdapter;
     private Context context;
     private FirebaseDBHelper firebaseDBHelper;
@@ -39,7 +39,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
     private ArrayList<CommentData> commentDatas;
     private ArrayList<CommunityData> mDatas;
 
-    public void setCommunityDatas(ArrayList<CommunityData> cDatas){
+    public void setCommunityDatas(ArrayList<CommunityData> cDatas) {
         mDatas = cDatas;
     }
 
@@ -53,8 +53,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
         commentAdapter = new CommentAdapter();
         isAdd = false;
 
-          firebaseDBHelper = new FirebaseDBHelper();
-          firebaseStorageHelper = new FirebaseStorageHelper();
+        firebaseDBHelper = new FirebaseDBHelper();
+        firebaseStorageHelper = new FirebaseStorageHelper();
 
         return new CommunityViewHolder(view);
     }
@@ -81,7 +81,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
         firebaseStorageHelper.setStorageProfileResult(new FirebaseStorageHelper.StorageProfileResult() {
             @Override
             public void applyProfile(Uri uri) {
-               Glide.with(context)
+                Glide.with(context)
                         .load(uri)
                         .override(150, 150)
                         .centerCrop()
@@ -100,11 +100,11 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
             @Override
             public void onClick(View v) {
                 int currentNumLike = communityData.getNumLike();
-                if(!isAdd) { //좋아요를 누르지 않은 상태이면(좋아요x->좋아요o)
+                if (!isAdd) { //좋아요를 누르지 않은 상태이면(좋아요x->좋아요o)
                     isAdd = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike + 1, true);
                     holder.btnLike.setBackgroundResource(R.color.colorPrimary);
-                }else{
-                    isAdd = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike -1, false);
+                } else {
+                    isAdd = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike - 1, false);
                     holder.btnLike.setBackgroundResource(android.R.drawable.btn_default);
                 }
             }
@@ -130,7 +130,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
     }
 
     private void shareKakao(int position) {
-        try{
+        try {
             KakaoLink kakaoLink = KakaoLink.getKakaoLink(context);
             KakaoTalkLinkMessageBuilder kakaoBuilder = kakaoLink.createKakaoTalkLinkMessageBuilder();
 
@@ -139,18 +139,18 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
             kakaoBuilder.addAppButton("앱 실행 혹은 다운로드");
             kakaoLink.sendMessage(kakaoBuilder, context);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void aboutCommentFunc(final CommunityViewHolder holder, final int position) { //아이템 포지션에 따라
-        final ViewPager viewPager = (ViewPager)((AppCompatActivity) context).findViewById(R.id.viewPager);
+        final ViewPager viewPager = (ViewPager) ((AppCompatActivity) context).findViewById(R.id.viewPager);
 
         holder.exBtnComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!holder.exLayoutComment.isExpanded()) {
+                if (!holder.exLayoutComment.isExpanded()) {
                     setCommentRecycler(holder);
                     firebaseDBHelper.readCommentData(mDatas.get(position).getFirebaseKey(), commentDatas, commentAdapter); //댓글을 읽어온다.
 
@@ -158,7 +158,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
                     holder.exBtnComment.setVisibility(View.GONE);
                     holder.btnShare.setVisibility(View.GONE);
                     holder.exLayoutComment.expand(); //댓글 창을 펼친다.
-                 }
+                }
 
                 viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() { //뷰페이저 이동하면 화면X
                     @Override
@@ -168,9 +168,11 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
                         holder.exBtnComment.setVisibility(View.VISIBLE);
                         holder.btnShare.setVisibility(View.VISIBLE);
                     }
+
                     @Override
                     public void onPageSelected(int position) {
                     }
+
                     @Override
                     public void onPageScrollStateChanged(int state) {
                     }
@@ -186,8 +188,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
                 Date currentDate = new Date(ctm);
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm");
 
-                CommentData cData = new CommentData(fUser.getPhotoUrl().toString() ,fUser.getDisplayName(),
-                        holder.etComment.getText().toString() ,dateFormat.format(currentDate));
+                CommentData cData = new CommentData(fUser.getPhotoUrl().toString(), fUser.getDisplayName(),
+                        holder.etComment.getText().toString(), dateFormat.format(currentDate));
                 //param : imagePath, userName, comment, current date
                 commentDatas.add(cData);
 
@@ -198,7 +200,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
         holder.btnClose_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holder.exLayoutComment.isExpanded()){
+                if (holder.exLayoutComment.isExpanded()) {
                     holder.exLayoutComment.collapse();
                     holder.btnLike.setVisibility(View.VISIBLE);
                     holder.exBtnComment.setVisibility(View.VISIBLE);
@@ -215,6 +217,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder>{
         commentAdapter.setCommunityDatas(commentDatas);
         holder.commentRecyclerView.setAdapter(commentAdapter);
     }
+
     @Override
     public int getItemCount() {
         return mDatas.size();

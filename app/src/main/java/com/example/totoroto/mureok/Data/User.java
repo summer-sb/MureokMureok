@@ -3,12 +3,14 @@ package com.example.totoroto.mureok.Data;
 public class User {
     public String userEmail;
     public String nickName;
+    public String profileImgPath;
 
     public User() {
     }
-    public User(String userEmail, String nickName) {
+    public User(String userEmail, String nickName, String profileImgPath) {
         this.userEmail = userEmail;
         this.nickName = nickName;
+        this.profileImgPath = profileImgPath;
     }
 
     public String getUserEmail() {
@@ -25,5 +27,13 @@ public class User {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public String getProfileImgPath() {
+        return profileImgPath;
+    }
+
+    public void setProfileImgPath(String profileImgPath) {
+        this.profileImgPath = profileImgPath;
     }
 }

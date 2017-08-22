@@ -32,7 +32,6 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:timePickerMode="spinner"
-        android:layout_below="@+id/etWaterDate"
         />
 
 

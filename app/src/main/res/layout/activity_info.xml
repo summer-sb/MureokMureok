@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.example.totoroto.mureok.Main.InfoActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.totoroto.mureok.Info.InfoActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civProfile_info"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@mipmap/ic_launcher_round"
-        android:layout_marginTop="100dp"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_marginTop="102dp"
+        app:civ_border_width = "1dp"
+        app:civ_border_color="@color/colorGray"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/tvNickName_Info"
@@ -35,6 +37,7 @@
         />
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/infoRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvEmail_info"

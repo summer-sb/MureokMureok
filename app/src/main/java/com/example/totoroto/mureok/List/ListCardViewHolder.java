@@ -17,6 +17,7 @@ public class ListCardViewHolder extends RecyclerView.ViewHolder{
     public EditText et_listInput;
     public Button btnReset;
     public Button btnAdd;
+    public Button btnFilter;
 
     public ListCardViewHolder(View itemView) {
         super(itemView);
@@ -29,11 +30,6 @@ public class ListCardViewHolder extends RecyclerView.ViewHolder{
         et_listInput = (EditText)itemView.findViewById(R.id.et_listInput);
         btnReset = (Button)itemView.findViewById(R.id.btnReset_listInput);
         btnAdd = (Button)itemView.findViewById(R.id.btnAdd_listInput);
+        btnFilter = (Button)itemView.findViewById(R.id.btnFilter_listInput);
     }
-/*
-    @Override
-    public void applyPath(String path) {
-
-    }
-    */
 }

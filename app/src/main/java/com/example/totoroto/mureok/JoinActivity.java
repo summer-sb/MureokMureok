@@ -35,7 +35,8 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     private String userPassword;
     private String userNickName;
 
-    private final String TAG = "JA";
+    private final String TAG = "JOINSOLBIN";
+    private final String defaultImagePath = "android.resource://com.example.totoroto.mureok/drawable/ic_profile_default";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                     // 유저 프로필 설정.
                     UserProfileChangeRequest profileChange = new UserProfileChangeRequest.Builder()
                             .setDisplayName(etJoinNickName.getText().toString())
-                            .setPhotoUri(Uri.parse("android.resource://com.example.totoroto.mureok/" + R.drawable.ic_profile_default))
+                            .setPhotoUri(Uri.parse(defaultImagePath))
                             .build();
                     user.updateProfile(profileChange);
 
@@ -116,7 +117,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                             //가입을 성공한 경우 db를 생성하고
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                            firebaseDBHelper.writeNewUser(userEmail, userNickName);
+                            firebaseDBHelper.writeNewUser(userEmail, userNickName, defaultImagePath);
                             //로그인 액티비티로 이동한다.
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             intent.putExtra("nickName", userNickName);

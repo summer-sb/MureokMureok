@@ -92,8 +92,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent intent = new Intent(getApplicationContext(), JoinActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.btnGoogleJoin:
-                break;
+            //case R.id.btnGoogleJoin:
+            //    break;
             case R.id.btnNonMember:
                 intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
@@ -127,6 +127,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin.setOnClickListener(this);
         btnJoin.setOnClickListener(this);
         btnNonMember.setOnClickListener(this);
-        btnGoogleJoin.setOnClickListener(this);
+//        btnGoogleJoin.setOnClickListener(this);
     }
 }
