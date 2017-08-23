@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.totoroto.mureok.LoginActivity"
+    tools:context="com.example.totoroto.mureok.Login.LoginActivity"
     >
 
     <TextView
@@ -89,7 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/join"
-        android:layout_below="@+id/btnGoogleLogin"
+        android:layout_below="@+id/btnGoogleJoin"
         android:layout_centerHorizontal="true"
         />
 

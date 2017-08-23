@@ -15,6 +15,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -167,7 +168,6 @@ public class FirebaseDBHelper {
                     dataList.add(childSnapshot.getKey()); //date를 받아와서 배열에 저장
                 }
                     mDateResult.apply(dataList); //인터페이스로 전달
-
             }
 
             @Override
@@ -300,6 +300,7 @@ public class FirebaseDBHelper {
             cRef.child("/likeUsers").child(uid).setValue(uid);
 
             Map<String, Object> cInfoUpdate = new HashMap<String, Object>();
+
             cInfoUpdate.put("/numLike", numLike);
             cRef.updateChildren(cInfoUpdate);
 

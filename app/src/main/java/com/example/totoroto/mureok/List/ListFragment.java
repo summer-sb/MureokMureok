@@ -45,11 +45,22 @@ public class ListFragment extends Fragment  {
 
         init(view);
         aboutRecycler();
+        aboutInput();
 
         firebaseDBHelper.readListData(mListDatas, listAdapter);
 
         return view;
     }
+
+    private void aboutInput() {
+        if(listAdapter.getItemCount() == 0) {
+            ListData tmpListData = new ListData();
+
+            mListDatas.add(tmpListData);
+            listAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     private void aboutRecycler() {
         recyclerView.setHasFixedSize(true);

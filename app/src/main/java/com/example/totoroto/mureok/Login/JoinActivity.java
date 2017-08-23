@@ -1,4 +1,4 @@
-package com.example.totoroto.mureok;
+package com.example.totoroto.mureok.Login;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.totoroto.mureok.Data.FirebaseDBHelper;
+import com.example.totoroto.mureok.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

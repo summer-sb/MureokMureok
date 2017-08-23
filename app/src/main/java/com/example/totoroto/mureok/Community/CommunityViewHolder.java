@@ -38,6 +38,11 @@ public class CommunityViewHolder extends RecyclerView.ViewHolder{
         super(itemView);
 
         init(itemView);
+        aboutStorageImgApply();
+    }
+
+    private void aboutStorageImgApply() {
+
     }
 
     private void init(View v) {

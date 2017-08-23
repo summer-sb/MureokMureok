@@ -52,6 +52,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
         commentDatas = new ArrayList<>();
         commentAdapter = new CommentAdapter();
         isAdd = false;
+        shareUri = null;
 
         firebaseDBHelper = new FirebaseDBHelper();
         firebaseStorageHelper = new FirebaseStorageHelper();
@@ -63,32 +64,19 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
     public void onBindViewHolder(final CommunityViewHolder holder, final int position) {
         final CommunityData communityData = mDatas.get(position);
 
-        firebaseStorageHelper.imageDownLoad(communityData.getFirebaseKey());
-        firebaseStorageHelper.setStorageImageResult(new FirebaseStorageHelper.StorageImageResult() {
-            @Override
-            public void applyImage(Uri uri) {
-                shareUri = uri;
-                Glide.with(context)
-                        .load(uri)
-                        .override(3500, 1500)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(holder.ivPicture);
-            }
-        });
+        Glide.with(context)
+                .load(Uri.parse(communityData.getImgProfile()))
+                .override(150, 150)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(holder.civProfile);
 
-        firebaseStorageHelper.profileDownLoad(communityData.getFirebaseKey());
-        firebaseStorageHelper.setStorageProfileResult(new FirebaseStorageHelper.StorageProfileResult() {
-            @Override
-            public void applyProfile(Uri uri) {
-                Glide.with(context)
-                        .load(uri)
-                        .override(150, 150)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(holder.civProfile);
-            }
-        });
+        Glide.with(context)
+                .load(Uri.parse(communityData.getImgPicture()))
+                .override(4000, 1500)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(holder.ivPicture);
 
         holder.tvNickName.setText(communityData.nickName);
         holder.tvDate.setText(communityData.date);
@@ -96,10 +84,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
         holder.tvNumLike.setText(String.valueOf(communityData.numLike));
 
         final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         holder.btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int currentNumLike = communityData.getNumLike();
+
                 if (!isAdd) { //좋아요를 누르지 않은 상태이면(좋아요x->좋아요o)
                     isAdd = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike + 1, true);
                     holder.btnLike.setBackgroundResource(R.color.colorPrimary);
@@ -107,6 +97,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
                     isAdd = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike - 1, false);
                     holder.btnLike.setBackgroundResource(android.R.drawable.btn_default);
                 }
+
             }
         });
 
@@ -134,7 +125,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
             KakaoLink kakaoLink = KakaoLink.getKakaoLink(context);
             KakaoTalkLinkMessageBuilder kakaoBuilder = kakaoLink.createKakaoTalkLinkMessageBuilder();
 
-            kakaoBuilder.addImage(shareUri.toString(), 81, 81); //가로 세로는 80보다 커야한다.
+            kakaoBuilder.addImage(mDatas.get(position).getImgPicture(), 81, 81); //가로 세로는 80보다 커야한다.
             kakaoBuilder.addText(mDatas.get(position).getContents());
             kakaoBuilder.addAppButton("앱 실행 혹은 다운로드");
             kakaoLink.sendMessage(kakaoBuilder, context);
@@ -188,12 +179,14 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
                 Date currentDate = new Date(ctm);
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm");
 
-                CommentData cData = new CommentData(fUser.getPhotoUrl().toString(), fUser.getDisplayName(),
-                        holder.etComment.getText().toString(), dateFormat.format(currentDate));
-                //param : imagePath, userName, comment, current date
-                commentDatas.add(cData);
+                if(!holder.etComment.getText().toString().equals("")) {
+                    CommentData cData = new CommentData(fUser.getPhotoUrl().toString(), fUser.getDisplayName(),
+                            holder.etComment.getText().toString(), dateFormat.format(currentDate));
+                    //param : imagePath, userName, comment, current date
+                    commentDatas.add(cData);
 
-                firebaseDBHelper.writeNewCommentData(mDatas.get(position).getFirebaseKey(), cData);
+                    firebaseDBHelper.writeNewCommentData(mDatas.get(position).getFirebaseKey(), cData);
+                }
             }
         });
 

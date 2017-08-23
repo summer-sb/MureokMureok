@@ -11,25 +11,26 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 public class FirebaseStorageHelper {
-    public interface StorageImageResult{
-        void applyImage(Uri uri);
-    }
-    public interface StorageProfileResult{
-        void applyProfile(Uri uri);
-    }
-
-    private StorageImageResult mImageResult;
-    private StorageProfileResult mProfileResult;
+    private PassImageResult mPassImage;
+    private PassProfileResult mPassProfile;
 
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
 
-    public void setStorageImageResult(StorageImageResult imageResult){
-        mImageResult = imageResult;
+    public interface PassImageResult{
+        void pass(Uri uri);
     }
 
-    public void setStorageProfileResult(StorageProfileResult profileResult){
-        mProfileResult = profileResult;
+    public interface PassProfileResult{
+        void pass(Uri uri);
+    }
+
+    public void setPassImageResult(PassImageResult imageResult){
+        mPassImage = imageResult;
+    }
+
+    public void setPassProfileResult(PassProfileResult profileResult){
+        mPassProfile = profileResult;
     }
 
     public void imageUpload(String filePath, String firebaseKey){
@@ -42,6 +43,7 @@ public class FirebaseStorageHelper {
                         // Get a URL to the uploaded content
                         @SuppressWarnings("VisibleForTests")
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        mPassImage.pass(downloadUrl); ///
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -61,6 +63,8 @@ public class FirebaseStorageHelper {
                         // Get a URL to the uploaded content
                         @SuppressWarnings("VisibleForTests")
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        mPassProfile.pass(downloadUrl);
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -69,27 +73,6 @@ public class FirebaseStorageHelper {
                         // Handle unsuccessful uploads
                     }
                 });
-    }
-
-    public void imageDownLoad(String firebaseKey){
-        StorageReference imageRef = storageRef.child("images/"+firebaseKey+".jpg");
-
-        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                mImageResult.applyImage(uri);
-            }
-        });
-
-    }
-    public void profileDownLoad(String firebaseKey){
-        StorageReference profileRef = storageRef.child("profiles/"+firebaseKey+".jpg");
-        profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                mProfileResult.applyProfile(uri);
-            }
-        });
     }
 
     public void imageDelete(String firebaseKey){

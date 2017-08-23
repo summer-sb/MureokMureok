@@ -1,11 +1,13 @@
 package com.example.totoroto.mureok.Community;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +31,9 @@ public class CommunityFragment extends Fragment{
     private TabLayout tabLayoutCategory;
     //about community recycler view
     private LinearLayoutManager layoutManager;
+    private RecyclerView cRecyclerView;
     private CommunityAdapter cAdapter;
     private ArrayList<CommunityData> mCommunityDatas;
-    private RecyclerView cRecyclerView;
 
     private final int SELECT_FLOWER = 1;
     private final int SELECT_HERB = 2;
@@ -39,6 +41,8 @@ public class CommunityFragment extends Fragment{
     private final int SELECT_VEGETABLE = 4;
     private final int SELECT_TREE = 5;
 
+    private String imgPath;
+    private String profilePath;
 
     public static CommunityFragment newInstance() {
         return new CommunityFragment();
@@ -61,17 +65,17 @@ public class CommunityFragment extends Fragment{
         }
         firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 0);
 
-
         return view;
     }
 
 
     private void aboutItemAdd() {
-        int typeCateGory;
+        final int typeCateGory;
+
         ListData listData = getArguments().getParcelable("sharedListData");
-        String imagePath = listData.getImgPath();
-        String contents = listData.getContents();
-        String listFirebaseKey = listData.getFirebaseKey();
+        imgPath = getArguments().getString("imgUrl");
+        final String contents = listData.getContents();
+        final String listFirebaseKey = listData.getFirebaseKey();
 
         if(listData.isRadioFlower()){
             typeCateGory = SELECT_FLOWER;
@@ -87,25 +91,33 @@ public class CommunityFragment extends Fragment{
             typeCateGory = 0;
         }
 
-        String profilePhoto = getArguments().getString("userProfilePhoto");
-        String nickName = getArguments().getString("userNickName");
-
         //파이어베이스 저장소에 이미지 저장
-        firebaseStorageHelper.imageUpload(imagePath, listFirebaseKey);
-        firebaseStorageHelper.profileUpload(profilePhoto, listFirebaseKey);
+        profilePath = getArguments().getString("userProfilePhoto");
+        final String nickName = getArguments().getString("userNickName");
+
+        firebaseStorageHelper.profileUpload(profilePath, listData.getFirebaseKey());
+        firebaseStorageHelper.setPassProfileResult(new FirebaseStorageHelper.PassProfileResult() {
+            @Override
+            public void pass(Uri uri) {
+                profilePath = uri.toString();
+                Log.d(TAG, "set profileUrl");
+
+                //현재 시간(공유한 시간)
+                long ctm = System.currentTimeMillis();
+                Date currentDate = new Date(ctm);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm");
+                //아이템 추가
+                CommunityData cData = new CommunityData(profilePath, nickName, dateFormat.format(currentDate),
+                        imgPath, contents, typeCateGory, 0);
+
+                mCommunityDatas.add(cData);
+                firebaseDBHelper.writeNewCommunityData(cData, listFirebaseKey);
+                cAdapter.notifyDataSetChanged();
+            }
+        });
 
 
-        //현재 시간(공유한 시간)
-        long ctm = System.currentTimeMillis();
-        Date currentDate = new Date(ctm);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm");
-        //아이템 추가
-        CommunityData cData = new CommunityData(profilePhoto, nickName, dateFormat.format(currentDate),
-                                                imagePath, contents, typeCateGory, 0);
 
-        mCommunityDatas.add(cData);
-        firebaseDBHelper.writeNewCommunityData(cData, listFirebaseKey);
-        cAdapter.notifyDataSetChanged();
     }
 
     private void aboutSetCommunityRecycler() {

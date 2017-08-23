@@ -1,7 +1,6 @@
-package com.example.totoroto.mureok;
+package com.example.totoroto.mureok.Login;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.totoroto.mureok.Main.MainActivity;
+import com.example.totoroto.mureok.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin = (Button)findViewById(R.id.btnLogin);
         btnJoin = (Button)findViewById(R.id.btnJoin);
         btnNonMember = (Button)findViewById(R.id.btnNonMember);
-        btnGoogleJoin = (Button)findViewById(R.id.btnGoogleLogin);
+        btnGoogleJoin = (Button)findViewById(R.id.btnGoogleJoin);
 
         mAuth = FirebaseAuth.getInstance();
 

@@ -12,11 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".JoinActivity" />
+        <activity android:name=".Login.LoginActivity" />
+        <activity android:name=".Login.JoinActivity" />
         <activity android:name=".PlantTip.TipActivity" />
         <activity android:name=".PlantTip.TipDetailActivity" />
-        <activity android:name=".Main.MainActivity">
+        <activity
+            android:name=".Main.MainActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -28,7 +30,7 @@
                     android:scheme="@string/kakao_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".SplashActivity">
+        <activity android:name=".Login.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,7 +44,8 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
 
-        <activity android:name=".Info.InfoActivity"></activity>
+        <activity android:name=".Info.InfoActivity" />
+        <activity android:name=".Community.Info.InfoShareActivity"></activity>
     </application>
 
 </manifest>

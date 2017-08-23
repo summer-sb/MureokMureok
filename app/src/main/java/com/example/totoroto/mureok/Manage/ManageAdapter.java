@@ -57,7 +57,7 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
     public void onBindViewHolder(final ManageViewHolder holder, final int position) {
         final ManageData itemData = mItems.get(position);
 
-        holder.tv_pName.setText(itemData.pName);
+        holder.tv_pName.setText(" ("+itemData.pName+")");
         holder.tv_pRealName.setText(itemData.pRealName);
         holder.tv_pEnrollDate.setText(itemData.pEnrollDate);
         aboutAlarmText(holder, itemData);
@@ -74,7 +74,7 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         try {
             Glide.with(context)
                     .load(Uri.parse(itemData.pImg))
-                    .override(1000, 800)
+                    .override(2800, 1200)
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(holder.iv_pImg);
@@ -122,9 +122,11 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
 
                 //TODO: 지금 adapter->set인데 set->adapter로 되야
                 Log.d(TAG, "adapter Array:"+itemData.getFirebaseKey()+"|"+map.get(itemData.getFirebaseKey()));
+                Bundle args = new Bundle();
+                args.putStringArrayList("waterDateArray", map.get(itemData.getFirebaseKey()));
 
                 CalendarDialog cDialog = new CalendarDialog();
-                cDialog.setArguments(aboutWaterDateResult(itemData)); //send waterDateArray -> calendar
+                cDialog.setArguments(args); //send waterDateArray -> calendar
 
                 FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
                 cDialog.show(fm, "CalendarDialog");
@@ -133,9 +135,7 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
 
     }
 
-    private Bundle aboutWaterDateResult(final ManageData itemData) {
-        final Bundle args = new Bundle();
-
+    private void aboutWaterDateResult(final ManageData itemData) {
         firebaseDBHelper.readWaterCalendarManageData(itemData.getFirebaseKey()); //달력에 물 줬던 날 표시
         firebaseDBHelper.setWaterDateResult(new FirebaseDBHelper.WaterDateResult() {
             @Override
@@ -151,12 +151,9 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
 
                     map.get(itemData.getFirebaseKey()).add(waterDate.get(i)); //맵에 어레이를 추가한다.
                     Log.d(TAG, "setResult waterArray:"+map.get(itemData.getFirebaseKey()));
-                    args.putStringArrayList("waterDateArray", map.get(itemData.getFirebaseKey()));
-
                 }
             }
         });
-        return args;
     }
 
     private void aboutWaterButton(ManageViewHolder holder, ManageData itemData) {
@@ -167,7 +164,11 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         if (holder.btnWater.getText().toString().equals("물 ON")) { //ON->OFF
             firebaseDBHelper.isWaterCalendarManageData(itemData.getFirebaseKey(), dateFormat.format(currentDate), false);
             holder.btnWater.setText("물 OFF");
-            map.get(itemData.getFirebaseKey()).remove(dateFormat.format(currentDate));
+            try {
+                map.get(itemData.getFirebaseKey()).remove(dateFormat.format(currentDate));
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
         } else { //OFF->ON
             firebaseDBHelper.isWaterCalendarManageData(itemData.getFirebaseKey(), dateFormat.format(currentDate), true);
             holder.btnWater.setText("물 ON");
@@ -177,7 +178,7 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
     private void aboutAlarmText(ManageViewHolder holder, ManageData itemData) {
         if (!itemData.pAM_PM.equals("")) { //알람이 설정되어 있으면
             holder.tv_pWaterDate.setText("" + itemData.pHour + " : " + itemData.pMinute
-                    + itemData.pAM_PM + " 에 물을 줍니다.");
+                    + itemData.pAM_PM + " 에 물을 줍니다");
 
             // Log.d(TAG, "hour:"+itemData.pHour +"|min:" + itemData.pMinute);
         } else {

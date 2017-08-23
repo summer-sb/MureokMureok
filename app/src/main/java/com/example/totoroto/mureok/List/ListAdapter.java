@@ -48,6 +48,10 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private FirebaseStorageHelper firebaseStorageHelper;
     private boolean isFilter = false;
 
+
+    //
+    private String imgUrl;
+    private String profileUrl;
     @Override
     public int getItemViewType(int position) {
         if (position == 0) {
@@ -135,7 +139,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                     Glide.with(context)
                             .load(Uri.parse(listData.imgPath))
-                            .override(3500, 1500)
+                            .override(7500, 2500)
                             .centerCrop()
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                             .into(((ListViewHolder) holder).ivImage);
@@ -227,7 +231,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 }else {
                     isFilter = false;
-                   // Toast.makeText(context, "해당 날짜에 기록이 없습니다", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, "해당 날짜에 기록이 없습니다", Toast.LENGTH_SHORT).show();
                     firebaseDBHelper.readListData(mListDatas, ListAdapter.this);
                     notifyDataSetChanged();
                 }
@@ -328,24 +332,46 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         shareDialog.show(fm, "shareDialog");
     }
 
-    private void sendCommunity(ListData listData) {
-        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+    private void sendCommunity(final ListData listData) {
+        final FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        CommunityFragment communityFragment = new CommunityFragment();
+        final CommunityFragment communityFragment = new CommunityFragment();
         MainActivity activity = (MainActivity) context;
         FragmentManager manager = activity.getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
+        final FragmentTransaction transaction = manager.beginTransaction();
+/*
+        firebaseStorageHelper.profileUpload(fUser.getPhotoUrl().toString(), listData.getFirebaseKey());
+        firebaseStorageHelper.setPassProfileResult(new FirebaseStorageHelper.PassProfileResult() {
+            @Override
+            public void pass(Uri uri) {
+                profileUrl = uri.toString();
+                Log.d(TAG, "set profileUrl");
+            }
+        });
+*/
+        firebaseStorageHelper.imageUpload(listData.getImgPath(), listData.getFirebaseKey());
+        firebaseStorageHelper.setPassImageResult(new FirebaseStorageHelper.PassImageResult() {
+            @Override
+            public void pass(Uri uri) {
+                imgUrl = uri.toString();
+                Log.d(TAG, imgUrl + "pass result");
 
-        Bundle bundle = new Bundle(3);
-        try {
-            bundle.putString("userProfilePhoto", fUser.getPhotoUrl().toString());
-            bundle.putString("userNickName", fUser.getDisplayName());
-            bundle.putParcelable("sharedListData", listData);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        communityFragment.setArguments(bundle);
-        transaction.replace(R.id.mainFrameLayout, communityFragment).commit();
+                Bundle bundle = new Bundle(4);
+                try {
+                    bundle.putString("userProfilePhoto", fUser.getPhotoUrl().toString());
+                    bundle.putString("userNickName", fUser.getDisplayName());
+                    bundle.putString("imgUrl", imgUrl);
+                    bundle.putParcelable("sharedListData", listData);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                communityFragment.setArguments(bundle);
+                transaction.replace(R.id.mainFrameLayout, communityFragment).commit();
+            }
+        });
+
+
+
     }
 
     private void aboutImgClick(RecyclerView.ViewHolder holder) {

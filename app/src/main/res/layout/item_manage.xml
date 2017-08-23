@@ -18,8 +18,8 @@
 
             <ImageView
                 android:id="@+id/iv_pImg_m"
-                android:layout_width="220dp"
-                android:layout_height="100dp"
+                android:layout_width="280dp"
+                android:layout_height="120dp"
                 android:src="@drawable/ic_img_placeholder" />
 
             <TextView
@@ -28,68 +28,96 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/iv_pImg_m"
                 android:layout_toEndOf="@+id/tv_pRealName_m"
-                android:text="@string/plantFriendly"
-                android:textSize="20sp" />
+                android:text="운모기"
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                />
+
+            <TextView
+                android:id="@+id/explainPname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이름 :"
+                android:layout_below="@+id/iv_pImg_m"
+                android:textSize="18sp"
+                />
 
             <TextView
                 android:id="@+id/tv_pRealName_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/iv_pImg_m"
-                android:text="@string/plantName"
-                android:textSize="20sp" />
+                android:layout_toEndOf="@+id/explainPname"
+                android:text="행운목"
+                android:textSize="18sp"
+                />
+
+            <TextView
+                android:id="@+id/tvExplainEnrollDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="등록일 :"
+                android:layout_marginTop="8dp"
+                android:textSize="18sp"
+                android:layout_below="@+id/tv_pName_m"
+                />
 
             <TextView
                 android:id="@+id/tvEnrollDate_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/tv_pName_m"
-                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/tv_pRealName_m"
+                android:layout_toEndOf="@+id/tvExplainEnrollDate"
+                android:layout_alignBaseline="@+id/tvExplainEnrollDate"
                 android:text="@string/_2000_00_00"
                 android:maxLines="1"
+                android:layout_marginStart="8dp"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvWaterDate_m"
+                android:text="0일 후에 알람이 울립니다"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/btnWaterAlarm_m"
-                android:layout_toEndOf="@+id/btnWaterAlarm_m"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_toStartOf="@+id/btnWaterAlarm_m"
+                android:layout_alignBottom="@+id/btnWaterAlarm_m"
+                android:layout_marginBottom="4dp"
+                />
 
             <Button
                 android:id="@+id/btnCalendar_m"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_below="@+id/tv_pRealName_m"
+                android:layout_below="@+id/btnWater_m"
+                android:layout_alignEnd="@+id/btnWater_m"
                 android:background="@drawable/ic_calendar" />
 
             <Button
                 android:id="@+id/btnWater_m"
                 android:layout_width="64dp"
                 android:layout_height="80dp"
-                android:layout_alignTop="@+id/iv_pImg_m"
-                android:layout_toRightOf="@+id/iv_pImg_m"
                 android:background="@drawable/ic_water_off"
-                android:text="물 OFF" />
+                android:text="물 OFF"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/iv_pImg_m" />
 
             <Button
                 android:id="@+id/btnWaterAlarm_m"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignTop="@+id/btnCalendar_m"
-                android:layout_toEndOf="@+id/btnCalendar_m"
+                android:layout_width="48dp"
+                android:layout_height="52dp"
                 android:background="@drawable/ic_alarm_off"
-                android:layout_marginStart="10dp"
+                android:layout_below="@+id/btnCalendar_m"
+                android:layout_alignStart="@+id/btnCalendar_m"
+                android:layout_marginStart="8dp"
                 />
-
             <Button
                 android:id="@+id/btnTip_m"
                 android:layout_width="104dp"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/btnWaterAlarm_m"
-                android:layout_alignBaseline="@+id/btnWaterAlarm_m"
-                android:text="@string/tipPlant" />
+                android:text="@string/tipPlant"
+                android:layout_below="@+id/tvWaterDate_m"
+                />
 
             <Button
                 android:id="@+id/btnDelete_m"
@@ -101,3 +129,5 @@
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>
+
+

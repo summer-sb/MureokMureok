@@ -148,7 +148,7 @@ public class AddPlantDialog extends DialogFragment implements View.OnClickListen
         pRealName = et_pRealName.getText().toString();
         pDate = tv_pDate.getText().toString();
 
-        if (pRealName != null) { //적어도 식물 이름은 입력해줘야
+        if (pRealName != null && pPicture != null) { //적어도 입력해줘야 할 것
             mDialogResult.apply(pPicture, pName, pRealName, pDate);
         }
         dismiss();

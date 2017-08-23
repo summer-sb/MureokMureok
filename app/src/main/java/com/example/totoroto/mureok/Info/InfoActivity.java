@@ -1,29 +1,21 @@
 package com.example.totoroto.mureok.Info;
 
-import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.totoroto.mureok.LoginActivity;
 import com.example.totoroto.mureok.R;
 import com.example.totoroto.mureok.RecyclerItemClickListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.ArrayList;
 
@@ -79,7 +71,9 @@ public class InfoActivity extends AppCompatActivity {
                     case 0: //프로필 변경
                         loadInfoProfileDialog();
                         break;
-
+                    case 1:
+                        loadInfoPwChangeDialog();
+                        break;
                     case 2: //회원 탈퇴
                         loadRemoveUserDialog();
                         break;
@@ -87,6 +81,13 @@ public class InfoActivity extends AppCompatActivity {
             }
         }));
 
+    }
+
+    private void loadInfoPwChangeDialog() {
+        InfoPwChangeDialog pwDialog = new InfoPwChangeDialog();
+
+        FragmentManager fm = getSupportFragmentManager();
+        pwDialog.show(fm, "pwDialog");
     }
 
     private void loadRemoveUserDialog() {

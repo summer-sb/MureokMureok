@@ -1,10 +1,11 @@
-package com.example.totoroto.mureok;
+package com.example.totoroto.mureok.Login;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.totoroto.mureok.R;
 
 public class SplashActivity extends AppCompatActivity {
 

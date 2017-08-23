@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -21,7 +20,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.totoroto.mureok.Info.InfoActivity;
-import com.example.totoroto.mureok.LoginActivity;
+import com.example.totoroto.mureok.Community.Info.InfoShareActivity;
+import com.example.totoroto.mureok.Login.LoginActivity;
 import com.example.totoroto.mureok.Manage.ManageFragment;
 import com.example.totoroto.mureok.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.navi_item_shares:
+                        moveInfoShareActivity();
                         break;
                     case R.id.navi_item_myInfo:
                         moveInfoActivity();
@@ -87,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void moveInfoShareActivity() {
+        Intent intent = new Intent(getApplicationContext(), InfoShareActivity.class);
+        startActivity(intent);
     }
 
     private void aboutLogout() {

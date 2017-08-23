@@ -88,4 +88,5 @@ public class CommunityData {
     public void setNumLike(int numLike) {
         this.numLike = numLike;
     }
+
 }

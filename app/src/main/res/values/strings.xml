@@ -68,7 +68,7 @@
     <string name="share">공유</string>
     <string name="reset">리셋</string>
     <string name="add">추가</string>
-    <string name="googleLogin">google로 로그인</string>
+    <string name="googleLogin">구글 계정으로 가입하기</string>
     <string name="setCategory">공유할 카테고리를 설정해 주세요</string>
     <string name="flower">꽃</string>
     <string name="herb">허브</string>
