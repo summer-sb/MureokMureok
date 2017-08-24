@@ -111,16 +111,13 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
             }
         });
 
-
+        aboutWaterDateResult(itemData);
         holder.btnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //물을 준 경우, 날짜를 달력에 표시하기 위해 데이터를 보낸다.
                 Context context = v.getContext();
 
-                aboutWaterDateResult(itemData);
-
-                //TODO: 지금 adapter->set인데 set->adapter로 되야
                 Log.d(TAG, "adapter Array:"+itemData.getFirebaseKey()+"|"+map.get(itemData.getFirebaseKey()));
                 Bundle args = new Bundle();
                 args.putStringArrayList("waterDateArray", map.get(itemData.getFirebaseKey()));
@@ -147,11 +144,12 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
                 for (int i = 0; i < waterDate.size(); i++) {
                     if(!map.containsKey(itemData.getFirebaseKey())) {
                         map.put(itemData.getFirebaseKey(), new ArrayList<String>());
+                        Log.d(TAG, "create calendar arraylist");
                     }
 
                     map.get(itemData.getFirebaseKey()).add(waterDate.get(i)); //맵에 어레이를 추가한다.
                     Log.d(TAG, "setResult waterArray:"+map.get(itemData.getFirebaseKey()));
-                }
+                }//end for
             }
         });
     }

@@ -118,6 +118,47 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
         });
 
         aboutCommentFunc(holder, position);
+        aboutCommentPreview(holder, position);
+
+
+    }
+
+    private void aboutCommentPreview(final CommunityViewHolder holder, int position) {
+        ArrayList<CommentData> preViewDatas = new ArrayList<>();
+        firebaseDBHelper.readCommentDataPreview(mDatas.get(position).getFirebaseKey(), preViewDatas);
+        firebaseDBHelper.setCommentPreView(new FirebaseDBHelper.CommentPreView() {
+            @Override
+            public void apply(ArrayList<CommentData> preView) {
+                try {
+                    if (preView.get(preView.size()-1) != null) {
+                        holder.viewGroupComment2.setVisibility(View.VISIBLE);
+                        Glide.with(context)
+                                .load(Uri.parse(preView.get(preView.size()-1).getProfileImgPath()))
+                                .override(100, 100)
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .into(holder.civUserProfile_c2);
+                        holder.tvUserName_c2.setText(preView.get(preView.size()-1).getUserName());
+                        holder.tvComment_c2.setText(preView.get(preView.size()-1).getComment());
+                        holder.tvDate_c2.setText(preView.get(preView.size()-1).getDate());
+                    }
+
+                    if (preView.get(preView.size()-2) != null) {
+                        holder.viewGroupComment1.setVisibility(View.VISIBLE);
+                        Glide.with(context)
+                                .load(Uri.parse(preView.get(preView.size()-2).getProfileImgPath()))
+                                .override(100, 100)
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .into(holder.civUserProfile_c1);
+                        holder.tvUserName_c1.setText(preView.get(preView.size()-2).getUserName());
+                        holder.tvComment_c1.setText(preView.get(preView.size()-2).getComment());
+                        holder.tvDate_c1.setText(preView.get(preView.size()-2).getDate());
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void shareKakao(int position) {
@@ -148,6 +189,9 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
                     holder.btnLike.setVisibility(View.GONE);
                     holder.exBtnComment.setVisibility(View.GONE);
                     holder.btnShare.setVisibility(View.GONE);
+                    holder.viewGroupComment1.setVisibility(View.GONE);
+                    holder.viewGroupComment2.setVisibility(View.GONE);
+
                     holder.exLayoutComment.expand(); //댓글 창을 펼친다.
                 }
 
@@ -158,6 +202,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
                         holder.btnLike.setVisibility(View.VISIBLE);
                         holder.exBtnComment.setVisibility(View.VISIBLE);
                         holder.btnShare.setVisibility(View.VISIBLE);
+                        holder.viewGroupComment1.setVisibility(View.VISIBLE);
+                        holder.viewGroupComment2.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -187,6 +233,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
 
                     firebaseDBHelper.writeNewCommentData(mDatas.get(position).getFirebaseKey(), cData);
                 }
+                holder.etComment.setText("");
             }
         });
 
@@ -198,6 +245,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
                     holder.btnLike.setVisibility(View.VISIBLE);
                     holder.exBtnComment.setVisibility(View.VISIBLE);
                     holder.btnShare.setVisibility(View.VISIBLE);
+                    holder.viewGroupComment1.setVisibility(View.VISIBLE);
+                    holder.viewGroupComment2.setVisibility(View.VISIBLE);
                 }
             }
         });

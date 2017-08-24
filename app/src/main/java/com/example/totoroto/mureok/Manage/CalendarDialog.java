@@ -49,8 +49,11 @@ public class CalendarDialog extends DialogFragment {
     private void aboutWaterDate() {
         Bundle mArgs = getArguments();
         //arrDate.clear();
-        arrDate = mArgs.getStringArrayList("waterDateArray");
-
+        try {
+            arrDate = mArgs.getStringArrayList("waterDateArray");
+        }catch (NullPointerException e){
+            Log.d("SOLBIN", "CDialog receive null");
+        }
         mCalendarView.addDecorator(new EventDecorator(getContext(), arrDate));
     }
 

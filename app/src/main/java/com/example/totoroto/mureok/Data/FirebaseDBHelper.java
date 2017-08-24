@@ -29,6 +29,7 @@ public class FirebaseDBHelper {
 
     private IsLikeResult isLikeResult;
     private WaterDateResult mDateResult;
+    private CommentPreView mCommentPreview;
     private IsWater mIsWater;
 
     public interface IsLikeResult {
@@ -37,6 +38,10 @@ public class FirebaseDBHelper {
 
     public interface WaterDateResult {
         void apply(ArrayList<String> waterDate);
+    }
+
+    public interface CommentPreView{
+        void apply(ArrayList<CommentData> preView);
     }
 
     public interface IsWater {
@@ -51,6 +56,9 @@ public class FirebaseDBHelper {
         mDateResult = dateResult;
     }
 
+    public void setCommentPreView(CommentPreView preView){
+        mCommentPreview = preView;
+    }
   /*  public void setIsWater(IsWater isWater) {
         mIsWater = isWater;
     }
@@ -420,6 +428,27 @@ public class FirebaseDBHelper {
         communityData.put("/" + key + "/commentData/" + commentKey, commentData);
 
         communityRef.updateChildren(communityData);
+    }
+
+    public void readCommentDataPreview(String positionKey, final ArrayList<CommentData> preDatas){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference communityRef = mRootRef.child("community").child("communityData")
+                .child(positionKey).child("commentData");
+
+        communityRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot s : dataSnapshot.getChildren()) {
+                    CommentData cData = s.getValue(CommentData.class);
+                    preDatas.add(cData);
+                }
+                mCommentPreview.apply(preDatas);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     public void readCommentData(String positionKey, final ArrayList<CommentData> commentDatas, final CommentAdapter cAdapter) {

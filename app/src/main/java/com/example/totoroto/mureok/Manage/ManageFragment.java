@@ -71,7 +71,7 @@ public class ManageFragment extends Fragment {
                     @Override
                     public void apply(String picture, String name, String realName, String date) {
                         ManageData manageData = new ManageData(picture, name, realName, date,
-                                false, 0, 0, 0, "");
+                                false, 0, 0, 0, "", "물 OFF");
                         mItemDatas.add(manageData);
                         firebaseDBHelper.writeNewManageData(manageData);
 

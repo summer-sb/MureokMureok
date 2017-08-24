@@ -158,4 +158,45 @@
 
     </android.support.v7.widget.CardView>
 
+    <RelativeLayout
+        android:id="@+id/commentLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cardView_community"
+        android:layout_gravity="bottom"
+
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorPriMedium"
+        >
+        <include
+            android:id="@+id/previewComment"
+            layout="@layout/item_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/commentLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/commentLayout1"
+       android:layout_gravity="bottom"
+
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorPriMedium"
+        >
+        <include
+            android:id="@+id/previewComment2"
+            layout="@layout/item_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
 </RelativeLayout>

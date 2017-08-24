@@ -23,12 +23,13 @@ public class ManageData {
     public int pHour;
     public int pMinute;
     public String pAM_PM;
+    public String pWaterState;
 
     public ManageData() {
     }
 
     public ManageData(String pImg, String pName, String pRealName, String pEnrollDate, boolean isAlarm,
-                      int perDate, int hour, int minute, String AM_PM){
+                      int perDate, int hour, int minute, String AM_PM, String pWaterState){
         this.pImg = pImg;
         this.pName = pName;
         this.pRealName = pRealName;
@@ -39,6 +40,7 @@ public class ManageData {
         this.pHour = hour;
         this.pMinute = minute;
         this.pAM_PM = AM_PM;
+        this.pWaterState = pWaterState;
     }
 
     public String getFirebaseKey() {
@@ -121,4 +123,11 @@ public class ManageData {
         this.pAM_PM = pAM_PM;
     }
 
+    public String getpWaterState() {
+        return pWaterState;
+    }
+
+    public void setpWaterState(String pWaterState) {
+        this.pWaterState = pWaterState;
+    }
 }
