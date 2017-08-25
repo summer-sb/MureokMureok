@@ -21,14 +21,18 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.totoroto.mureok.R;
 
 public class ListModifyDialog extends DialogFragment implements View.OnClickListener{
-    private final int REQ_GALLERY_MODIFY_IMG = 300;
-    private String changedImgPath;
+    private final int REQ_GALLERY_MODIFY_IMG = 333;
+    private String changedImgPath = "";
     private ModifyDialogResult mDialogResult;
 
     private ImageView imageView;
     private EditText editText;
     private Button btnCancel;
     private Button btnOK;
+
+    private String originImgPath;
+    private String originContents;
+
 
     public interface ModifyDialogResult{
         void apply(String imgPath, String contents);
@@ -71,7 +75,6 @@ public class ListModifyDialog extends DialogFragment implements View.OnClickList
                 changedImgPath = data.getData().toString();
                 Glide.with(getContext())
                         .load(data.getData())
-                        .override(3500,1500)
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imageView);
@@ -82,12 +85,11 @@ public class ListModifyDialog extends DialogFragment implements View.OnClickList
     }
 
     private void setOriginalListItem() {
-        String originImgPath = getArguments().getString("listImagePath");
-        String originContents = getArguments().getString("listContents");
+        originImgPath = getArguments().getString("listImagePath");
+        originContents = getArguments().getString("listContents");
 
         Glide.with(getContext())
                 .load(Uri.parse(originImgPath))
-                .override(3500, 1500)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageView);
@@ -120,11 +122,19 @@ public class ListModifyDialog extends DialogFragment implements View.OnClickList
 
     private void aboutBtnOK() {
         String changedContents = editText.getText().toString();
+
+        if(changedContents.equals("")){
+            Toast.makeText(getContext(), "내용을 입력하세요", Toast.LENGTH_SHORT).show();
+        }else if(changedImgPath.equals("")){
+            changedImgPath = originImgPath;
+        }else{
+            mDialogResult.apply(changedImgPath, changedContents);
+            dismiss();
+        }
+        /*
         if(!changedImgPath.equals("") && !changedContents.equals("")) {
             mDialogResult.apply(changedImgPath, changedContents);
             dismiss();
-        }else{
-            Toast.makeText(getContext(), "이미지 또는 내용을 입력하세요", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 }

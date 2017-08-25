@@ -48,16 +48,19 @@ public class ListFragment extends Fragment  {
         aboutInput();
 
         firebaseDBHelper.readListData(mListDatas, listAdapter);
-
         return view;
     }
 
     private void aboutInput() {
+
         if(listAdapter.getItemCount() == 0) {
+            Log.d(TAG, "itemcnt1:"+listAdapter.getItemCount());
             ListData tmpListData = new ListData();
 
             mListDatas.add(tmpListData);
             listAdapter.notifyDataSetChanged();
+
+            Log.d(TAG, "itemcnt2:"+listAdapter.getItemCount());
         }
     }
 
@@ -89,7 +92,6 @@ public class ListFragment extends Fragment  {
 
                 Glide.with(getContext())
                         .load(imgPath)
-                        .override(1000, 1000)
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imgView);

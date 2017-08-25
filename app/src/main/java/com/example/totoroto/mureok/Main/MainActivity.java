@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.totoroto.mureok.Info.InfoActivity;
-import com.example.totoroto.mureok.Community.Info.InfoShareActivity;
 import com.example.totoroto.mureok.Login.LoginActivity;
 import com.example.totoroto.mureok.Manage.ManageFragment;
 import com.example.totoroto.mureok.R;
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.navi_item_shares:
-                        moveInfoShareActivity();
+                       // moveInfoShareActivity();
                         break;
                     case R.id.navi_item_myInfo:
                         moveInfoActivity();
@@ -90,10 +89,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void moveInfoShareActivity() {
-        Intent intent = new Intent(getApplicationContext(), InfoShareActivity.class);
-        startActivity(intent);
-    }
 
     private void aboutLogout() {
         FirebaseAuth fAuth = FirebaseAuth.getInstance();

@@ -54,7 +54,6 @@ public class TipDetailActivity extends AppCompatActivity implements View.OnClick
 
            Glide.with(getApplicationContext())
                    .load(Uri.parse(realPath))
-                   .override(2500, 1000)
                    .centerCrop()
                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                    .into(ivTip_Img);

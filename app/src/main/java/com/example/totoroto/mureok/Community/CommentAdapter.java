@@ -37,7 +37,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
         try {
             Glide.with(context)
                     .load(Uri.parse(cData.getProfileImgPath()))
-                    .override(150, 150)
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(holder.civUserProfile);

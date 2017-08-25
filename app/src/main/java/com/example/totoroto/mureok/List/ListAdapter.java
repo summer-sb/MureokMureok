@@ -48,10 +48,8 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private FirebaseStorageHelper firebaseStorageHelper;
     private boolean isFilter = false;
 
-
     //
     private String imgUrl;
-    private String profileUrl;
     @Override
     public int getItemViewType(int position) {
         if (position == 0) {
@@ -68,12 +66,10 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         firebaseStorageHelper = new FirebaseStorageHelper();
 
         if (viewType == VIEWTYPE_CARD) {
-            View itemView = inflater.inflate(R.layout.item_list_card,
-                    viewGroup, false);
+            View itemView = inflater.inflate(R.layout.item_list_card, viewGroup, false);
             return new ListCardViewHolder(itemView);
         } else {
-            View itemView = inflater.inflate(R.layout.item_list,
-                    viewGroup, false);
+            View itemView = inflater.inflate(R.layout.item_list, viewGroup, false);
             return new ListViewHolder(itemView);
         }
     }
@@ -82,8 +78,8 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (getItemCount() == 0) {
             ListData tmpListData = new ListData();
-
             mListDatas.add(tmpListData);
+
             notifyDataSetChanged();
         }
 
@@ -139,7 +135,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                     Glide.with(context)
                             .load(Uri.parse(listData.imgPath))
-                            .override(7500, 2500)
                             .centerCrop()
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                             .into(((ListViewHolder) holder).ivImage);
@@ -339,16 +334,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         MainActivity activity = (MainActivity) context;
         FragmentManager manager = activity.getSupportFragmentManager();
         final FragmentTransaction transaction = manager.beginTransaction();
-/*
-        firebaseStorageHelper.profileUpload(fUser.getPhotoUrl().toString(), listData.getFirebaseKey());
-        firebaseStorageHelper.setPassProfileResult(new FirebaseStorageHelper.PassProfileResult() {
-            @Override
-            public void pass(Uri uri) {
-                profileUrl = uri.toString();
-                Log.d(TAG, "set profileUrl");
-            }
-        });
-*/
+
         firebaseStorageHelper.imageUpload(listData.getImgPath(), listData.getFirebaseKey());
         firebaseStorageHelper.setPassImageResult(new FirebaseStorageHelper.PassImageResult() {
             @Override
@@ -369,9 +355,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 transaction.replace(R.id.mainFrameLayout, communityFragment).commit();
             }
         });
-
-
-
     }
 
     private void aboutImgClick(RecyclerView.ViewHolder holder) {

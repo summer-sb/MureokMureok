@@ -175,7 +175,8 @@ public class FirebaseDBHelper {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     dataList.add(childSnapshot.getKey()); //date를 받아와서 배열에 저장
                 }
-                    mDateResult.apply(dataList); //인터페이스로 전달
+
+                mDateResult.apply(dataList); //인터페이스로 전달
             }
 
             @Override
@@ -335,6 +336,7 @@ public class FirebaseDBHelper {
                     String userKey = childSnapshot.getKey();
 
                     if (userKey.equals(uid)) {
+                        Log.d(TAG, "<userkey|uid>   "+userKey+"|"+uid);
                         isLikeResult.success();
                         break;
                     }

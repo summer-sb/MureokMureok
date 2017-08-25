@@ -115,7 +115,6 @@ public class AddPlantDialog extends DialogFragment implements View.OnClickListen
 
                  Glide.with(getContext())
                         .load(data.getData())
-                        .override(600,600)
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(iv_pPicture);

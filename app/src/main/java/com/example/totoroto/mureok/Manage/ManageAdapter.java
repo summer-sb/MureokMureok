@@ -57,7 +57,10 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
     public void onBindViewHolder(final ManageViewHolder holder, final int position) {
         final ManageData itemData = mItems.get(position);
 
-        holder.tv_pName.setText(" ("+itemData.pName+")");
+        if(!itemData.pName.equals("")){
+            holder.tv_pName.setText(" ("+itemData.pName+")");
+        }
+
         holder.tv_pRealName.setText(itemData.pRealName);
         holder.tv_pEnrollDate.setText(itemData.pEnrollDate);
         aboutAlarmText(holder, itemData);
@@ -74,7 +77,6 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         try {
             Glide.with(context)
                     .load(Uri.parse(itemData.pImg))
-                    .override(2800, 1200)
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(holder.iv_pImg);
@@ -148,8 +150,8 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
                     }
 
                     map.get(itemData.getFirebaseKey()).add(waterDate.get(i)); //맵에 어레이를 추가한다.
-                    Log.d(TAG, "setResult waterArray:"+map.get(itemData.getFirebaseKey()));
                 }//end for
+                Log.d(TAG, "setResult waterArray:"+map.get(itemData.getFirebaseKey()));
             }
         });
     }

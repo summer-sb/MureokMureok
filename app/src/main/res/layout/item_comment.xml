@@ -5,8 +5,9 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civUserProrile_comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/ic_launcher_round"
         />
     <TextView
         android:id="@+id/tvUserName_comment"

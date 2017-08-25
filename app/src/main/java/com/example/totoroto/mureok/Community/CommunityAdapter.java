@@ -34,7 +34,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
     private FirebaseDBHelper firebaseDBHelper;
     private FirebaseStorageHelper firebaseStorageHelper;
 
-    private boolean isAdd;
+    private boolean[] isAdd;
     private Uri shareUri;
     private ArrayList<CommentData> commentDatas;
     private ArrayList<CommunityData> mDatas;
@@ -51,7 +51,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
         View view = inflater.inflate(R.layout.item_community, parent, false);
         commentDatas = new ArrayList<>();
         commentAdapter = new CommentAdapter();
-        isAdd = false;
+
+        isAdd = new boolean[getItemCount()];
+        for(int i=0; i<getItemCount(); i++){
+            isAdd[i] = false;
+        }
+
         shareUri = null;
 
         firebaseDBHelper = new FirebaseDBHelper();
@@ -66,14 +71,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
 
         Glide.with(context)
                 .load(Uri.parse(communityData.getImgProfile()))
-                .override(150, 150)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(holder.civProfile);
 
         Glide.with(context)
                 .load(Uri.parse(communityData.getImgPicture()))
-                .override(4000, 1500)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(holder.ivPicture);
@@ -83,18 +86,39 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
         holder.tvContents.setText(communityData.contents);
         holder.tvNumLike.setText(String.valueOf(communityData.numLike));
 
+
         final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+
+        firebaseDBHelper.isLikeCommunityData(mDatas.get(position).getFirebaseKey(), uid);
+        firebaseDBHelper.setIsLikeResult(new FirebaseDBHelper.IsLikeResult() {
+            @Override
+            public void success() {
+                //holder.btnLike.setBackgroundResource(R.color.colorPrimary);
+                isAdd[position] = true;
+                holder.btnLike.setBackgroundResource(R.color.colorPrimary);
+                Log.d("SOLBIN", "isAdd("+position+")" + isAdd[position]);
+            }
+        });
+/*
+        if(isAdd[position]){
+
+            Log.d("SOLBIN", "color on "+ position + isAdd[position]);
+        }else{
+            holder.btnLike.setBackgroundResource(android.R.drawable.btn_default);
+            Log.d("SOLBIN", "color off" + position + isAdd[position]);
+        }
+*/
         holder.btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int currentNumLike = communityData.getNumLike();
 
-                if (!isAdd) { //좋아요를 누르지 않은 상태이면(좋아요x->좋아요o)
-                    isAdd = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike + 1, true);
+                if (!isAdd[position]) { //좋아요를 누르지 않은 상태이면(좋아요x->좋아요o)
+                    isAdd[position] = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike + 1, true);
                     holder.btnLike.setBackgroundResource(R.color.colorPrimary);
                 } else {
-                    isAdd = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike - 1, false);
+                    isAdd[position] = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike - 1, false);
                     holder.btnLike.setBackgroundResource(android.R.drawable.btn_default);
                 }
 
@@ -108,19 +132,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
             }
         });
 
-        firebaseDBHelper.isLikeCommunityData(mDatas.get(position).getFirebaseKey(), uid);
-        firebaseDBHelper.setIsLikeResult(new FirebaseDBHelper.IsLikeResult() {
-            @Override
-            public void success() {
-                holder.btnLike.setBackgroundResource(R.color.colorPrimary);
-                isAdd = true;
-            }
-        });
-
         aboutCommentFunc(holder, position);
         aboutCommentPreview(holder, position);
-
-
     }
 
     private void aboutCommentPreview(final CommunityViewHolder holder, int position) {
@@ -141,7 +154,6 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
                         holder.tvComment_c2.setText(preView.get(preView.size()-1).getComment());
                         holder.tvDate_c2.setText(preView.get(preView.size()-1).getDate());
                     }
-
                     if (preView.get(preView.size()-2) != null) {
                         holder.viewGroupComment1.setVisibility(View.VISIBLE);
                         Glide.with(context)
@@ -258,6 +270,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
         holder.commentRecyclerView.setLayoutManager(layoutManager);
         commentAdapter.setCommunityDatas(commentDatas);
         holder.commentRecyclerView.setAdapter(commentAdapter);
+
     }
 
     @Override
