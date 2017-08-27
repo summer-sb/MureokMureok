@@ -5,21 +5,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.totoroto.mureok.PlantTip.TipDetailActivity">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbarLayout_tip_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_tip_detail"
+            android:layout_width="match_parent"
+            android:layout_height="54dp">
+
+            <Button
+                android:id="@+id/btnTipClose"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:background="@drawable/ic_back"
+                />
+
+            <TextView
+                android:id="@+id/tvPname_tip_detail"
+                android:text="@string/tip_pname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="#efefef" />
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="250dp"
         android:src="@mipmap/ic_launcher"
         android:id="@+id/ivTip_img"
+        android:layout_below="@+id/appbarLayout_tip_detail"
         />
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/ivTip_img"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        />
     <TextView
         android:id="@+id/tvExplain_frt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/infoFrt"
         android:layout_below="@+id/ivTip_img"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_marginTop="10dp"
         />
 
@@ -31,7 +65,15 @@
         android:layout_alignBaseline="@+id/tvExplain_frt"
         android:text="@string/notFound_info"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/tvExplain_frt"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         />
 
     <TextView
@@ -40,7 +82,7 @@
         android:layout_height="wrap_content"
         android:text="@string/infoTemp"
         android:layout_below="@+id/tvExplain_frt"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_marginTop="10dp"
         />
 
@@ -52,9 +94,15 @@
         android:layout_alignBaseline="@+id/tvExplain_temperature"
         android:text="@string/notFound_info"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
         />
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/tvExplain_temperature"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        />
     <TextView
         android:id="@+id/tvExplain_hydro"
         android:layout_width="wrap_content"
@@ -62,7 +110,7 @@
         android:text="@string/infoHydro"
         android:layout_alignEnd="@+id/tvExplain_temperature"
         android:layout_below="@+id/tvExplain_temperature"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_marginTop="10dp"
         />
 
@@ -74,9 +122,15 @@
         android:layout_alignBaseline="@+id/tvExplain_hydro"
         android:text="@string/notFound_info"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
         />
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/tvExplain_hydro"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        />
     <TextView
         android:id="@+id/tvExplain_prpg"
         android:layout_width="wrap_content"
@@ -84,7 +138,7 @@
         android:text="@string/infoPrpg"
         android:layout_alignEnd="@+id/tvExplain_temperature"
         android:layout_below="@+id/tvExplain_hydro"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_marginTop="10dp"
         />
 
@@ -96,9 +150,15 @@
         android:layout_alignBaseline="@+id/tvExplain_prpg"
         android:text="@string/notFound_info"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
         />
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/tvExplain_prpg"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        />
     <TextView
         android:id="@+id/tvExplain_soil"
         android:layout_width="wrap_content"
@@ -106,7 +166,7 @@
         android:text="@string/infoSoil"
         android:layout_alignEnd="@+id/tvExplain_temperature"
         android:layout_below="@+id/tvExplain_prpg"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_marginTop="10dp"
         />
 
@@ -118,7 +178,14 @@
         android:layout_alignBaseline="@+id/tvExplain_soil"
         android:text="@string/notFound_info"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/tvExplain_soil"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         />
     <TextView
         android:id="@+id/tvExplain_water"
@@ -127,7 +194,7 @@
         android:text="@string/infoWater"
         android:layout_alignEnd="@+id/tvExplain_temperature"
         android:layout_below="@+id/tvExplain_soil"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_marginTop="10dp"
         />
     <TextView
@@ -136,7 +203,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvExplain_water"
         android:text="@string/spring"
-        android:textSize="18sp"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
         />
 
     <TextView
@@ -147,7 +215,6 @@
         android:layout_alignBaseline="@+id/tvExplain_waterSpring"
         android:text="@string/notFound_info"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
         />
     <TextView
         android:id="@+id/tvExplain_waterSummer"
@@ -155,7 +222,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvExplain_waterSpring"
         android:text="@string/summer"
-        android:textSize="18sp"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
         />
     <TextView
         android:id="@+id/tvTip_waterSummer"
@@ -165,7 +233,6 @@
         android:layout_alignBaseline="@+id/tvExplain_waterSummer"
         android:text="@string/notFound_info"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
         />
     <TextView
         android:id="@+id/tvExplain_waterAutumn"
@@ -173,7 +240,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvExplain_waterSummer"
         android:text="@string/autumn"
-        android:textSize="18sp"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
         />
     <TextView
         android:id="@+id/tvTip_waterAutumn"
@@ -183,7 +251,6 @@
         android:layout_alignBaseline="@+id/tvExplain_waterAutumn"
         android:text="@string/notFound_info"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
         />
     <TextView
         android:id="@+id/tvExplain_waterWinter"
@@ -191,7 +258,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvExplain_waterAutumn"
          android:text="@string/winter"
-        android:textSize="18sp"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
         />
     <TextView
         android:id="@+id/tvTip_waterWinter"
@@ -201,22 +269,5 @@
         android:layout_alignBaseline="@+id/tvExplain_waterWinter"
         android:text="@string/notFound_info"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
-        />
-
-    <Button
-        android:id="@+id/btnTipClose"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/back"
-        />
-    <Button
-        android:id="@+id/btnTipEnroll"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/btnTipClose"
-        android:layout_alignParentBottom="true"
-        android:text="@string/enroll"
         />
 </RelativeLayout>

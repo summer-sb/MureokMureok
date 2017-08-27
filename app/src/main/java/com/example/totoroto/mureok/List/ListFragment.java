@@ -45,9 +45,10 @@ public class ListFragment extends Fragment  {
 
         init(view);
         aboutRecycler();
-        aboutInput();
+      //  aboutInput();
 
         firebaseDBHelper.readListData(mListDatas, listAdapter);
+
         return view;
     }
 
@@ -58,6 +59,7 @@ public class ListFragment extends Fragment  {
             ListData tmpListData = new ListData();
 
             mListDatas.add(tmpListData);
+            firebaseDBHelper.writeNewListData(tmpListData);
             listAdapter.notifyDataSetChanged();
 
             Log.d(TAG, "itemcnt2:"+listAdapter.getItemCount());

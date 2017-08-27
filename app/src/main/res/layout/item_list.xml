@@ -7,20 +7,24 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="12dp"
         app:cardCornerRadius="5dp"
+         android:layout_centerHorizontal="true"
         app:layout_scrollFlags="scroll|enterAlways"
         >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/primary_border"
+            >
 
             <TextView
                 android:id="@+id/listItem_tvDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
+                android:background="@color/colorPrimary"
+                android:gravity="center_horizontal"
                 android:text="@string/_2017_01_01"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
@@ -28,8 +32,8 @@
             <ImageView
                 android:id="@+id/listItem_iv"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:src="@mipmap/ic_launcher"
+                android:layout_height="140dp"
+                android:layout_margin="8dp"
                 android:visibility="gone"
                 android:layout_below="@+id/listItem_tvDate"
                 />
@@ -39,29 +43,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/listItem_iv"
+                android:layout_margin="8dp"
+                android:textColor="@android:color/black"
                 android:text="@string/initContents" />
 
             <Button
                 android:id="@+id/listItem_btnShare"
-                android:layout_width="108dp"
+                android:layout_width="113dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/listItem_tvContent"
+                android:backgroundTint="@color/colorPrimary"
                 android:text="@string/share" />
 
             <Button
                 android:id="@+id/listItem_btnModify"
-                android:layout_width="108dp"
+                android:layout_width="113dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/listItem_btnShare"
                 android:layout_toEndOf="@+id/listItem_btnShare"
+                android:backgroundTint="@color/colorPrimary"
                 android:text="@string/modify" />
 
             <Button
                 android:id="@+id/listItem_btnDelete"
-                android:layout_width="108dp"
+                android:layout_width="113dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/listItem_btnShare"
                 android:layout_toEndOf="@+id/listItem_btnModify"
+                android:backgroundTint="@color/colorPrimary"
                 android:text="@string/delete" />
         </RelativeLayout>
 

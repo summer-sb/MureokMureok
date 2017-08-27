@@ -273,6 +273,12 @@ public class FirebaseDBHelper {
                     ListData mListData = s.getValue(ListData.class);
                     listDatas.add(mListData);
                 }
+                if(listDatas.size() == 0){
+                    Log.d(TAG, "bindviewholder itemcnt 0");
+
+                    ListData tmpListData = new ListData();
+                    listDatas.add(tmpListData);
+                }
                 listAdapter.notifyDataSetChanged();
             }
 

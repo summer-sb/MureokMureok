@@ -66,12 +66,14 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         aboutAlarmText(holder, itemData);
 
         if (itemData.pIsAlarm) { //알람이 설정되어 있으면
-            holder.btnAlarm.setBackgroundResource(R.drawable.ic_alarm_on);
-            holder.btnAlarm.setText(R.string.alarmOn);
+          //  holder.btnAlarm.setBackgroundResource(R.drawable.ic_alarm_on);
+            holder.btnAlarm.setSelected(true);
+         //   holder.btnAlarm.setText(R.string.alarmOn);
 
         } else {
-            holder.btnAlarm.setBackgroundResource(R.drawable.ic_alarm_off);
-            holder.btnAlarm.setText(R.string.alarmOff);
+          //  holder.btnAlarm.setBackgroundResource(R.drawable.ic_alarm_off);
+            holder.btnAlarm.setSelected(false);
+          //  holder.btnAlarm.setText(R.string.alarmOff);
         }
 
         try {
@@ -161,9 +163,10 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         final Date currentDate = new Date(ctm);
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
 
-        if (holder.btnWater.getText().toString().equals("물 ON")) { //ON->OFF
+        if (holder.btnWater.isSelected()) { //ON->OFF
             firebaseDBHelper.isWaterCalendarManageData(itemData.getFirebaseKey(), dateFormat.format(currentDate), false);
-            holder.btnWater.setText("물 OFF");
+            holder.btnWater.setSelected(false);
+            //holder.btnWater.setText("물 OFF");
             try {
                 map.get(itemData.getFirebaseKey()).remove(dateFormat.format(currentDate));
             }catch (NullPointerException e){
@@ -171,7 +174,8 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
             }
         } else { //OFF->ON
             firebaseDBHelper.isWaterCalendarManageData(itemData.getFirebaseKey(), dateFormat.format(currentDate), true);
-            holder.btnWater.setText("물 ON");
+            //holder.btnWater.setText("물 ON");
+            holder.btnWater.setSelected(true);
         }
     }
 

@@ -136,10 +136,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.mainFrameLayout, ManageFragment.newInstance()).commit();
 
         //탭 추가
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_home));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_list));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_community));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.selector_tab_manage));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.selector_tab_gallery));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.selector_tab_community));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL); //너비를 모두 같게 표시
+
 
         TabAdapter tabAdapter = new TabAdapter(getSupportFragmentManager());
         viewPager.setAdapter(tabAdapter);

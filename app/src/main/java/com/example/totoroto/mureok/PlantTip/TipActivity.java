@@ -193,6 +193,7 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
                     Intent intent = new Intent(getApplicationContext(), TipDetailActivity.class);
                     intent.putExtra(INTENT_STR, tipDetailData);
                     intent.putExtra("plantImage", mTipDatas.get(position).getpImage());
+                    intent.putExtra("plantName", mTipDatas.get(position).getpRealName());
                     startActivity(intent);
                 }
             }

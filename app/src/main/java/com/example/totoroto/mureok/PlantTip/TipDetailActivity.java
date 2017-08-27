@@ -22,6 +22,7 @@ public class TipDetailActivity extends AppCompatActivity implements View.OnClick
     public static final String INTENT_STR = "TipDetailData";
 
     private ImageView ivTip_Img;
+    private TextView tvPname;
     private TextView tvTip_frt;
     private TextView tvTip_temperature;
     private TextView tvTip_hydro;
@@ -32,7 +33,6 @@ public class TipDetailActivity extends AppCompatActivity implements View.OnClick
     private TextView tvTip_waterAutumn;
     private TextView tvTip_waterWinter;
     private Button btnTipClose;
-    private Button btnTipEnroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,8 @@ public class TipDetailActivity extends AppCompatActivity implements View.OnClick
         Bundle bundle = getIntent().getExtras();
         TipDetailData detailData = bundle.getParcelable(INTENT_STR);
         String imagePath = bundle.getString("plantImage");
+        String pRealName = bundle.getString("plantName");
+        tvPname.setText(pRealName);
 
        try {
            String path = imagePath.split("\\|")[0];
@@ -170,6 +172,7 @@ public class TipDetailActivity extends AppCompatActivity implements View.OnClick
 
     private void init() {
         ivTip_Img = (ImageView)findViewById(R.id.ivTip_img);
+        tvPname = (TextView)findViewById(R.id.tvPname_tip_detail);
         tvTip_frt = (TextView) findViewById(R.id.tvTip_frt);
         tvTip_temperature = (TextView)findViewById(R.id.tvTip_temperature);
         tvTip_hydro = (TextView)findViewById(R.id.tvTip_hydro);
@@ -180,10 +183,8 @@ public class TipDetailActivity extends AppCompatActivity implements View.OnClick
         tvTip_waterAutumn = (TextView)findViewById(R.id.tvTip_waterAutumn);
         tvTip_waterWinter = (TextView)findViewById(R.id.tvTip_waterWinter);
         btnTipClose = (Button)findViewById(R.id.btnTipClose);
-        btnTipEnroll = (Button)findViewById(R.id.btnTipEnroll);
 
         btnTipClose.setOnClickListener(this);
-        btnTipEnroll.setOnClickListener(this);
     }
 
     @Override
@@ -191,8 +192,6 @@ public class TipDetailActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()){
             case R.id.btnTipClose:
                 finish();
-                break;
-            case R.id.btnTipEnroll:
                 break;
         }
     }

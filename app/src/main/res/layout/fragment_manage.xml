@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#efefef"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#efefef">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mRecyclerView"
@@ -12,13 +12,37 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fBtnAdd_m"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floatingMenu_m"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="60dp"
-        android:layout_marginEnd="60dp"
-        android:src="@drawable/ic_floating_button"
-        />
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="24dp"
+        app:menu_colorNormal="@color/colorAccent"
+        app:fabSize="normal"
+        app:menu_fab_hide_animation="@anim/fab_scale_down"
+        app:menu_fab_show_animation="@anim/fab_scale_up">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fBtnTip_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_book"
+            app:fabSize="mini"
+            app:fab_colorNormal="@color/colorPriMedium"
+            app:fab_label="식물 도감" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fBtnAdd_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_write_manage"
+            app:fabSize="mini"
+            app:fab_colorNormal="@color/colorPriMedium"
+            app:fab_label="식물 관리 추가" />
+
+
+    </com.github.clans.fab.FloatingActionMenu>
+
 </FrameLayout>

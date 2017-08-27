@@ -10,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="5dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_centerHorizontal="true">
 
     <RelativeLayout
@@ -55,13 +55,14 @@
         android:id="@+id/communityItemLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="58dp"
+        android:layout_marginTop="50dp"
         >
     <ImageView
         android:id="@+id/ivPicture_community"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="140dp"
         android:background="@color/colorGray"
+        android:layout_margin="8dp"
         />
 
     <TextView
@@ -69,44 +70,60 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivPicture_community"
-        android:layout_marginTop="4dp"
-        android:textSize="18sp"
-        android:text="안녕 내이름은"
+        android:textColor="@android:color/black"
+        android:layout_margin="8dp"
         />
-
+        <TextView
+            android:id="@+id/tvExplainNumLike_community"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/like"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_below="@+id/tvContents_community"
+            />
         <TextView
             android:id="@+id/tvNumLike_community"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="16sp"
+            android:layout_toEndOf="@+id/tvExplainNumLike_community"
+            android:layout_marginStart="8dp"
+            android:text="@string/zero"
+            android:textStyle="bold"
+            android:layout_alignBaseline="@+id/tvExplainNumLike_community"
             android:textColor="@color/colorPrimaryDark"
             android:layout_below="@+id/tvContents_community"
             />
     <Button
         android:id="@+id/btnLike_community"
-        android:layout_width="96dp"
-        android:layout_height="wrap_content"
-        android:text="@string/like"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/selector_btn_like"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         android:layout_below="@+id/tvNumLike_community"
         />
 
     <Button
         android:id="@+id/exBtnComment_community"
-        android:layout_width="96dp"
-        android:layout_height="wrap_content"
-        android:text="@string/comment"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/ic_comment"
+        android:layout_marginStart="16dp"
         android:layout_toEndOf="@+id/btnLike_community"
-        android:layout_alignBaseline="@+id/btnLike_community"
+        android:layout_alignBottom="@+id/btnLike_community"
         />
 
     <Button
         android:id="@+id/btnShare_community"
-        android:layout_width="108dp"
-        android:layout_height="wrap_content"
-        android:text="@string/linkShare"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/ic_share"
+        android:layout_marginStart="16dp"
         android:layout_toEndOf="@+id/exBtnComment_community"
-        android:layout_alignBaseline="@+id/btnLike_community"
+        android:layout_alignBottom="@+id/btnLike_community"
         />
         <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/exLayoutComment"
@@ -118,31 +135,7 @@
             app:el_expanded="false"
             app:el_parallax="0.5"
             >
-            <Button
-                android:id="@+id/btnClose_comment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:text="닫기"
-                />
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_comment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="50dp"
-                >
-            </android.support.v7.widget.RecyclerView>
 
-            <EditText
-                android:id="@+id/etComment"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="4dp"
-                android:layout_marginStart="2dp"
-                android:layout_gravity="bottom|start"
-                />
             <Button
                 android:id="@+id/btnSend_comment"
                 android:layout_width="wrap_content"
@@ -150,9 +143,33 @@
                 android:layout_alignBaseline="@+id/etComment"
                 android:layout_toEndOf="@+id/etComment"
                 android:layout_alignEnd="@+id/btnClose_comment"
-                android:text="보내기"
+                android:text="@string/send"
                 android:layout_gravity="bottom|end"
                 />
+
+            <Button
+                android:id="@+id/btnClose_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:backgroundTint="@color/colorPriMedium"
+                android:text="@string/close" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_comment"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:layout_marginBottom="50dp"
+                android:layout_marginTop="48dp"/>
+
+            <EditText
+                android:id="@+id/etComment"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom|start"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="2dp" />
         </net.cachapa.expandablelayout.ExpandableLayout>
     </RelativeLayout>
 
@@ -164,7 +181,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/cardView_community"
         android:layout_gravity="bottom"
-
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_centerHorizontal="true"
@@ -184,9 +200,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/commentLayout1"
        android:layout_gravity="bottom"
-
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+
         android:layout_centerHorizontal="true"
         android:background="@color/colorPriMedium"
         >

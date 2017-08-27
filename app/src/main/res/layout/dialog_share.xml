@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="308dp"
     android:layout_height="wrap_content">
 
     <TextView
@@ -9,7 +9,6 @@
         android:layout_height="30dp"
         android:text="@string/setCategory"
         android:gravity="center"
-        android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/colorGray"
         android:background="@color/colorPrimary"
@@ -18,10 +17,11 @@
 
     <ImageView
         android:id="@+id/iv_flower"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_below="@+id/tvSetCategory"
         android:src="@drawable/ic_share_flower"
+        android:layout_marginStart="10dp"
         />
     <TextView
         android:id="@+id/tv_flower"
@@ -29,17 +29,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_flower"
         android:text="@string/flower"
-        android:textSize="20sp"
         android:layout_marginStart="20dp"
         />
     <ImageView
         android:id="@+id/iv_hurb"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_toEndOf="@+id/iv_flower"
         android:layout_below="@+id/tvSetCategory"
         android:src="@drawable/ic_share_hurb"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="18dp"
         />
     <TextView
         android:layout_width="wrap_content"
@@ -47,16 +46,15 @@
         android:layout_below="@+id/iv_hurb"
         android:layout_marginStart="69dp"
         android:text="@string/herb"
-        android:textSize="20sp"
         />
     <ImageView
         android:id="@+id/iv_cactus"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_toEndOf="@+id/iv_hurb"
         android:layout_below="@+id/tvSetCategory"
         android:src="@drawable/ic_share_cactus"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="28dp"
         />
     <TextView
         android:layout_width="wrap_content"
@@ -64,42 +62,39 @@
         android:layout_below="@+id/iv_cactus"
         android:layout_marginStart="126dp"
         android:text="@string/cactus"
-        android:textSize="20sp"
         />
     <ImageView
         android:id="@+id/iv_vegetable"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_toEndOf="@+id/iv_cactus"
         android:layout_below="@+id/tvSetCategory"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="30dp"
         android:src="@drawable/ic_share_vegetable"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_vegetable"
-        android:layout_marginStart="206dp"
+        android:layout_marginStart="200dp"
         android:layout_alignBaseline="@+id/tv_flower"
         android:text="@string/vegetable"
-        android:textSize="20sp"
         />
     <ImageView
         android:id="@+id/iv_tree"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_toEndOf="@+id/iv_vegetable"
         android:layout_below="@+id/tvSetCategory"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="30dp"
         android:src="@drawable/ic_share_tree"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_tree"
-        android:layout_marginStart="270dp"
+        android:layout_marginStart="265dp"
         android:text="@string/tree"
-        android:textSize="20sp"
         />
 
     <RadioGroup
@@ -121,28 +116,28 @@
             android:id="@+id/radioHerb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="25dp"
            />
 
         <RadioButton
             android:id="@+id/radioCactus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="34dp"
+            android:layout_marginStart="28dp"
              />
 
         <RadioButton
             android:id="@+id/radioVegetable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="38dp"
+            android:layout_marginStart="36dp"
          />
 
         <RadioButton
             android:id="@+id/radioTree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="32dp"
            />
     </RadioGroup>
 
@@ -152,7 +147,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/radioGroup"
         android:layout_marginTop="20dp"
-        android:text="@string/cancel" />
+        android:text="@string/cancel"
+        android:backgroundTint="@color/colorPrimary"
+        />
 
     <Button
         android:id="@+id/btnOK_selectShare"
@@ -160,5 +157,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/btnCancel_selectShare"
         android:layout_toEndOf="@+id/btnCancel_selectShare"
-        android:text="@string/share" />
+        android:text="@string/share"
+        android:backgroundTint="@color/colorPrimary"
+        />
 </RelativeLayout>

@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="308dp"
     android:layout_height="wrap_content">
-
+    <TextView
+        android:id="@+id/tvExplainAdd"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="@string/add_plant"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/colorGray"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="20dp"
+        />
     <TextView
         android:id="@+id/dialog_tvRealName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/plantName"
-        android:textSize="20sp"
+        android:layout_below="@+id/tvExplainAdd"
         android:layout_marginStart="22dp"
         android:layout_marginTop="40dp"
         android:layout_alignParentTop="true"
@@ -19,6 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/dialog_tvRealName"
         android:layout_alignBaseline="@id/dialog_tvRealName"
+        android:maxLines="1"
+        android:layout_marginStart="8dp"
         />
 
     <TextView
@@ -27,8 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/dialog_tvRealName"
         android:layout_alignEnd="@+id/dialog_tvRealName"
-        android:textSize="20sp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="16dp"
         android:text="@string/plantFriendly"
         />
     <EditText
@@ -37,15 +48,17 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/dialog_tvName"
         android:layout_alignBottom="@+id/dialog_tvName"
-        android:layout_toEndOf="@+id/dialog_tvName" />
+        android:layout_toEndOf="@+id/dialog_tvName"
+        android:maxLines="1"
+        android:layout_marginStart="8dp"
+        />
 
     <TextView
         android:id="@+id/dialog_tvEnrollDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         android:text="@string/enrollDate"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="16dp"
         android:layout_below="@+id/dialog_etName"
         android:layout_alignEnd="@+id/dialog_tvRealName" />
 
@@ -56,7 +69,7 @@
         android:layout_alignBaseline="@+id/dialog_tvEnrollDate"
         android:layout_toEndOf="@+id/dialog_tvEnrollDate"
         android:text="@string/_2017_01_01"
-        android:textSize="20sp"
+        android:layout_marginStart="8dp"
         />
    <Button
        android:id="@+id/dialog_btnCalendar"
@@ -66,6 +79,7 @@
        android:layout_alignBaseline="@+id/dialog_tvDate"
        android:layout_marginStart="16dp"
        android:text="@string/modify"
+       android:backgroundTint="@color/colorPriMedium"
        />
 
     <TextView
@@ -75,26 +89,27 @@
         android:text="@string/picture"
         android:layout_alignEnd="@+id/dialog_tvRealName"
         android:layout_below="@+id/dialog_tvDate"
-        android:textSize="20sp"
         android:layout_marginTop="18dp"
         />
     <ImageView
         android:id="@+id/dialog_ivPicture"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_toEndOf="@+id/dialog_tvPicture"
         android:layout_below="@+id/dialog_tvDate"
         android:src="@drawable/ic_img_placeholder"
+        android:layout_marginStart="8dp"
         />
 
     <Button
         android:id="@+id/dialog_btnPicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/dialog_tvPicture"
         android:layout_toEndOf="@+id/dialog_ivPicture"
         android:layout_alignStart="@+id/dialog_btnCalendar"
+        android:layout_alignBottom="@+id/dialog_ivPicture"
         android:text="@string/load"
+        android:backgroundTint="@color/colorPriMedium"
         />
 
     <Button
@@ -104,6 +119,7 @@
         android:layout_below="@+id/dialog_ivPicture"
         android:layout_marginTop="10dp"
         android:text="@string/cancel"
+        android:backgroundTint="@color/colorPrimary"
         />
 
     <Button
@@ -113,6 +129,7 @@
         android:layout_alignBaseline="@+id/dialog_btnNegative"
         android:layout_toEndOf="@+id/dialog_btnNegative"
         android:text="@string/ok"
+        android:backgroundTint="@color/colorPrimary"
         />
 
 </RelativeLayout>

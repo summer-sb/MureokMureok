@@ -89,7 +89,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
 
         final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-
+/*
         firebaseDBHelper.isLikeCommunityData(mDatas.get(position).getFirebaseKey(), uid);
         firebaseDBHelper.setIsLikeResult(new FirebaseDBHelper.IsLikeResult() {
             @Override
@@ -100,7 +100,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
                 Log.d("SOLBIN", "isAdd("+position+")" + isAdd[position]);
             }
         });
-/*
+
         if(isAdd[position]){
 
             Log.d("SOLBIN", "color on "+ position + isAdd[position]);
@@ -116,10 +116,10 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
 
                 if (!isAdd[position]) { //좋아요를 누르지 않은 상태이면(좋아요x->좋아요o)
                     isAdd[position] = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike + 1, true);
-                    holder.btnLike.setBackgroundResource(R.color.colorPrimary);
+                    holder.btnLike.setSelected(true);
                 } else {
                     isAdd[position] = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike - 1, false);
-                    holder.btnLike.setBackgroundResource(android.R.drawable.btn_default);
+                    holder.btnLike.setSelected(false);
                 }
 
             }

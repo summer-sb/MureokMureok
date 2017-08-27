@@ -2,15 +2,19 @@ package com.example.totoroto.mureok.Manage;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.totoroto.mureok.PlantTip.TipActivity;
 import com.example.totoroto.mureok.R;
 
-public class ManageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class ManageViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener, AdapterView.OnItemLongClickListener {
     public ImageView iv_pImg;
     public TextView tv_pName;
     public TextView tv_pRealName;
@@ -21,7 +25,6 @@ public class ManageViewHolder extends RecyclerView.ViewHolder implements View.On
     public Button btnCalendar;
     public Button btnAlarm;
     public Button btnDelete;
-    private Button btnTip;
 
     public ManageViewHolder(View itemView) {
         super(itemView);
@@ -39,42 +42,24 @@ public class ManageViewHolder extends RecyclerView.ViewHolder implements View.On
         btnWater = (Button)itemView.findViewById(R.id.btnWater_m);
         btnCalendar = (Button) itemView.findViewById(R.id.btnCalendar_m);
         btnAlarm = (Button) itemView.findViewById(R.id.btnWaterAlarm_m);
-        btnTip = (Button) itemView.findViewById(R.id.btnTip_m);
-        btnDelete = (Button) itemView.findViewById(R.id.btnDelete_m);
+       btnDelete = (Button) itemView.findViewById(R.id.btnDelete_m);
 
         iv_pImg.setOnClickListener(this);
-        btnTip.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
-            case R.id.btnTip_m:
-                moveTipActivity(v);
-                break;
             case R.id.iv_pImg_m:
                 break;
             default:
-                //
         }
     }
 
-    private void moveTipActivity(View v) {
-        Intent intent = new Intent(v.getContext(), TipActivity.class);
-        v.getContext().startActivity(intent);
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d("SOLBIN", "longclick pos:"+ position);
+        return false;
     }
-/*
-    private void aboutBtnMinus() {
-
-    }
-
-    private void aboutBtnPlus() {
-        tv_pWaterCnt.setText(String.valueOf(++waterCount));
-    }
-
-    private void aboutCalendar(View v) {
-    }
-    */
 }

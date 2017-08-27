@@ -3,6 +3,7 @@ package com.example.totoroto.mureok.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -76,13 +77,17 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        Log.d(TAG, "bindviewholder itemcnt "+ getItemCount());
+        /*
         if (getItemCount() == 0) {
+            Log.d(TAG, "bindviewholder itemcnt 0");
+
             ListData tmpListData = new ListData();
             mListDatas.add(tmpListData);
-
+            firebaseDBHelper.writeNewListData(tmpListData);
             notifyDataSetChanged();
         }
-
+*/
         if (holder.getItemViewType() == VIEWTYPE_CARD) {
             ((ListCardViewHolder) holder).btnAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -112,9 +117,12 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
             if(isFilter){
-                ((ListCardViewHolder) holder).btnFilter.setBackgroundResource(R.color.colorPrimary);
+               // ((ListCardViewHolder) holder).btnFilter.setBackgroundResource(R.color.colorPrimary);
+
+                ((ListCardViewHolder) holder).btnFilter.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorAccent)));
             }else{
-                ((ListCardViewHolder) holder).btnFilter.setBackgroundResource(android.R.drawable.btn_default);
+               // ((ListCardViewHolder) holder).btnFilter.setBackgroundResource(android.R.drawable.btn_default);
+                ((ListCardViewHolder) holder).btnFilter.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorPrimary)));
             }
 
         } else if (holder.getItemViewType() == VIEWTYPE_LIST) {
@@ -124,9 +132,9 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((ListViewHolder) holder).tvContents.setText(listData.contents);
 
             if (listData.getisShare()) {
-                ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                ((ListViewHolder) holder).btnShare.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorAccent)));
             } else {
-                ((ListViewHolder) holder).btnShare.setBackgroundResource(android.R.drawable.btn_default);
+                ((ListViewHolder) holder).btnShare.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorPrimary)));
             }
 
             if (listData.imgPath != null) {
@@ -274,31 +282,31 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     case R.id.radioFlower:
                         mListDatas.get(position).setRadioFlower(true);
                         mListDatas.get(position).setisShare(true);
-                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        ((ListViewHolder) holder).btnShare.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorAccent)));
                         break;
                     case R.id.radioHerb:
                         mListDatas.get(position).setRadioHerb(true);
                         mListDatas.get(position).setisShare(true);
-                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        ((ListViewHolder) holder).btnShare.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorAccent)));
                         break;
                     case R.id.radioCactus:
                         mListDatas.get(position).setRadioCactus(true);
                         mListDatas.get(position).setisShare(true);
-                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        ((ListViewHolder) holder).btnShare.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorAccent)));
                         break;
                     case R.id.radioVegetable:
                         mListDatas.get(position).setRadioVegetable(true);
                         mListDatas.get(position).setisShare(true);
-                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        ((ListViewHolder) holder).btnShare.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorAccent)));
                         break;
                     case R.id.radioTree:
                         mListDatas.get(position).setRadioTree(true);
                         mListDatas.get(position).setisShare(true);
-                        ((ListViewHolder) holder).btnShare.setBackgroundResource(R.color.colorPrimary);
+                        ((ListViewHolder) holder).btnShare.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorAccent)));
                         break;
                     case NUM_CANCEL: //click btn cancel
                         mListDatas.get(position).setisShare(false);
-                        ((ListViewHolder) holder).btnShare.setBackgroundResource(android.R.drawable.btn_default);
+                        ((ListViewHolder) holder).btnShare.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorPrimary)));
 
                         mListDatas.get(position).setRadioFlower(false);
                         mListDatas.get(position).setRadioHerb(false);

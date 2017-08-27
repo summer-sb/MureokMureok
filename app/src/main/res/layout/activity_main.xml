@@ -29,8 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:background="@color/colorPrimary"
-                app:tabSelectedTextColor="#008000"
-                app:tabTextColor="#000000" />
+                app:tabIndicatorColor="@android:color/transparent"
+                 />
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
