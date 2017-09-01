@@ -52,12 +52,9 @@ public class CommunityViewHolder extends RecyclerView.ViewHolder{
         super(itemView);
 
         init(itemView);
-        aboutStorageImgApply();
-    }
-
-    private void aboutStorageImgApply() {
 
     }
+
 
     private void init(View v) {
         civProfile = (CircleImageView)v.findViewById(R.id.civUserProfile_community);

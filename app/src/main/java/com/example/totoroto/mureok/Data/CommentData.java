@@ -6,6 +6,7 @@ public class CommentData {
     private String userName;
     private String comment;
     private String date;
+    private String firebaseKey;
 
     public CommentData() {
     }
@@ -47,5 +48,13 @@ public class CommentData {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getFirebaseKey() {
+        return firebaseKey;
+    }
+
+    public void setFirebaseKey(String firebaseKey) {
+        this.firebaseKey = firebaseKey;
     }
 }

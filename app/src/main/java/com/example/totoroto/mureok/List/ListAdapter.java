@@ -348,7 +348,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void pass(Uri uri) {
                 imgUrl = uri.toString();
-                Log.d(TAG, imgUrl + "pass result");
 
                 Bundle bundle = new Bundle(4);
                 try {

@@ -72,9 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawers();
 
                 switch (item.getItemId()) {
-                    case R.id.navi_item_shares:
-                       // moveInfoShareActivity();
-                        break;
+
                     case R.id.navi_item_myInfo:
                         moveInfoActivity();
                         break;

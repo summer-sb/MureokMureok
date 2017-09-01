@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.totoroto.mureok.Community.CommentAdapter;
 import com.example.totoroto.mureok.Community.CommunityAdapter;
+import com.example.totoroto.mureok.Community.CommunityViewHolder;
 import com.example.totoroto.mureok.List.ListAdapter;
 import com.example.totoroto.mureok.Manage.ManageAdapter;
 import com.example.totoroto.mureok.R;
@@ -307,7 +308,7 @@ public class FirebaseDBHelper {
         communityRef.updateChildren(communityUpdate);
     }
 
-    public boolean updateNumLikeData(String uid, String positionKey, int numLike, boolean isLike) {
+    public void updateNumLikeData(String uid, String positionKey, int numLike, boolean isLike) {
         mRootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference cRef = mRootRef.child("community").child("communityData").child(positionKey);
 
@@ -318,20 +319,16 @@ public class FirebaseDBHelper {
 
             cInfoUpdate.put("/numLike", numLike);
             cRef.updateChildren(cInfoUpdate);
-
-            return true;
         } else {
             cRef.child("/likeUsers").child(uid).removeValue(); //좋아요한 유저에서 삭제
 
             Map<String, Object> cInfoUpdate = new HashMap<String, Object>(); //좋아요-1
             cInfoUpdate.put("/numLike", numLike);
             cRef.updateChildren(cInfoUpdate);
-
-            return false;
         }
     }
 
-    public void isLikeCommunityData(String positionKey, final String uid) {
+    public void isLikeCommunityData(String positionKey, final String uid, final CommunityViewHolder holder) {
         mRootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference cRef = mRootRef.child("community").child("communityData").child(positionKey);
 
@@ -340,10 +337,11 @@ public class FirebaseDBHelper {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     String userKey = childSnapshot.getKey();
-
+                    Log.d(TAG, "userkey"+userKey);
                     if (userKey.equals(uid)) {
                         Log.d(TAG, "<userkey|uid>   "+userKey+"|"+uid);
-                        isLikeResult.success();
+                        holder.btnLike.setSelected(true);
+
                         break;
                     }
                 }
@@ -434,6 +432,7 @@ public class FirebaseDBHelper {
 
         Map<String, Object> communityData = new HashMap<String, Object>();
         communityData.put("/" + key + "/commentData/" + commentKey, commentData);
+        commentData.setFirebaseKey(commentKey);
 
         communityRef.updateChildren(communityData);
     }
@@ -447,6 +446,7 @@ public class FirebaseDBHelper {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot s : dataSnapshot.getChildren()) {
+                    preDatas.clear();
                     CommentData cData = s.getValue(CommentData.class);
                     preDatas.add(cData);
                 }
@@ -480,5 +480,13 @@ public class FirebaseDBHelper {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    public void deleteCommentData(String positionKey, String firebaseKey){
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference communityRef = mRootRef.child("community").child("communityData")
+                .child(positionKey).child("commentData").child(firebaseKey);
+
+        communityRef.removeValue();
     }
 }

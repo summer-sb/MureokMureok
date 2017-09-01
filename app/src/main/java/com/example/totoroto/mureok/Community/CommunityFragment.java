@@ -17,6 +17,8 @@ import com.example.totoroto.mureok.Data.FirebaseDBHelper;
 import com.example.totoroto.mureok.Data.FirebaseStorageHelper;
 import com.example.totoroto.mureok.Data.ListData;
 import com.example.totoroto.mureok.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
@@ -74,6 +76,7 @@ public class CommunityFragment extends Fragment{
 
         ListData listData = getArguments().getParcelable("sharedListData");
         imgPath = getArguments().getString("imgUrl");
+
         final String contents = listData.getContents();
         final String listFirebaseKey = listData.getFirebaseKey();
 
@@ -95,7 +98,25 @@ public class CommunityFragment extends Fragment{
         profilePath = getArguments().getString("userProfilePhoto");
         final String nickName = getArguments().getString("userNickName");
 
-        firebaseStorageHelper.profileUpload(profilePath, listData.getFirebaseKey());
+     //   firebaseStorageHelper.profileUpload(profilePath, listData.getFirebaseKey());
+     //   profilePath = uri.toString();
+        //TODO: 밑에 두줄 추가. 주석처리한 부분 수정.
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        profilePath = firebaseUser.getPhotoUrl().toString();
+        Log.d(TAG, "set profileUrl");
+
+        //현재 시간(공유한 시간)
+        long ctm = System.currentTimeMillis();
+        Date currentDate = new Date(ctm);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm");
+        //아이템 추가
+        CommunityData cData = new CommunityData(profilePath, nickName, dateFormat.format(currentDate),
+                imgPath, contents, typeCateGory, 0);
+
+        mCommunityDatas.add(cData);
+        firebaseDBHelper.writeNewCommunityData(cData, listFirebaseKey);
+        cAdapter.notifyDataSetChanged();
+/*
         firebaseStorageHelper.setPassProfileResult(new FirebaseStorageHelper.PassProfileResult() {
             @Override
             public void pass(Uri uri) {
@@ -115,8 +136,7 @@ public class CommunityFragment extends Fragment{
                 cAdapter.notifyDataSetChanged();
             }
         });
-
-
+*/
 
     }
 
@@ -167,6 +187,9 @@ public class CommunityFragment extends Fragment{
                         break;
                     case 4:
                         firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 4);
+                        break;
+                    case 5:
+                        firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 5);
                         break;
                     default:
                         firebaseDBHelper.readCommunityData(mCommunityDatas, cAdapter, 0);

@@ -128,7 +128,7 @@
         <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/exLayoutComment"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="400dp"
             android:layout_below="@+id/tvNumLike_community"
             android:background="@android:color/white"
             app:el_duration="1000"
@@ -144,6 +144,7 @@
                 android:layout_toEndOf="@+id/etComment"
                 android:layout_alignEnd="@+id/btnClose_comment"
                 android:text="@string/send"
+                android:backgroundTint="@color/colorPriMedium"
                 android:layout_gravity="bottom|end"
                 />
 
@@ -158,7 +159,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView_comment"
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="50dp"
                 android:layout_marginTop="48dp"/>
 

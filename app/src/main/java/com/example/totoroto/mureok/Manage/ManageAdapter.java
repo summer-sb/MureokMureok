@@ -66,14 +66,9 @@ public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {
         aboutAlarmText(holder, itemData);
 
         if (itemData.pIsAlarm) { //알람이 설정되어 있으면
-          //  holder.btnAlarm.setBackgroundResource(R.drawable.ic_alarm_on);
             holder.btnAlarm.setSelected(true);
-         //   holder.btnAlarm.setText(R.string.alarmOn);
-
         } else {
-          //  holder.btnAlarm.setBackgroundResource(R.drawable.ic_alarm_off);
             holder.btnAlarm.setSelected(false);
-          //  holder.btnAlarm.setText(R.string.alarmOff);
         }
 
         try {

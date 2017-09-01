@@ -47,7 +47,7 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
     private final int numOfRows = 216;
     private ArrayList<TipData> tempLists;
     private ArrayList<TipData> mTipDatas;
-
+    private ArrayList<TipData> filteredLists;
     private RecyclerView recyclerTip;
     private TipAdapter tipAdapter;
     private LinearLayoutManager layoutManager;
@@ -84,9 +84,8 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filteredLists.clear();
                 s = s.toString().toLowerCase();
-
-                ArrayList<TipData> filteredLists = new ArrayList<>();
 
                 for(int i=0; i<mTipDatas.size(); i++){
                     String str = mTipDatas.get(i).getpRealName(); //식물 이름
@@ -113,9 +112,14 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
                 recyclerTip, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-                final int plantCode = mTipDatas.get(position).getpCode();
-                Log.d(TAG, "pCode" + plantCode + "|position" + position);
-
+                final int plantCode;
+                if(filteredLists.size() != 0) {
+                    plantCode = filteredLists.get(position).getpCode();
+                    Log.d(TAG, "pCode" + plantCode + "|position" + position);
+                }else{
+                    plantCode = mTipDatas.get(position).getpCode();
+                    Log.d(TAG, "pCode" + plantCode + "|position" + position);
+                }
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -189,12 +193,21 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
                 if(tipDetailData.waterWinter != null) {
                     eventType = XmlPullParser.END_DOCUMENT; //while 종료
 
-                    //detail 액티비티로 객체 보내기
-                    Intent intent = new Intent(getApplicationContext(), TipDetailActivity.class);
-                    intent.putExtra(INTENT_STR, tipDetailData);
-                    intent.putExtra("plantImage", mTipDatas.get(position).getpImage());
-                    intent.putExtra("plantName", mTipDatas.get(position).getpRealName());
-                    startActivity(intent);
+
+                    if(filteredLists.size() == 0) {
+                        //detail 액티비티로 객체 보내기
+                        Intent intent = new Intent(getApplicationContext(), TipDetailActivity.class);
+                        intent.putExtra(INTENT_STR, tipDetailData);
+                        intent.putExtra("plantImage", mTipDatas.get(position).getpImage());
+                        intent.putExtra("plantName", mTipDatas.get(position).getpRealName());
+                        startActivity(intent);
+                    }else{
+                        Intent intent = new Intent(getApplicationContext(), TipDetailActivity.class);
+                        intent.putExtra(INTENT_STR, tipDetailData);
+                        intent.putExtra("plantImage", filteredLists.get(position).getpImage());
+                        intent.putExtra("plantName", filteredLists.get(position).getpRealName());
+                        startActivity(intent);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -209,6 +222,7 @@ public class TipActivity extends AppCompatActivity implements View.OnClickListen
 
         btnBack.setOnClickListener(this);
         mTipDatas = new ArrayList<>();
+        filteredLists = new ArrayList<>();
     }
 
     private void aboutRecycler() {

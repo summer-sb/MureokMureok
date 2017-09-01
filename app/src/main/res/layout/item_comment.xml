@@ -10,6 +10,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@mipmap/ic_launcher_round"
+        android:layout_centerVertical="true"
         />
     <TextView
         android:id="@+id/tvUserName_comment"
@@ -35,6 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/civUserProrile_comment"
+        android:layout_below="@id/tvComment_comment"
+        android:layout_marginTop="8dp"
         />
 </RelativeLayout>

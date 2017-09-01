@@ -17,14 +17,18 @@
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvExplain"
-        android:text="@string/cancel" />
+        android:text="@string/cancel"
+        android:backgroundTint="@color/colorPrimary"
+        />
     <Button
         android:id="@+id/btnOK_water"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/btnCancel_water"
         android:layout_toEndOf="@+id/btnCancel_water"
-        android:text="@string/ok" />
+        android:text="@string/ok"
+        android:backgroundTint="@color/colorPrimary"
+        />
 
     <TimePicker
         android:id="@+id/timePicker"

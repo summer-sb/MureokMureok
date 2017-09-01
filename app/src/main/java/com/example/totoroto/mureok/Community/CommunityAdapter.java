@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -66,7 +67,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final CommunityViewHolder holder, final int position) {
+    public void onBindViewHolder(final CommunityViewHolder holder, int position) {
         final CommunityData communityData = mDatas.get(position);
 
         Glide.with(context)
@@ -90,19 +91,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
         final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 /*
-        firebaseDBHelper.isLikeCommunityData(mDatas.get(position).getFirebaseKey(), uid);
-        firebaseDBHelper.setIsLikeResult(new FirebaseDBHelper.IsLikeResult() {
-            @Override
-            public void success() {
-                //holder.btnLike.setBackgroundResource(R.color.colorPrimary);
-                isAdd[position] = true;
-                holder.btnLike.setBackgroundResource(R.color.colorPrimary);
-                Log.d("SOLBIN", "isAdd("+position+")" + isAdd[position]);
-            }
-        });
-
         if(isAdd[position]){
-
             Log.d("SOLBIN", "color on "+ position + isAdd[position]);
         }else{
             holder.btnLike.setBackgroundResource(android.R.drawable.btn_default);
@@ -114,21 +103,25 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
             public void onClick(View v) {
                 int currentNumLike = communityData.getNumLike();
 
-                if (!isAdd[position]) { //좋아요를 누르지 않은 상태이면(좋아요x->좋아요o)
-                    isAdd[position] = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike + 1, true);
+                if (!holder.btnLike.isSelected()) { //좋아요를 누르지 않은 상태이면(좋아요x->좋아요o)
                     holder.btnLike.setSelected(true);
+                    firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike + 1, true);
+
                 } else {
-                    isAdd[position] = firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike - 1, false);
                     holder.btnLike.setSelected(false);
+                    firebaseDBHelper.updateNumLikeData(uid, communityData.getFirebaseKey(), currentNumLike - 1, false);
                 }
+
 
             }
         });
 
+        firebaseDBHelper.isLikeCommunityData(communityData.getFirebaseKey(), uid, holder);
+
         holder.btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareKakao(position);
+                shareKakao(holder.getAdapterPosition());
             }
         });
 
@@ -214,8 +207,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
                         holder.btnLike.setVisibility(View.VISIBLE);
                         holder.exBtnComment.setVisibility(View.VISIBLE);
                         holder.btnShare.setVisibility(View.VISIBLE);
-                        holder.viewGroupComment1.setVisibility(View.VISIBLE);
-                        holder.viewGroupComment2.setVisibility(View.VISIBLE);
+                        if(!holder.tvComment_c1.getText().equals("")) {
+                            holder.viewGroupComment1.setVisibility(View.VISIBLE);
+                        }
+                        if(!holder.tvComment_c2.getText().equals("")) {
+                            holder.viewGroupComment2.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override
@@ -257,9 +254,25 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityViewHolder> 
                     holder.btnLike.setVisibility(View.VISIBLE);
                     holder.exBtnComment.setVisibility(View.VISIBLE);
                     holder.btnShare.setVisibility(View.VISIBLE);
-                    holder.viewGroupComment1.setVisibility(View.VISIBLE);
-                    holder.viewGroupComment2.setVisibility(View.VISIBLE);
+
+                    if(!holder.tvComment_c1.getText().equals("")) {
+                        holder.viewGroupComment1.setVisibility(View.VISIBLE);
+                    }
+                    if(!holder.tvComment_c2.getText().equals("")) {
+                        holder.viewGroupComment2.setVisibility(View.VISIBLE);
+                    }
+
                 }
+            }
+        });
+
+        holder.commentRecyclerView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                firebaseDBHelper.deleteCommentData(mDatas.get(position).getFirebaseKey(), commentDatas.get(position).getFirebaseKey());
+                commentDatas.remove(position);
+                notifyDataSetChanged();
+                return false;
             }
         });
     }
