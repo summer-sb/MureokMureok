@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Mureok.iml" filepath="$PROJECT_DIR$/Mureok.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MureokMureok.iml" filepath="$PROJECT_DIR$/MureokMureok.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
