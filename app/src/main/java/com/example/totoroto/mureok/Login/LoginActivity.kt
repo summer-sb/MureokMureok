@@ -110,7 +110,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, GoogleApiClient
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 startActivity(intent)
             } else {
-                // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out")
             }
         }
@@ -138,22 +137,21 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, GoogleApiClient
             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
             if (result.isSuccess) {
                 // Google Sign In was successful, authenticate with Firebase
-                val account = result.signInAccount
-                firebaseAuthWithGoogle(account!!)
+                val account = result.signInAccount ?: return
+                firebaseAuthWithGoogle(account)
             }
 
         }
     }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id)
 
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "signInWithCredential:success")
-                        val user = auth.currentUser
 
                         val intent = Intent(applicationContext, MainActivity::class.java)
                         startActivity(intent)
@@ -181,10 +179,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, GoogleApiClient
 
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onStart() {
         super.onStart()
 
@@ -193,6 +187,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, GoogleApiClient
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
             // and the GoogleSignInResult will be available instantly.
             Log.d(TAG, "Got cached sign-in")
+
             val result = opr.get()
             handleSignInResult(result)
         } else {
