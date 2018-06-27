@@ -8,10 +8,10 @@ import com.example.totoroto.mureok.R
 import java.util.*
 
 class TipAdapter : RecyclerView.Adapter<TipViewHolder>() {
-    private var mTipDatas: ArrayList<TipData>? = null
+    private var tipDatas: ArrayList<TipData> ?= null
 
     fun setTipDatas(pDatas: ArrayList<TipData>) {
-        mTipDatas = pDatas
+        tipDatas = pDatas
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TipViewHolder {
@@ -24,12 +24,12 @@ class TipAdapter : RecyclerView.Adapter<TipViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TipViewHolder, position: Int) {
-        val tipData = mTipDatas?.get(position) ?: return
+        val tipData = tipDatas?.get(position) ?: return
 
-        holder.tvPlantItem.text = tipData?.pRealName
+        holder.tvPlantItem.text = tipData.realName
     }
 
     override fun getItemCount(): Int {
-        return if (mTipDatas != null) mTipDatas!!.size else 0
+        return tipDatas?.size ?: 0
     }
 }

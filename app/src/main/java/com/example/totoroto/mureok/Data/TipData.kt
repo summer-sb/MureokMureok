@@ -1,4 +1,4 @@
 package com.example.totoroto.mureok.Data;
 
-class TipData(val pCode: Int, val pRealName: String, val pImage: String)
+class TipData(val code: Int?, val realName: String?, val image: String?)
 

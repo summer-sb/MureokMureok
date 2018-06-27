@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import com.example.totoroto.mureok.Data.DetailParams
 import com.example.totoroto.mureok.Data.TipData
 import com.example.totoroto.mureok.Data.TipDetailData
 import com.example.totoroto.mureok.R
@@ -21,31 +22,18 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStreamReader
 import java.net.URL
-import java.util.*
 
 class TipActivity : AppCompatActivity(), View.OnClickListener {
-    private val TAG = "TipPlant"
 
-    private val API_KEY = "20170726ADJPJHDALH0FXS5HK84T7G"
-    private val TAG_FRT = "frtlzrInfo"
-    private val TAG_TEMPERATURE = "grwhTpCode"
-    private val TAG_HYDRO = "hdCode"
-    private val TAG_PRPG = "prpgtEraInfo"
-    private val TAG_SOIL = "soilInfo"
-    private val TAG_WATER_SPRING = "watercycleSprngCode"
-    private val TAG_WATER_SUMMER = "watercycleSummerCode"
-    private val TAG_WATER_AUTUMN = "watercycleAutumnCode"
-    private val TAG_WATER_WINTER = "watercycleWinterCode"
-
-    private val numOfRows = 216
     private var tempLists: ArrayList<TipData>? = null
-    private var mTipDatas: ArrayList<TipData>? = null
-    private var filteredLists: ArrayList<TipData>? = null
-    private var recyclerTip: RecyclerView? = null
-    private var tipAdapter: TipAdapter? = null
-    private var layoutManager: LinearLayoutManager? = null
-    private var btnBack: Button? = null
-    private var etTipSearch: EditText? = null
+    private var filteredLists: ArrayList<TipData> = ArrayList()
+    private var tipDatas: ArrayList<TipData> = ArrayList()
+
+    private lateinit var tipAdapter: TipAdapter
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var btnBack: Button
+    private lateinit var etTipSearch: EditText
+    private lateinit var recyclerTip: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,19 +43,19 @@ class TipActivity : AppCompatActivity(), View.OnClickListener {
         aboutRecycler()
         aboutTipDetail()
 
-        val mLoadTask = LoadTask()
-        mLoadTask.execute()
+        val loadTask = LoadTask()
+        loadTask.execute()
 
         aboutEditTextSearch()
     }
 
-    private inner class LoadTask : AsyncTask<Void, Void, Void>() {
+    private inner class LoadTask : AsyncTask<Void, Void, Void?>() {
         override fun doInBackground(vararg voids: Void): Void? {
             getPlantListData()
             return null
         }
 
-        override fun onPostExecute(aVoid: Void) {
+        override fun onPostExecute(aVoid: Void?) {
             super.onPostExecute(aVoid)
             aboutMapListData()
         }
@@ -75,21 +63,21 @@ class TipActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun aboutEditTextSearch() {
-        etTipSearch!!.addTextChangedListener(object : TextWatcher {
+        etTipSearch.addTextChangedListener(object : TextWatcher {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 var s = s
-                filteredLists!!.clear()
+                filteredLists.clear()
                 s = s.toString().toLowerCase()
 
-                for (i in mTipDatas!!.indices) {
-                    val str = mTipDatas!![i].pRealName //식물 이름
-                    if (str.contains(s)) {
-                        filteredLists!!.add(mTipDatas!![i])
+                for (i in 0..tipDatas.size) {
+                    val str = tipDatas.get(i).realName //식물 이름
+                    if (str?.contains(s) != null) {
+                        filteredLists.add(tipDatas.get(i))
                     }
                 }
-                tipAdapter!!.setTipDatas(filteredLists!!)
-                tipAdapter!!.notifyDataSetChanged()
+                tipAdapter.setTipDatas(filteredLists)
+                tipAdapter.notifyDataSetChanged()
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -100,22 +88,34 @@ class TipActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun aboutTipDetail() {
 
-        recyclerTip!!.addOnItemTouchListener(RecyclerItemClickListener(applicationContext,
+        recyclerTip.addOnItemTouchListener(RecyclerItemClickListener(applicationContext,
                 recyclerTip, RecyclerItemClickListener.OnItemClickListener { view, position ->
-            val plantCode: Int
-            if (filteredLists!!.size != 0) {
-                plantCode = filteredLists!![position].pCode
+            val plantCode: Int?
+
+            if (filteredLists.size != 0) {
+                plantCode = filteredLists.get(position).code
                 Log.d(TAG, "pCode$plantCode|position$position")
             } else {
-                plantCode = mTipDatas!![position].pCode
+                plantCode = tipDatas.get(position).code
                 Log.d(TAG, "pCode$plantCode|position$position")
             }
-            Thread(Runnable { getPlantDetailData(plantCode, position) }).start()
+
+            val detailParams = DetailParams(plantCode, position);
+            val detailTask = DetailTask()
+            detailTask.execute(detailParams)
         }))
     }
 
-    private fun getPlantDetailData(pCode: Int, position: Int) {
-        //1.
+    private inner class DetailTask : AsyncTask<DetailParams, Void, Void?>{
+        constructor() : super()
+
+        override fun doInBackground(vararg params: DetailParams): Void? {
+            getPlantDetailData(params[0].plantCode, params[0].position)
+            return null
+        }
+    }
+
+    private fun getPlantDetailData(pCode: Int?, position: Int) {
         val queryUrl = ("http://api.nongsaro.go.kr/service/garden/gardenDtl"
                 + "?apiKey=" + API_KEY + "&cntntsNo=" + pCode)
 
@@ -143,7 +143,6 @@ class TipActivity : AppCompatActivity(), View.OnClickListener {
                         else if (tag == TAG_FRT) {
                             xpp.next()
                             tipDetailData.frt = xpp.text
-                            Log.d(TAG, tipDetailData.frt)
                         } else if (tag == TAG_TEMPERATURE) {
                             xpp.next()
                             tipDetailData.temperature = xpp.text
@@ -177,18 +176,18 @@ class TipActivity : AppCompatActivity(), View.OnClickListener {
                     eventType = XmlPullParser.END_DOCUMENT //while 종료
 
 
-                    if (filteredLists!!.size == 0) {
+                    if (filteredLists.size == 0) {
                         //detail 액티비티로 객체 보내기
                         val intent = Intent(applicationContext, TipDetailActivity::class.java)
                         intent.putExtra(INTENT_STR, tipDetailData)
-                        intent.putExtra("plantImage", mTipDatas!![position].pImage)
-                        intent.putExtra("plantName", mTipDatas!![position].pRealName)
+                        intent.putExtra("plantImage", tipDatas.get(position).image)
+                        intent.putExtra("plantName", tipDatas.get(position).realName)
                         startActivity(intent)
                     } else {
                         val intent = Intent(applicationContext, TipDetailActivity::class.java)
                         intent.putExtra(INTENT_STR, tipDetailData)
-                        intent.putExtra("plantImage", filteredLists!![position].pImage)
-                        intent.putExtra("plantName", filteredLists!![position].pRealName)
+                        intent.putExtra("plantImage", filteredLists.get(position).image)
+                        intent.putExtra("plantName", filteredLists.get(position).realName)
                         startActivity(intent)
                     }
                 }
@@ -204,22 +203,19 @@ class TipActivity : AppCompatActivity(), View.OnClickListener {
         btnBack = findViewById<View>(R.id.btnBack_tip) as Button
         etTipSearch = findViewById<View>(R.id.etTipSearch) as EditText
 
-        btnBack!!.setOnClickListener(this)
-        mTipDatas = ArrayList()
-        filteredLists = ArrayList()
+        btnBack.setOnClickListener(this)
     }
 
     private fun aboutRecycler() {
         layoutManager = LinearLayoutManager(applicationContext)
-        recyclerTip!!.setHasFixedSize(true)
-        recyclerTip!!.layoutManager = layoutManager
-        val mDividerItemDeco = DividerItemDecoration(
-                recyclerTip!!.context, layoutManager!!.orientation)
-        recyclerTip!!.addItemDecoration(mDividerItemDeco)
+        recyclerTip.setHasFixedSize(true)
+        recyclerTip.layoutManager = layoutManager
+        val mDividerItemDeco = DividerItemDecoration(recyclerTip.context, layoutManager.orientation)
+        recyclerTip.addItemDecoration(mDividerItemDeco)
 
         tipAdapter = TipAdapter()
-        tipAdapter!!.setTipDatas(mTipDatas!!)
-        recyclerTip!!.adapter = tipAdapter
+        tipAdapter.setTipDatas(tipDatas)
+        recyclerTip.adapter = tipAdapter
     }
 
 
@@ -236,7 +232,7 @@ class TipActivity : AppCompatActivity(), View.OnClickListener {
         var pImage = ""
 
         val queryUrl = ("http://api.nongsaro.go.kr/service/garden/gardenList"
-                + "?apiKey=" + API_KEY + "&numOfRows=" + numOfRows)
+                + "?apiKey=" + API_KEY + "&numOfRows=" + NUM_OF_ROWS)
 
         try {
             val url = URL(queryUrl) //문자열로 된 요청 url을 URL 객체로 생성.
@@ -267,7 +263,7 @@ class TipActivity : AppCompatActivity(), View.OnClickListener {
                             xpp.next()
                             pImage = xpp.text
                             val data = TipData(pNo, pName, pImage)
-                            tempLists!!.add(data)
+                            tempLists?.add(data)
                         }
                     }
                 }
@@ -277,20 +273,36 @@ class TipActivity : AppCompatActivity(), View.OnClickListener {
             e.printStackTrace()
         }
 
-        //
     }
 
     private fun aboutMapListData() {
-        for (i in tempLists!!.indices) {
-            val tData = TipData(tempLists!![i].pCode, tempLists!![i].pRealName, tempLists!![i].pImage)
-            mTipDatas!!.add(tData)
+        val listSize = tempLists?.size ?: return
+
+        for (i in 0 until listSize) {
+            val tData = TipData(tempLists?.get(i)?.code, tempLists?.get(i)?.realName, tempLists?.get(i)?.image)
+            tipDatas.add(tData)
         }
 
-        tipAdapter!!.notifyDataSetChanged()
+        tipAdapter.notifyDataSetChanged()
     }
 
     companion object {
         val INTENT_STR = "TipDetailData"
+        private val TAG = "TipPlant"
+
+        private val API_KEY = "20170726ADJPJHDALH0FXS5HK84T7G"
+        private val TAG_FRT = "frtlzrInfo"
+        private val TAG_TEMPERATURE = "grwhTpCode"
+        private val TAG_HYDRO = "hdCode"
+        private val TAG_PRPG = "prpgtEraInfo"
+        private val TAG_SOIL = "soilInfo"
+        private val TAG_WATER_SPRING = "watercycleSprngCode"
+        private val TAG_WATER_SUMMER = "watercycleSummerCode"
+        private val TAG_WATER_AUTUMN = "watercycleAutumnCode"
+        private val TAG_WATER_WINTER = "watercycleWinterCode"
+
+        private val NUM_OF_ROWS = 216
     }
 }
+
 
