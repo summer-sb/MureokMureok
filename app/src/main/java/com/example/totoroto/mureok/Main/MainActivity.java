@@ -173,3 +173,4 @@ public class MainActivity extends AppCompatActivity {
         civProfilePicture = (CircleImageView) header.findViewById(R.id.civProfile_navi);
     }
 }
+
