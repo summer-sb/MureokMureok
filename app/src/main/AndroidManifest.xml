@@ -13,7 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Login.LoginActivity" />
-        <activity android:name=".Login.JoinActivity" />
         <activity android:name=".PlantTip.TipDetailActivity" />
         <activity
             android:name=".Main.MainActivity"
