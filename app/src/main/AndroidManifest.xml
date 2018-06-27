@@ -13,8 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Login.LoginActivity" />
-        <activity android:name=".Login.JoinActivity" />
-        <activity android:name=".PlantTip.TipActivity" />
         <activity android:name=".PlantTip.TipDetailActivity" />
         <activity
             android:name=".Main.MainActivity"
@@ -37,17 +35,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".Info.InfoActivity" />
+
         <receiver android:name=".Alarm.AlarmBroadCast" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
-
+        <activity android:name=".PlantTip.TipActivity" />
     </application>
 
 </manifest>
