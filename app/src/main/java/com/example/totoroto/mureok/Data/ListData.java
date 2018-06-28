@@ -2,9 +2,6 @@ package com.example.totoroto.mureok.Data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import java.util.List;
 
 public class ListData implements Parcelable{
     public String firebaseKey;

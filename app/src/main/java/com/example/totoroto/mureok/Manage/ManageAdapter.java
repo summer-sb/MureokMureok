@@ -21,10 +21,7 @@ import com.example.totoroto.mureok.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class ManageAdapter extends RecyclerView.Adapter<ManageViewHolder> {

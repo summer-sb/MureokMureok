@@ -1,12 +1,8 @@
 package com.example.totoroto.mureok.PlantTip;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,7 +11,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.totoroto.mureok.Data.TipDetailData;
-import com.example.totoroto.mureok.Manage.ManageFragment;
 import com.example.totoroto.mureok.R;
 
 public class TipDetailActivity extends AppCompatActivity implements View.OnClickListener{

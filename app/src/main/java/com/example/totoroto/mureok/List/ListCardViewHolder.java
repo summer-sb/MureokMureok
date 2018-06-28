@@ -1,15 +1,11 @@
 package com.example.totoroto.mureok.List;
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.totoroto.mureok.R;
 
 public class ListCardViewHolder extends RecyclerView.ViewHolder{

@@ -1,6 +1,5 @@
 package com.example.totoroto.mureok.Community;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -19,7 +18,6 @@ import com.example.totoroto.mureok.Data.ListData;
 import com.example.totoroto.mureok.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
