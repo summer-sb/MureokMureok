@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.totoroto.mureok.Info.InfoActivity">
+    tools:context="com.example.totoroto.mureok.info.InfoActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civProfile_info"

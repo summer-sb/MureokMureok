@@ -12,12 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Login.LoginActivity" />
-        <activity android:name=".Login.JoinActivity" />
-        <activity android:name=".PlantTip.TipActivity" />
-        <activity android:name=".PlantTip.TipDetailActivity" />
+        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".login.JoinActivity" />
+        <activity android:name=".planttip.TipActivity" />
+        <activity android:name=".planttip.TipDetailActivity" />
         <activity
-            android:name=".Main.MainActivity"
+            android:name=".main.MainActivity"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -30,7 +30,7 @@
                     android:scheme="@string/kakao_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login.SplashActivity">
+        <activity android:name=".login.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,8 +38,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Info.InfoActivity" />
-        <receiver android:name=".Alarm.AlarmBroadCast" />
+        <activity android:name=".info.InfoActivity" />
+        <receiver android:name=".alarm.AlarmBroadCast" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.totoroto.mureok.PlantTip.TipDetailActivity">
+    tools:context="com.example.totoroto.mureok.planttip.TipDetailActivity">
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbarLayout_tip_detail"
         android:layout_width="match_parent"
