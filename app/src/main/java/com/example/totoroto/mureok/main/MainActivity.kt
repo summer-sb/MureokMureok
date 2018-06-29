@@ -92,9 +92,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun aboutToolbar() {
         setSupportActionBar(toolbar)
-        val actionBar = supportActionBar
-        actionBar?.setHomeAsUpIndicator(R.drawable.ic_drawer)
-        actionBar?.setDisplayHomeAsUpEnabled(true)
+        val actionBar = supportActionBar ?: return
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer)
+        actionBar.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun aboutTab() {
