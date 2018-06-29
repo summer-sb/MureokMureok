@@ -2,16 +2,10 @@ package com.example.totoroto.mureok.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
 import android.support.v4.view.GravityCompat
-import android.support.v4.view.ViewPager
-import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -20,25 +14,15 @@ import com.example.totoroto.mureok.info.InfoActivity
 import com.example.totoroto.mureok.login.LoginActivity
 import com.example.totoroto.mureok.manage.ManageFragment
 import com.google.firebase.auth.FirebaseAuth
-import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.drawer_header.*
 
 class MainActivity : AppCompatActivity() {
-    private val TAG = "SOLBIN"
-
-    private var tabLayout: TabLayout? = null
-    private var viewPager: ViewPager? = null
-    private var toolbar: Toolbar? = null
-    private var navigationView: NavigationView? = null
-    private var drawerLayout: DrawerLayout? = null
-    private var tvNickName: TextView? = null
-    private var tvEmail: TextView? = null
-    private var civProfilePicture: CircleImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        init()
         aboutToolbar()
         aboutTab()
         aboutNavi()
@@ -58,12 +42,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun aboutNavi() {
 
-        navigationView!!.setNavigationItemSelectedListener { item ->
+        navigationView.setNavigationItemSelectedListener { item ->
             item.isChecked = true
-            drawerLayout!!.closeDrawers()
+            drawerLayout.closeDrawers()
 
             when (item.itemId) {
-
                 R.id.navi_item_myInfo -> moveInfoActivity()
                 R.id.navi_item_send_opinion -> {
                 }
@@ -89,18 +72,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            drawerLayout!!.openDrawer(GravityCompat.START)
+            drawerLayout.openDrawer(GravityCompat.START)
 
             //navigation header
             val fUser = FirebaseAuth.getInstance().currentUser
             if (fUser != null) {
-                tvEmail!!.text = fUser.email
-                tvNickName!!.text = fUser.displayName
+                tvEmail_navi.text = fUser.email
+                tvProfile_navi.text = fUser.displayName
                 Glide.with(applicationContext)
                         .load(fUser.photoUrl)
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(civProfilePicture!!)
+                        .into(civProfile_navi)
             }
             return true
         }
@@ -110,8 +93,8 @@ class MainActivity : AppCompatActivity() {
     private fun aboutToolbar() {
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
-        actionBar!!.setHomeAsUpIndicator(R.drawable.ic_drawer)
-        actionBar.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setHomeAsUpIndicator(R.drawable.ic_drawer)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun aboutTab() {
@@ -119,19 +102,19 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.mainFrameLayout, ManageFragment.newInstance()).commit()
 
         //탭 추가
-        tabLayout!!.addTab(tabLayout!!.newTab().setIcon(R.drawable.selector_tab_manage))
-        tabLayout!!.addTab(tabLayout!!.newTab().setIcon(R.drawable.selector_tab_gallery))
-        tabLayout!!.addTab(tabLayout!!.newTab().setIcon(R.drawable.selector_tab_community))
-        tabLayout!!.tabGravity = TabLayout.GRAVITY_FILL //너비를 모두 같게 표시
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.selector_tab_manage))
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.selector_tab_gallery))
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.selector_tab_community))
+        tabLayout.tabGravity = TabLayout.GRAVITY_FILL //너비를 모두 같게 표시
 
 
         val tabAdapter = TabAdapter(supportFragmentManager)
-        viewPager!!.adapter = tabAdapter
-        viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+        viewPager.adapter = tabAdapter
+        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
-        tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPager!!.currentItem = tab.position
+                viewPager.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -140,16 +123,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun init() {
-        tabLayout = findViewById<View>(R.id.tabLayout) as TabLayout
-        viewPager = findViewById<View>(R.id.viewPager) as ViewPager
-        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        navigationView = findViewById<View>(R.id.navigationView) as NavigationView
-        drawerLayout = findViewById<View>(R.id.drawerLayout) as DrawerLayout
-
-        val header = navigationView!!.getHeaderView(0)
-        tvNickName = header.findViewById<View>(R.id.tvProfile_navi) as TextView
-        tvEmail = header.findViewById<View>(R.id.tvEmail_navi) as TextView
-        civProfilePicture = header.findViewById<View>(R.id.civProfile_navi) as CircleImageView
+    companion object {
+        const val TAG = "SOLBIN"
     }
 }
