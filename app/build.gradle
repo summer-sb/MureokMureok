@@ -20,6 +20,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dataBinding{
+        enabled = true
+    }
 }
 
 dependencies {
@@ -41,8 +45,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-auth:$rootProject.ext.firebase_version"
     implementation "com.google.firebase:firebase-crash:$rootProject.ext.firebase_version"
     implementation "com.google.firebase:firebase-storage:$rootProject.ext.firebase_version"
-
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation "android.arch.lifecycle:extensions:$rootProject.ext.lifecycle_version"
+
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.1'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
