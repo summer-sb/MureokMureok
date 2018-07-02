@@ -5,12 +5,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.totoroto.mureok.community.CommunityFragment;
+import com.example.totoroto.mureok.community.PostListFragment;
 import com.example.totoroto.mureok.list.ListFragment;
 import com.example.totoroto.mureok.manage.ManageFragment;
 
 
 public class TabAdapter extends FragmentStatePagerAdapter {
-    private final int numTab = 3;
+    private final int numTab = 4;
 
     public TabAdapter(FragmentManager fm) {
         super(fm);
@@ -25,6 +26,8 @@ public class TabAdapter extends FragmentStatePagerAdapter {
                 return ListFragment.newInstance();
             case 2:
                 return CommunityFragment.newInstance();
+            case 3:
+                return PostListFragment.newInstance();
             default:
                 return null;
         }
