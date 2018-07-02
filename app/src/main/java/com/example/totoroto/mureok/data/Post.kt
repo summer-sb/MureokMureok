@@ -1,3 +1,3 @@
 package com.example.totoroto.mureok.data
 
-class Post(var key: String, var imgProfile: String, var nickName: String, var date: String, var imgPicture: String, var contents: String, var typeCategory: Int, var numLike: Int)
+class Post(val key: String, val imgProfile: String, val nickName: String, val date: String, val imgPicture: String, val contents: String, val typeCategory: Int, var numLike: Int)
