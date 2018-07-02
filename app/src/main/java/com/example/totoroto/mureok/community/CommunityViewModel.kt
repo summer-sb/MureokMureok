@@ -2,11 +2,11 @@ package com.example.totoroto.mureok.community
 
 import android.arch.lifecycle.ViewModel
 import com.example.totoroto.mureok.data.Post
-import rx.Observable
+import io.reactivex.Observable
 
 class CommunityViewModel : ViewModel() {
 
-    fun observePostList(): Observable<Post>{}
+    fun observePostList(): Observable<Post> {}
 
 
 }
