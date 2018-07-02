@@ -6,7 +6,11 @@ import io.reactivex.Observable
 
 class CommunityViewModel : ViewModel() {
 
-    fun observePostList(): Observable<Post> {}
+    fun observePostList(): Observable<Post> {
+        val post :Observable<Post> = Observable.empty()
+
+        return post
+    }
 
 
 }

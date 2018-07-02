@@ -26,8 +26,6 @@ public class TabAdapter extends FragmentStatePagerAdapter {
                 return ListFragment.newInstance();
             case 2:
                 return CommunityFragment.newInstance();
-            case 3:
-                return PostListFragment.newInstance();
             default:
                 return null;
         }

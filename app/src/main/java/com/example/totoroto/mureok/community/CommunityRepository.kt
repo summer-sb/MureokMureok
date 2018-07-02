@@ -4,7 +4,9 @@ import com.example.totoroto.mureok.data.Post
 import java.util.ArrayList
 
 class CommunityRepository {
-    fun getPostList() : ArrayList<Post> {
+    fun getPostList() : List<Post> {
+        val temp : List<Post> = listOf()
 
+        return temp
     }
 }
