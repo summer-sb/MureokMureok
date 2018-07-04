@@ -16,20 +16,19 @@ class ExampleActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
-        // TODO Thread와 Handler를 이용하여 textView에 ApiServer로부터 받아온 데이터를 출력하세요
-
+        
+        //Thread와 Handler를 이용하여 textView에 ApiServer로부터 받아온 데이터를 출력하세요
         loadByThread()
     }
 
-    fun loadByThread() {
+    private fun loadByThread() {
         val handler = Handler()
-        var data : String? = null
 
         Thread(Runnable {
-            data = ApiServer.getData()
+            val data = ApiServer.getData()
 
             handler.post {
-                textView.setText(data)
+                textView.text = data
             }
 
         }).start()
