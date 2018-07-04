@@ -1,4 +1,4 @@
-package com.example.totoroto.mureok.example
+package com.example.totoroto.mureok.example.example1
 
 import android.os.Handler
 import android.os.Looper
@@ -13,10 +13,10 @@ import android.os.NetworkOnMainThreadException
 object ApiServer {
 
     private val mainHandler = Handler(Looper.getMainLooper())
-    private val data = listOf("스타벅스", "커피빈", "이디야", "탐앤탐스", "할리스", "폴바셋", "앤젤리너스")
+    private val data = "Hello World"
 
 
-    fun getData(): List<String> {
+    fun getData(): String {
         if (Thread.currentThread() === mainHandler.looper.thread) {
             throw NetworkOnMainThreadException()
         }

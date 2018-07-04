@@ -1,8 +1,7 @@
-package com.example.totoroto.mureok.example
+package com.example.totoroto.mureok.example.example1
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import com.example.totoroto.mureok.R
 
 /**
@@ -14,7 +13,7 @@ class ExampleActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
-        // TODO ApiServer로 부터 data를 받아와서 recyclerView에 표시하시오
+        // TODO Thread와 Handler를 이용하여 textView에 ApiServer로부터 받아온 데이터를 출력하세요
     }
 
 
