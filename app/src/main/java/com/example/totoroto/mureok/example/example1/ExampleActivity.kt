@@ -12,29 +12,26 @@ import kotlinx.android.synthetic.main.activity_example.*
  * @since 04 - 7월 - 2018
  */
 class ExampleActivity: Activity() {
-    val handler = Handler()
-    var data : String ?= null
-
-    fun loadThread() {
-
-        val thread = Thread(Runnable {
-            data = ApiServer.getData()
-
-            handler.post {
-                textView.setText(data)
-            }
-
-        })
-        thread.start()
-
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
         // TODO Thread와 Handler를 이용하여 textView에 ApiServer로부터 받아온 데이터를 출력하세요
 
-        loadThread()
+        loadByThread()
+    }
+
+    fun loadByThread() {
+        val handler = Handler()
+        var data : String? = null
+
+        Thread(Runnable {
+            data = ApiServer.getData()
+
+            handler.post {
+                textView.setText(data)
+            }
+
+        }).start()
     }
 }
