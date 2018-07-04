@@ -1,6 +1,7 @@
 package com.example.totoroto.mureok.example.example1
 
 import android.app.Activity
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import com.example.totoroto.mureok.R
@@ -33,5 +34,18 @@ class ExampleActivity: Activity() {
 
     private fun loadByAsyncTask() {
         // TODO AsyncTask를 이용하여 textView에 ApiServer로부터 받아온 데이터를 출력하세요
+
+        ExampleTask().execute()
+    }
+
+    internal inner class ExampleTask : AsyncTask<Void, Void, String>() {
+
+        override fun doInBackground(vararg voids: Void): String = ApiServer.getData()
+
+        override fun onPostExecute(result: String) {
+            super.onPostExecute(result)
+
+            textView.text = result
+        }
     }
 }
