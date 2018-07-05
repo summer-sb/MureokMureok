@@ -22,8 +22,8 @@ class ExampleActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
-        runByThread()
-//        runByAsyncTask()
+//        runByThread()
+        runByAsyncTask()
     }
 
     private fun runByThread() {
@@ -35,11 +35,11 @@ class ExampleActivity: Activity() {
     }
 
     private fun runByAsyncTask() {
-        ExampleTask().execute()
-        ExampleTask().execute()
-        ExampleTask().execute()
-        ExampleTask().execute()
-        ExampleTask().execute()
+        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     private inner class ExampleThread(): Thread() {
@@ -69,11 +69,13 @@ class ExampleActivity: Activity() {
     private inner class ExampleTask: AsyncTask<Void, Void, List<Int>>() {
 
         override fun doInBackground(vararg params: Void): List<Int> {
-            Log.d(TAG, "========${Thread.currentThread().name} start=======")
-            val item = list.size
-            Thread.sleep(Random().nextInt(10).toLong())
-            list.add(item)
-            Log.d(TAG, "========${Thread.currentThread().name} end=======")
+            synchronized(list){
+                Log.d(TAG, "========${Thread.currentThread().name} start=======")
+                val item = list.size
+                Thread.sleep(Random().nextInt(10).toLong())
+                list.add(item)
+                Log.d(TAG, "========${Thread.currentThread().name} end=======")
+            }
             return list
         }
 
