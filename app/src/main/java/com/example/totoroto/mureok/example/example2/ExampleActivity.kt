@@ -47,9 +47,13 @@ class ExampleActivity: Activity() {
         override fun run() {
             super.run()
             Log.d(TAG, "========${Thread.currentThread().name} start=======")
-            val item = list.size
-            Thread.sleep(Random().nextInt(10).toLong())
-            list.add(item)
+
+            synchronized(list){
+                val item = list.size
+                Thread.sleep(Random().nextInt(10).toLong())
+                list.add(item)
+            }
+
             Log.d(TAG, "========${Thread.currentThread().name} end=======")
             handler.post {
                 printCount(list)
