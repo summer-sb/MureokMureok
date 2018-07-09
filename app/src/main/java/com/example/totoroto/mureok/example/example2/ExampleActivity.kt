@@ -5,8 +5,10 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.widget.TextView
 import com.example.totoroto.mureok.R
 import kotlinx.android.synthetic.main.activity_example.*
+import java.lang.ref.WeakReference
 import java.util.*
 
 /**
@@ -35,11 +37,11 @@ class ExampleActivity: Activity() {
     }
 
     private fun runByAsyncTask() {
-        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     private inner class ExampleThread(): Thread() {
@@ -63,16 +65,16 @@ class ExampleActivity: Activity() {
         }
     }
 
-
-
-
-    private inner class ExampleTask: AsyncTask<Void, Void, List<Int>>() {
+    private class ExampleTask(val list: MutableList<Int>, val tv: TextView): AsyncTask<Void, Void, List<Int>>() {
+        val tvRef : WeakReference<TextView> = WeakReference(tv)
 
         override fun doInBackground(vararg params: Void): List<Int> {
+
             synchronized(list){
                 Log.d(TAG, "========${Thread.currentThread().name} start=======")
                 val item = list.size
                 Thread.sleep(Random().nextInt(10).toLong())
+
                 list.add(item)
                 Log.d(TAG, "========${Thread.currentThread().name} end=======")
             }
@@ -81,7 +83,11 @@ class ExampleActivity: Activity() {
 
         override fun onPostExecute(result: List<Int>) {
             super.onPostExecute(result)
-            printCount(result)
+
+            val context = tvRef.get()
+            if(context != null) {
+                tv.text = list.toString()
+            }
         }
     }
 
