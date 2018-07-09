@@ -24,7 +24,6 @@ class ExampleActivity: Activity() {
 
     private val handler = Handler()
     private val list = mutableListOf<Int>()
-    private lateinit var tv: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +41,11 @@ class ExampleActivity: Activity() {
     }
 
     private fun runByAsyncTask() {
-        tv = textView
-        ExampleTask(list, tv).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask(list, tv).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask(list, tv).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask(list, tv).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask(list, tv).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     private inner class ExampleThread(): Thread() {
@@ -71,7 +69,7 @@ class ExampleActivity: Activity() {
         }
     }
 
-    private class ExampleTask(val list: MutableList<Int>, val textView: TextView): AsyncTask<Void, Void, List<Int>>() {
+    private class ExampleTask(val list: MutableList<Int>, val weakReference: WeakReference<TextView>): AsyncTask<Void, Void, List<Int>>() {
 
         override fun doInBackground(vararg params: Void): List<Int> {
 
@@ -89,7 +87,11 @@ class ExampleActivity: Activity() {
         override fun onPostExecute(result: List<Int>) {
             super.onPostExecute(result)
 
-            textView.text = list.toString()
+            val tvRef = weakReference.get()
+
+            if(tvRef != null) {
+                weakReference.get()?.text = list.toString()
+            }
         }
     }
 
