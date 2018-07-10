@@ -5,6 +5,8 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.totoroto.mureok.R
 import com.example.totoroto.mureok.R.id.text
@@ -27,6 +29,7 @@ class ExampleActivity: Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_example)
 //        runByThread()
         runByAsyncTask()
@@ -41,11 +44,11 @@ class ExampleActivity: Activity() {
     }
 
     private fun runByAsyncTask() {
-        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        ExampleTask(list, WeakReference(textView)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ExampleTask(list, textView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     private inner class ExampleThread(): Thread() {
@@ -69,7 +72,8 @@ class ExampleActivity: Activity() {
         }
     }
 
-    private class ExampleTask(val list: MutableList<Int>, val weakReference: WeakReference<TextView>): AsyncTask<Void, Void, List<Int>>() {
+    private class ExampleTask(val list: MutableList<Int>, tv: TextView): AsyncTask<Void, Void, List<Int>>() {
+        val weakReference = WeakReference<TextView>(tv)
 
         override fun doInBackground(vararg params: Void): List<Int> {
 
@@ -87,11 +91,7 @@ class ExampleActivity: Activity() {
         override fun onPostExecute(result: List<Int>) {
             super.onPostExecute(result)
 
-            val tvRef = weakReference.get()
-
-            if(tvRef != null) {
-                weakReference.get()?.text = list.toString()
-            }
+            weakReference.get()?.text = list.toString()
         }
     }
 
