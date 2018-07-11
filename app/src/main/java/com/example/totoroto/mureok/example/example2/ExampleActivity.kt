@@ -6,6 +6,7 @@ import com.example.totoroto.mureok.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_example.*
+import java.lang.ref.WeakReference
 
 /**
  *
@@ -21,7 +22,10 @@ class ExampleActivity: Activity() {
 
         ApiServer.observeItem().subscribeOn(Schedulers.io())
                                .observeOn(AndroidSchedulers.mainThread())
-                               .subscribe{ it -> textView.text = it.toString() }
+                               .subscribe{
+                                   val tv = WeakReference(textView)
+                                   tv.get()?.text = it.toString()
+                               }
 
     }
 
