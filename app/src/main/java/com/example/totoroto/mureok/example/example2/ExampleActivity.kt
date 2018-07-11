@@ -3,6 +3,8 @@ package com.example.totoroto.mureok.example.example2
 import android.app.Activity
 import android.os.Bundle
 import com.example.totoroto.mureok.R
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_example.*
 
 /**
  *
@@ -15,6 +17,9 @@ class ExampleActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
+
+        ApiServer.observeItem().subscribeOn(Schedulers.computation())
+                               .subscribe{ it -> textView.text = it.toString() }
     }
 
 }
