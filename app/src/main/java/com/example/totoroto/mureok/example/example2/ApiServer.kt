@@ -15,7 +15,7 @@ object ApiServer {
     fun observeItem(): Observable<Int> {
         return Observable.create {
             checkThread()
-            Thread.sleep(100)
+            Thread.sleep(5000)
             it.onNext(0)
             it.onComplete()
         }

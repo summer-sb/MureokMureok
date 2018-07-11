@@ -18,7 +18,7 @@ class ExampleActivity: Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
 
-        ApiServer.observeItem().subscribeOn(Schedulers.computation())
+        ApiServer.observeItem().subscribeOn(Schedulers.io())
                                .subscribe{ it -> textView.text = it.toString() }
     }
 
