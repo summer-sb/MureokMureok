@@ -35,35 +35,31 @@ class ExampleActivity: Activity() {
         printTask.execute()
     }
 
-    private class PrintTask(coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, List<String>>() {
+    private class PrintTask(coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, Pair<String, String>>() {
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
 
-        override fun doInBackground(vararg params: Void?): List<String> {
-            val ids = ApiServer.getCoffeeIds()
-            val names = mutableMapOf<String, String>()
-            val prices = mutableMapOf<String, Int>()
-            val results : MutableList<String> = mutableListOf()
-            val size = names.size
+        override fun doInBackground(vararg params: Void?): Pair<String, String> {
+            val idList = ApiServer.getCoffeeIds()
+            var result : Pair<String, String> = Pair("","")
 
-            for(i in 0..size){
-                names[ids[i]] = ApiServer.getName(ids[i])
-                prices[ids[i]] = ApiServer.getPrice(ApiServer.getPriceCode(ids[i]))
-            }
+            for(i in 0 until idList.size) {
+                if (idList[i] == ApiServer.ID_AMERICANO) {
+                    val name = ApiServer.getName(idList[i])
+                    val price = ApiServer.getPrice(ApiServer.getPriceCode(idList[i])).toString()
+                    result = result.copy(first = name, second = price)
 
-            for(i in 0..size) {
-                if(ids[i] == ApiServer.ID_AMERICANO) {
-                    results.add(names[ApiServer.ID_AMERICANO] ?: return emptyList())
-                    results.add(prices[ApiServer.ID_AMERICANO].toString())
+                    break
                 }
             }
-            return results
+
+            return result
         }
-        override fun onPostExecute(result: List<String>) {
+        override fun onPostExecute(result: Pair<String, String>) {
             super.onPostExecute(result)
 
-            coffeeNameView.get()?.text = result[0]
-            coffeePriceView.get()?.text = result[1]
+            coffeeNameView.get()?.text = result.first
+            coffeePriceView.get()?.text = result.second
         }
 
     }
