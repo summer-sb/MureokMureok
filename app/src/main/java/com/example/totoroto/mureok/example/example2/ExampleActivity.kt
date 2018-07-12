@@ -4,9 +4,9 @@ import android.app.Activity
 import android.os.Bundle
 import com.example.totoroto.mureok.R
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_example.*
-import java.lang.ref.WeakReference
 
 /**
  *
@@ -15,18 +15,21 @@ import java.lang.ref.WeakReference
  * @since 05 - 7월 - 2018
  */
 class ExampleActivity: Activity() {
+    private var disposable : Disposable ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
 
-        ApiServer.observeItem().subscribeOn(Schedulers.io())
+        disposable = ApiServer.observeItem().subscribeOn(Schedulers.io())
                                .observeOn(AndroidSchedulers.mainThread())
                                .subscribe{
-                                   val tv = WeakReference(textView)
-                                   tv.get()?.text = it.toString()
+                                   textView.text = it.toString()
                                }
-
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable?.dispose()
+    }
 }
