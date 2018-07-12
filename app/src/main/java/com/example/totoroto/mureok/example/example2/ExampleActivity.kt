@@ -44,13 +44,14 @@ class ExampleActivity: Activity() {
             val names = mutableMapOf<String, String>()
             val prices = mutableMapOf<String, Int>()
             val results : MutableList<String> = mutableListOf()
+            val size = names.size
 
-            for(i in 0..1){
+            for(i in 0..size){
                 names[ids[i]] = ApiServer.getName(ids[i])
                 prices[ids[i]] = ApiServer.getPrice(ApiServer.getPriceCode(ids[i]))
             }
 
-            for(i in 0..1) {
+            for(i in 0..size) {
                 if(ids[i] == ApiServer.ID_AMERICANO) {
                     results.add(names[ApiServer.ID_AMERICANO] ?: return emptyList())
                     results.add(prices[ApiServer.ID_AMERICANO].toString())
