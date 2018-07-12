@@ -1,9 +1,11 @@
 package com.example.totoroto.mureok.example.example2
 
 import android.app.Activity
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Toast
 import com.example.totoroto.mureok.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -31,35 +33,45 @@ class ExampleActivity: Activity() {
                                    textView.text = it.toString()
                                }
 
-        val printTask = PrintTask(coffeeNameView, coffeePriceView)
+        val printTask = PrintTask(applicationContext, coffeeNameView, coffeePriceView)
         printTask.execute()
     }
 
-    private class PrintTask(coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, Pair<String, String>>() {
+    private class PrintTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, String, Pair<String?, String?>?>() {
+        private val context = WeakReference(context)
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
 
-        override fun doInBackground(vararg params: Void?): Pair<String, String> {
+        override fun doInBackground(vararg params: Void?): Pair<String?, String?>? {
             val idList = ApiServer.getCoffeeIds()
-            var result : Pair<String, String> = Pair("","")
+            var name : String ?= null
+            var price : String ?= null
 
             for(i in 0 until idList.size) {
                 if (idList[i] == ApiServer.ID_AMERICANO) {
-                    val name = ApiServer.getName(idList[i])
-                    val price = ApiServer.getPrice(ApiServer.getPriceCode(idList[i])).toString()
-                    result = result.copy(first = name, second = price)
-
-                    break
+                    try {
+                        name = ApiServer.getName(idList[i])
+                        price = ApiServer.getPrice(ApiServer.getPriceCode(idList[i])).toString()
+                    }catch (e: IllegalArgumentException){
+                        publishProgress("에러 발생")
+                    }
+                    return Pair(name , price)
                 }
             }
-
-            return result
+            publishProgress("데이터 없음")
+            return null
         }
-        override fun onPostExecute(result: Pair<String, String>) {
+
+        override fun onProgressUpdate(vararg values: String?) {
+            super.onProgressUpdate(*values)
+            Toast.makeText(context.get(), values[0],Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onPostExecute(result: Pair<String?, String?>?) {
             super.onPostExecute(result)
 
-            coffeeNameView.get()?.text = result.first
-            coffeePriceView.get()?.text = result.second
+            coffeeNameView.get()?.text = result?.first
+            coffeePriceView.get()?.text = result?.second
         }
 
     }
