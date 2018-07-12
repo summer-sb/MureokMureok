@@ -37,41 +37,60 @@ class ExampleActivity: Activity() {
         printTask.execute()
     }
 
-    private class PrintTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, String, Pair<String?, String?>?>() {
+    private class PrintTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, Pair<String, String>?>() {
         private val context = WeakReference(context)
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
 
-        override fun doInBackground(vararg params: Void?): Pair<String?, String?>? {
+        override fun doInBackground(vararg params: Void?): Pair<String, String>? {
             val idList = ApiServer.getCoffeeIds()
-            var name : String ?= null
-            var price : String ?= null
 
             for(i in 0 until idList.size) {
                 if (idList[i] == ApiServer.ID_AMERICANO) {
+                    var name = ""
+                    var price = ""
+                    var priceCode = ""
+
                     try {
                         name = ApiServer.getName(idList[i])
-                        price = ApiServer.getPrice(ApiServer.getPriceCode(idList[i])).toString()
                     }catch (e: IllegalArgumentException){
-                        publishProgress("에러 발생")
+                        name = "1"
+                    }
+
+                    try {
+                        priceCode = ApiServer.getPriceCode(idList[i])
+                    }catch (e: IllegalArgumentException){
+                        name = "2"
+                    }
+
+                    try{
+                        price = ApiServer.getPrice(priceCode).toString()
+                    }catch (e: IllegalArgumentException){
+                        name = "3"
                     }
                     return Pair(name , price)
                 }
             }
-            publishProgress("데이터 없음")
+
             return null
         }
 
-        override fun onProgressUpdate(vararg values: String?) {
-            super.onProgressUpdate(*values)
-            Toast.makeText(context.get(), values[0],Toast.LENGTH_SHORT).show()
-        }
-
-        override fun onPostExecute(result: Pair<String?, String?>?) {
+        override fun onPostExecute(result: Pair<String, String>?) {
             super.onPostExecute(result)
 
-            coffeeNameView.get()?.text = result?.first
-            coffeePriceView.get()?.text = result?.second
+            if(result == null) {
+                Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
+            }else {
+                when (result.first) {
+                    "1" -> Toast.makeText(context.get(), "getName 에러 발생", Toast.LENGTH_SHORT).show()
+                    "2" -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
+                    "3" -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                    else -> {
+                        coffeeNameView.get()?.text = result.first
+                        coffeePriceView.get()?.text = result.second
+                    }
+                }
+            }
         }
 
     }
