@@ -10,7 +10,8 @@ import kotlinx.android.synthetic.main.activity_example.*
 
 /**
  *
- * TODO ApiServer로부터 데이터를 받아와서 textView에 출력해주세요
+ * TODO ApiServer로부터 데이터를 받아와서 coffeeNameView와 coffeePriceView에 아메리카노의 이름과 가격이 출력되게 하세요 (AsyncTask를 사용할 것)
+ *
  * @author Changwoo Hong(chawoo@hpcnt.com)
  * @since 05 - 7월 - 2018
  */
