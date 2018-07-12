@@ -53,20 +53,20 @@ class ExampleActivity: Activity() {
 
                     try {
                         name = ApiServer.getName(idList[i])
-                    }catch (e: IllegalArgumentException){
-                        name = "1"
+                    } catch (e: IllegalArgumentException) {
+                        name = "getName 에러 발생"
                     }
 
                     try {
                         priceCode = ApiServer.getPriceCode(idList[i])
-                    }catch (e: IllegalArgumentException){
-                        name = "2"
+                    } catch (e: IllegalArgumentException) {
+                        name = "getPriceCode 에러 발생"
                     }
 
-                    try{
+                    try {
                         price = ApiServer.getPrice(priceCode).toString()
-                    }catch (e: IllegalArgumentException){
-                        name = "3"
+                    } catch (e: IllegalArgumentException) {
+                        name = "getPrice 에러 발생"
                     }
                     return Pair(name , price)
                 }
@@ -78,13 +78,13 @@ class ExampleActivity: Activity() {
         override fun onPostExecute(result: Pair<String, String>?) {
             super.onPostExecute(result)
 
-            if(result == null) {
+            if (result == null) {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
-            }else {
+            } else {
                 when (result.first) {
-                    "1" -> Toast.makeText(context.get(), "getName 에러 발생", Toast.LENGTH_SHORT).show()
-                    "2" -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
-                    "3" -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                    "getName 에러 발생" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
+                    "getPriceCode 에러 발생" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
+                    "getPrice 에러 발생" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
                     else -> {
                         coffeeNameView.get()?.text = result.first
                         coffeePriceView.get()?.text = result.second
