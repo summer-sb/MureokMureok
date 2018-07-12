@@ -29,7 +29,7 @@ class ExampleActivity: Activity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         disposable?.dispose()
+        super.onDestroy()
     }
 }
