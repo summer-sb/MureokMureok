@@ -59,15 +59,17 @@ class ExampleActivity: Activity() {
 
                     try {
                         priceCode = ApiServer.getPriceCode(idList[i])
+
+                        try {
+                            price = ApiServer.getPrice(priceCode).toString()
+                        } catch (e: IllegalArgumentException) {
+                            name = "getPrice 에러 발생"
+                        }
+
                     } catch (e: IllegalArgumentException) {
                         name = "getPriceCode 에러 발생"
                     }
 
-                    try {
-                        price = ApiServer.getPrice(priceCode).toString()
-                    } catch (e: IllegalArgumentException) {
-                        name = "getPrice 에러 발생"
-                    }
                     return Pair(name , price)
                 }
             }
