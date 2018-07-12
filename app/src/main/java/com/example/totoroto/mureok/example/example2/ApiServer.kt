@@ -14,6 +14,8 @@ object ApiServer {
 
     const val ID_AMERICANO = "ID_AMERICANO"
     const val ID_LATTE = "ID_LATTE"
+    const val PRICE_CODE_2000 = "PRICE_CODE_2000"
+    const val PRICE_CODE_2500 = "PRICE_CODE_2500"
 
     fun observeItem(): Observable<Int> {
         return Observable.create {
@@ -24,16 +26,25 @@ object ApiServer {
         }
     }
 
-    fun getCoffees(): List<String> {
+    fun getCoffeeIds(): List<String> {
         checkThread()
         return listOf(ID_AMERICANO, ID_LATTE)
     }
 
-    fun getPrice(id: String): Int {
+    fun getPriceCode(id: String): String {
         checkThread()
         return when (id) {
-            ID_AMERICANO -> 2000
-            ID_LATTE -> 2500
+            ID_AMERICANO -> PRICE_CODE_2000
+            ID_LATTE -> PRICE_CODE_2500
+            else -> "잘못된 입력"
+        }
+    }
+
+    fun getPrice(priceCode: String): Int {
+        checkThread()
+        return when (priceCode) {
+            PRICE_CODE_2000 -> 2000
+            PRICE_CODE_2500 -> 2500
             else -> -1
         }
     }
