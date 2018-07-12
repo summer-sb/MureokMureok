@@ -50,11 +50,13 @@ class ExampleActivity: Activity() {
                     var name = ""
                     var price = ""
                     var priceCode = ""
+                    var errorNum = ""
 
                     try {
                         name = ApiServer.getName(idList[i])
                     } catch (e: IllegalArgumentException) {
-                        name = "getName 에러 발생"
+                        errorNum = "1"
+                        return Pair(errorNum, "")
                     }
 
                     try {
@@ -63,11 +65,13 @@ class ExampleActivity: Activity() {
                         try {
                             price = ApiServer.getPrice(priceCode).toString()
                         } catch (e: IllegalArgumentException) {
-                            name = "getPrice 에러 발생"
+                            errorNum = "2"
+                            return Pair(errorNum, "")
                         }
 
                     } catch (e: IllegalArgumentException) {
-                        name = "getPriceCode 에러 발생"
+                        errorNum = "3"
+                        return Pair(errorNum, "")
                     }
 
                     return Pair(name , price)
@@ -84,9 +88,9 @@ class ExampleActivity: Activity() {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             } else {
                 when (result.first) {
-                    "getName 에러 발생" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
-                    "getPriceCode 에러 발생" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
-                    "getPrice 에러 발생" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
+                    "1" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
+                    "2" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
+                    "3" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
                     else -> {
                         coffeeNameView.get()?.text = result.first
                         coffeePriceView.get()?.text = result.second
