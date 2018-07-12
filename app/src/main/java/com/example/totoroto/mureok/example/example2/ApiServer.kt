@@ -36,7 +36,7 @@ object ApiServer {
         return when (id) {
             ID_AMERICANO -> PRICE_CODE_2000
             ID_LATTE -> PRICE_CODE_2500
-            else -> "잘못된 입력"
+            else -> throw IllegalArgumentException()
         }
     }
 
@@ -45,7 +45,7 @@ object ApiServer {
         return when (priceCode) {
             PRICE_CODE_2000 -> 2000
             PRICE_CODE_2500 -> 2500
-            else -> -1
+            else -> throw IllegalArgumentException()
         }
     }
 
@@ -54,7 +54,7 @@ object ApiServer {
         return when (id) {
             ID_AMERICANO -> "아메리카노"
             ID_LATTE -> "라떼"
-            else -> "잘못된 입력"
+            else -> throw IllegalArgumentException()
         }
     }
 
