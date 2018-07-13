@@ -89,7 +89,7 @@ class ExampleActivity: Activity() {
         var errorCode = ERROR_DEFAULT
 
         override fun doInBackground(vararg params: Void?): String? {
-            val price: String?
+            val price: String
             val priceCode: String
 
             try {
