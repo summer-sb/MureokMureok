@@ -37,27 +37,65 @@ class ExampleActivity: Activity() {
         printTask.execute()
     }
 
-    private class PrintTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, Pair<String, String>?>() {
+    private class PrintTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, Pair<String?, String?>?>() {
         private val context = WeakReference(context)
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
-        private var errorNum = 0
 
-        override fun doInBackground(vararg params: Void?): Pair<String, String>? {
+        override fun doInBackground(vararg params: Void?): Pair<String?, String?>? {
             val idList = ApiServer.getCoffeeIds()
 
             for (i in 0 until idList.size) {
                 if (idList[i] == ApiServer.ID_AMERICANO) {
-                    var name = ""
-                    var price = ""
-                    var priceCode = ""
 
+                    val nameTask = NameTask(context, coffeeNameView, idList)
+                    nameTask.executeOnExecutor(THREAD_POOL_EXECUTOR)
+
+                    val priceTask = PriceTask(context, coffeePriceView, idList)
+                    priceTask.executeOnExecutor(THREAD_POOL_EXECUTOR)
+                }
+            }
+
+            return null
+        }
+    }
+
+    private class NameTask(val context : WeakReference<Context>, val coffeeNameView : WeakReference<TextView>, val idList : List<String>) : AsyncTask<Void, Void, String>() {
+        var name : String ?= null
+
+        override fun doInBackground(vararg params: Void?): String? {
+            for (i in 0 until idList.size) {
+                if (idList[i] == ApiServer.ID_AMERICANO) {
                     try {
                         name = ApiServer.getName(idList[i])
                     } catch (e: IllegalArgumentException) {
-                        errorNum = 1
                         return null
                     }
+                }
+            }
+            return name
+        }
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+
+            if(name != null){
+                coffeeNameView.get()?.text = name
+            }else{
+                Toast.makeText(context.get(), "getName 에러 발생", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val idList: List<String>) : AsyncTask<Void, Void, String?>(){
+        var price: String? = null
+        var priceCode: String = ""
+        var errorNum = 0
+
+        override fun doInBackground(vararg params: Void?): String? {
+
+            for (i in 0 until idList.size) {
+                if (idList[i] == ApiServer.ID_AMERICANO) {
 
                     try {
                         priceCode = ApiServer.getPriceCode(idList[i])
@@ -68,37 +106,29 @@ class ExampleActivity: Activity() {
                             errorNum = 2
                             return null
                         }
-
                     } catch (e: IllegalArgumentException) {
                         errorNum = 3
                         return null
                     }
-
-                    return Pair(name, price)
                 }
             }
-
-            return null
+            return price
         }
 
-        override fun onPostExecute(result: Pair<String, String>?) {
+        override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
 
-            if (result == null) {
-
+            if(result == null){
                 when (errorNum) {
-                    0 -> Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
-                    1 -> Toast.makeText(context.get(), "getName 에러 발생", Toast.LENGTH_SHORT).show()
                     2 -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
                     3 -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                 }
-
-            } else {
-                coffeeNameView.get()?.text = result.first
-                coffeePriceView.get()?.text = result.second
+            }else{
+                coffeePriceView.get()?.text = price
             }
         }
     }
+
 
     override fun onDestroy() {
         disposable?.dispose()
