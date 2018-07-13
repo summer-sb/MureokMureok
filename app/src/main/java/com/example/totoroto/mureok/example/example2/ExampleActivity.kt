@@ -62,7 +62,10 @@ class ExampleActivity: Activity() {
 
             if (result != null) {
                 NameTask(context, coffeeNameView, result[0]).executeOnExecutor(THREAD_POOL_EXECUTOR)
-                PriceTask(context, coffeePriceView, result , 0).executeOnExecutor(THREAD_POOL_EXECUTOR)
+
+                for (i in 0 until result.size) {
+                    PriceTask(context, coffeePriceView, result[i], 0).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                }
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
@@ -87,22 +90,18 @@ class ExampleActivity: Activity() {
         }
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val idList: List<String>, val count: Int) : AsyncTask<Void, Void, String?>(){
+    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int) : AsyncTask<Void, Void, String?>(){
         var errorCode = DEFAULT
 
         override fun doInBackground(vararg params: Void?): String? {
-            var price = 0
-            val priceCode: MutableList<String> = mutableListOf()
+            val price: String
+            val priceCode: String
 
             try {
-                for(i in 0 until idList.size) {
-                    priceCode.add(ApiServer.getPriceCode(idList[i]))
-                }
-                try {
-                    for(i in 0 until idList.size) {
-                        price += ApiServer.getPrice(priceCode[i])
-                    }
+                priceCode = ApiServer.getPriceCode(id)
 
+                try {
+                    price = ApiServer.getPrice(priceCode).toString()
                 } catch (e: IllegalArgumentException) {
                     errorCode = ERROR_PRICE
                     return null
@@ -113,7 +112,7 @@ class ExampleActivity: Activity() {
                 return null
             }
 
-            return price.toString()
+            return price
         }
 
         override fun onPostExecute(result: String?) {
@@ -125,14 +124,20 @@ class ExampleActivity: Activity() {
                     ERROR_PRICE -> {
 
                         if (count < RETRY_COUNT) {
-                            PriceTask(context, coffeePriceView, idList, count+1).execute()
+                            PriceTask(context, coffeePriceView, id, count+1).execute()
                         } else {
                             Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             } else {
-                coffeePriceView.get()?.text = result
+                val temp = coffeePriceView.get()?.text.toString()
+                
+                if (temp.isEmpty()) {
+                    coffeePriceView.get()?.text = result
+                } else {
+                    coffeePriceView.get()?.text = (Integer.parseInt(temp) + Integer.parseInt(result)).toString()
+                }
             }
         }
         companion object {
