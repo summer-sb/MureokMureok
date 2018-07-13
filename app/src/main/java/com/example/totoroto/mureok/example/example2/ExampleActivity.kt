@@ -28,90 +28,84 @@ class ExampleActivity: Activity() {
         setContentView(R.layout.activity_example)
 
         disposable = ApiServer.observeItem().subscribeOn(Schedulers.io())
-                               .observeOn(AndroidSchedulers.mainThread())
-                               .subscribe{
-                                   textView.text = it.toString()
-                               }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe{
+                    textView.text = it.toString()
+                }
 
-        val printTask = PrintTask(applicationContext, coffeeNameView, coffeePriceView)
-        printTask.execute()
+        val idTask = IdTask(applicationContext, coffeeNameView, coffeePriceView)
+        idTask.execute()
     }
 
-    private class PrintTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, Pair<String?, String?>?>() {
+    private class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, String?>() {
         private val context = WeakReference(context)
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
 
-        override fun doInBackground(vararg params: Void?): Pair<String?, String?>? {
+        override fun doInBackground(vararg params: Void?): String? {
             val idList = ApiServer.getCoffeeIds()
 
             for (i in 0 until idList.size) {
                 if (idList[i] == ApiServer.ID_AMERICANO) {
-
-                    val nameTask = NameTask(context, coffeeNameView, idList)
-                    nameTask.executeOnExecutor(THREAD_POOL_EXECUTOR)
-
-                    val priceTask = PriceTask(context, coffeePriceView, idList)
-                    priceTask.executeOnExecutor(THREAD_POOL_EXECUTOR)
+                    return idList[i]
                 }
             }
 
             return null
         }
-    }
-
-    private class NameTask(val context : WeakReference<Context>, val coffeeNameView : WeakReference<TextView>, val idList : List<String>) : AsyncTask<Void, Void, String>() {
-        var name : String ?= null
-
-        override fun doInBackground(vararg params: Void?): String? {
-            for (i in 0 until idList.size) {
-                if (idList[i] == ApiServer.ID_AMERICANO) {
-                    try {
-                        name = ApiServer.getName(idList[i])
-                    } catch (e: IllegalArgumentException) {
-                        return null
-                    }
-                }
-            }
-            return name
-        }
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
 
-            if(name != null){
-                coffeeNameView.get()?.text = name
+            if (result != null) {
+                val nameTask = NameTask(context, coffeeNameView, result)
+                nameTask.executeOnExecutor(THREAD_POOL_EXECUTOR)
+
+                val priceTask = PriceTask(context, coffeePriceView, result)
+                priceTask.executeOnExecutor(THREAD_POOL_EXECUTOR)
+            }
+        }
+    }
+
+    private class NameTask(val context : WeakReference<Context>, val coffeeNameView : WeakReference<TextView>, val id : String) : AsyncTask<Void, Void, String>() {
+
+        override fun doInBackground(vararg params: Void?): String? {
+            return ApiServer.getName(id)
+        }
+
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+
+            if(result != null){
+                coffeeNameView.get()?.text = result
             }else{
                 Toast.makeText(context.get(), "getName 에러 발생", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val idList: List<String>) : AsyncTask<Void, Void, String?>(){
-        var price: String? = null
-        var priceCode: String = ""
-        var errorNum = 0
+    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String) : AsyncTask<Void, Void, String?>(){
+        var errorCode = ERROR_DEFAULT
 
         override fun doInBackground(vararg params: Void?): String? {
+            var price: String? = null
+            val priceCode: String
 
-            for (i in 0 until idList.size) {
-                if (idList[i] == ApiServer.ID_AMERICANO) {
+            try {
+                priceCode = ApiServer.getPriceCode(id)
 
-                    try {
-                        priceCode = ApiServer.getPriceCode(idList[i])
-
-                        try {
-                            price = ApiServer.getPrice(priceCode).toString()
-                        } catch (e: IllegalArgumentException) {
-                            errorNum = 2
-                            return null
-                        }
-                    } catch (e: IllegalArgumentException) {
-                        errorNum = 3
-                        return null
-                    }
+                try {
+                    price = ApiServer.getPrice(priceCode).toString()
+                } catch (e: IllegalArgumentException) {
+                    errorCode = ERROR_PRICE_CODE
+                    return null
                 }
+            } catch (e: IllegalArgumentException) {
+                errorCode = ERROR_PRICE
+                return null
             }
+
             return price
         }
 
@@ -119,19 +113,24 @@ class ExampleActivity: Activity() {
             super.onPostExecute(result)
 
             if(result == null){
-                when (errorNum) {
-                    2 -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
-                    3 -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                when (errorCode) {
+                    ERROR_PRICE_CODE -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
+                    ERROR_PRICE -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                 }
             }else{
-                coffeePriceView.get()?.text = price
+                coffeePriceView.get()?.text = result
             }
         }
     }
 
-
     override fun onDestroy() {
         disposable?.dispose()
         super.onDestroy()
+    }
+
+    companion object {
+        const val ERROR_DEFAULT = 0
+        const val ERROR_PRICE_CODE = 2
+        const val ERROR_PRICE = 3
     }
 }
