@@ -60,7 +60,7 @@ class ExampleActivity: Activity() {
 
             if (result != null) {
                 NameTask(context, coffeeNameView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
-                PriceTask(context, coffeePriceView, result , DEFAULT_COUNT).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                PriceTask(context, coffeePriceView, result , 0).executeOnExecutor(THREAD_POOL_EXECUTOR)
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
@@ -85,8 +85,8 @@ class ExampleActivity: Activity() {
         }
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, var count: Int) : AsyncTask<Void, Void, String?>(){
-        var errorCode = ERROR_DEFAULT
+    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int) : AsyncTask<Void, Void, String?>(){
+        var errorCode = DEFAULT
 
         override fun doInBackground(vararg params: Void?): String? {
             val price: String
@@ -118,11 +118,10 @@ class ExampleActivity: Activity() {
                     ERROR_PRICE_CODE -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
                     ERROR_PRICE -> {
 
-                        if (count < 100) {
-                            if (count == DEFAULT_COUNT) {
-                                Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
-                            }
+                        if (count < RETRY_COUNT) {
                             PriceTask(context, coffeePriceView, id, count+1).execute()
+                        } else {
+                            Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -130,17 +129,16 @@ class ExampleActivity: Activity() {
                 coffeePriceView.get()?.text = result
             }
         }
+        companion object {
+            const val DEFAULT = 0
+            const val ERROR_PRICE_CODE = 2
+            const val ERROR_PRICE = 3
+            const val RETRY_COUNT = 100
+        }
     }
 
     override fun onDestroy() {
         disposable?.dispose()
         super.onDestroy()
-    }
-
-    companion object {
-        const val ERROR_DEFAULT = 0
-        const val ERROR_PRICE_CODE = 2
-        const val ERROR_PRICE = 3
-        const val DEFAULT_COUNT = 0
     }
 }
