@@ -33,8 +33,7 @@ class ExampleActivity: Activity() {
                     textView.text = it.toString()
                 }
 
-        val idTask = IdTask(applicationContext, coffeeNameView, coffeePriceView)
-        idTask.execute()
+        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
 
     private class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, String?>() {
@@ -58,11 +57,10 @@ class ExampleActivity: Activity() {
             super.onPostExecute(result)
 
             if (result != null) {
-                val nameTask = NameTask(context, coffeeNameView, result)
-                nameTask.executeOnExecutor(THREAD_POOL_EXECUTOR)
-
-                val priceTask = PriceTask(context, coffeePriceView, result)
-                priceTask.executeOnExecutor(THREAD_POOL_EXECUTOR)
+                NameTask(context, coffeeNameView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                PriceTask(context, coffeePriceView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
+            }else{
+                Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -121,16 +119,16 @@ class ExampleActivity: Activity() {
                 coffeePriceView.get()?.text = result
             }
         }
+
+        companion object {
+            const val ERROR_DEFAULT = 0
+            const val ERROR_PRICE_CODE = 2
+            const val ERROR_PRICE = 3
+        }
     }
 
     override fun onDestroy() {
         disposable?.dispose()
         super.onDestroy()
-    }
-
-    companion object {
-        const val ERROR_DEFAULT = 0
-        const val ERROR_PRICE_CODE = 2
-        const val ERROR_PRICE = 3
     }
 }
