@@ -89,7 +89,7 @@ class ExampleActivity: Activity() {
         var errorCode = ERROR_DEFAULT
 
         override fun doInBackground(vararg params: Void?): String? {
-            var price: String
+            val price: String
             val priceCode: String
 
             try {
@@ -98,21 +98,12 @@ class ExampleActivity: Activity() {
                 try {
                     price = ApiServer.getPrice(priceCode).toString()
                 } catch (e: IllegalArgumentException) {
-                    errorCode = ERROR_PRICE_CODE
-                    try{
-                        price = ApiServer.getPrice(priceCode).toString()
-                    }catch (e: IllegalArgumentException){
-                        try{
-                            price = ApiServer.getPrice(priceCode).toString()
-                        }catch (e: IllegalArgumentException){
-                            errorCode = ERROR_PRICE_REPEAT
-                            return null
-                        }
-                    }
+                    errorCode = ERROR_PRICE
+                    return null
                 }
 
             } catch (e: IllegalArgumentException) {
-                errorCode = ERROR_PRICE
+                errorCode = ERROR_PRICE_CODE
                 return null
             }
 
@@ -125,8 +116,14 @@ class ExampleActivity: Activity() {
             if(result == null) {
                 when (errorCode) {
                     ERROR_PRICE_CODE -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
-                    ERROR_PRICE -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
-                    ERROR_PRICE_REPEAT -> Toast.makeText(context.get(), "getPrice 반복했지만 에러 발생", Toast.LENGTH_SHORT).show()
+                    ERROR_PRICE -> {
+
+                        if (count < 100) {
+                            Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                            PriceTask(context, coffeePriceView, id).execute()
+                        }
+                        count++
+                    }
                 }
             } else {
                 coffeePriceView.get()?.text = result
@@ -137,7 +134,7 @@ class ExampleActivity: Activity() {
             const val ERROR_DEFAULT = 0
             const val ERROR_PRICE_CODE = 2
             const val ERROR_PRICE = 3
-            const val ERROR_PRICE_REPEAT = 4
+            var count = 0
         }
     }
 
