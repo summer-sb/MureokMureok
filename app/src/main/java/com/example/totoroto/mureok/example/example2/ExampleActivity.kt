@@ -131,13 +131,8 @@ class ExampleActivity: Activity() {
                     }
                 }
             } else {
-                val temp = coffeePriceView.get()?.text.toString()
-                
-                if (temp.isEmpty()) {
-                    coffeePriceView.get()?.text = result
-                } else {
-                    coffeePriceView.get()?.text = (Integer.parseInt(temp) + Integer.parseInt(result)).toString()
-                }
+                sum += Integer.parseInt(result)
+                coffeePriceView.get()?.text = sum.toString()
             }
         }
         companion object {
@@ -145,6 +140,7 @@ class ExampleActivity: Activity() {
             const val ERROR_PRICE_CODE = 2
             const val ERROR_PRICE = 3
             const val RETRY_COUNT = 100
+            var sum = 0
         }
     }
 
