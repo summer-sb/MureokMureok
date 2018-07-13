@@ -60,7 +60,7 @@ class ExampleActivity: Activity() {
 
             if (result != null) {
                 NameTask(context, coffeeNameView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
-                PriceTask(context, coffeePriceView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                PriceTask(context, coffeePriceView, result, 0).executeOnExecutor(THREAD_POOL_EXECUTOR)
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
@@ -85,7 +85,7 @@ class ExampleActivity: Activity() {
         }
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String) : AsyncTask<Void, Void, String?>(){
+    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, var count: Int) : AsyncTask<Void, Void, String?>(){
         var errorCode = ERROR_DEFAULT
 
         override fun doInBackground(vararg params: Void?): String? {
@@ -117,12 +117,10 @@ class ExampleActivity: Activity() {
                 when (errorCode) {
                     ERROR_PRICE_CODE -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
                     ERROR_PRICE -> {
-
                         if (count < 100) {
                             Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
-                            PriceTask(context, coffeePriceView, id).execute()
+                            PriceTask(context, coffeePriceView, id, count+1).execute()
                         }
-                        count++
                     }
                 }
             } else {
@@ -134,7 +132,6 @@ class ExampleActivity: Activity() {
             const val ERROR_DEFAULT = 0
             const val ERROR_PRICE_CODE = 2
             const val ERROR_PRICE = 3
-            var count = 0
         }
     }
 
