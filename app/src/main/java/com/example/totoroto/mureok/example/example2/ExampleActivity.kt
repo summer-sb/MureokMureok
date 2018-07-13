@@ -60,7 +60,7 @@ class ExampleActivity: Activity() {
 
             if (result != null) {
                 NameTask(context, coffeeNameView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
-                PriceTask(context, coffeePriceView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                PriceTask(context, coffeePriceView, result , 0).executeOnExecutor(THREAD_POOL_EXECUTOR)
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
@@ -85,8 +85,8 @@ class ExampleActivity: Activity() {
         }
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String) : AsyncTask<Void, Void, String?>(){
-        var errorCode = ERROR_DEFAULT
+    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int) : AsyncTask<Void, Void, String?>(){
+        var errorCode = DEFAULT
 
         override fun doInBackground(vararg params: Void?): String? {
             val price: String
@@ -98,11 +98,12 @@ class ExampleActivity: Activity() {
                 try {
                     price = ApiServer.getPrice(priceCode).toString()
                 } catch (e: IllegalArgumentException) {
-                    errorCode = ERROR_PRICE_CODE
+                    errorCode = ERROR_PRICE
                     return null
                 }
+
             } catch (e: IllegalArgumentException) {
-                errorCode = ERROR_PRICE
+                errorCode = ERROR_PRICE_CODE
                 return null
             }
 
@@ -115,17 +116,24 @@ class ExampleActivity: Activity() {
             if(result == null) {
                 when (errorCode) {
                     ERROR_PRICE_CODE -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
-                    ERROR_PRICE -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                    ERROR_PRICE -> {
+
+                        if (count < RETRY_COUNT) {
+                            PriceTask(context, coffeePriceView, id, count+1).execute()
+                        } else {
+                            Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             } else {
                 coffeePriceView.get()?.text = result
             }
         }
-
         companion object {
-            const val ERROR_DEFAULT = 0
+            const val DEFAULT = 0
             const val ERROR_PRICE_CODE = 2
             const val ERROR_PRICE = 3
+            const val RETRY_COUNT = 100
         }
     }
 
