@@ -59,7 +59,7 @@ class ExampleActivity: Activity() {
             if (result != null) {
                 NameTask(context, coffeeNameView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
                 PriceTask(context, coffeePriceView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
-            }else{
+            } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
         }
@@ -75,19 +75,23 @@ class ExampleActivity: Activity() {
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
 
-            if(result != null){
+            if(result != null) {
                 coffeeNameView.get()?.text = result
-            }else{
+            } else {
                 Toast.makeText(context.get(), "getName 에러 발생", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String) : AsyncTask<Void, Void, String?>(){
-        var errorCode = ERROR_DEFAULT
+        val errDefault = 0
+        val errPriceCode = 2
+        val errPrice = 3
+
+        var errorCode = errDefault
 
         override fun doInBackground(vararg params: Void?): String? {
-            var price: String? = null
+            val price: String?
             val priceCode: String
 
             try {
@@ -96,11 +100,11 @@ class ExampleActivity: Activity() {
                 try {
                     price = ApiServer.getPrice(priceCode).toString()
                 } catch (e: IllegalArgumentException) {
-                    errorCode = ERROR_PRICE_CODE
+                    errorCode = errPriceCode
                     return null
                 }
             } catch (e: IllegalArgumentException) {
-                errorCode = ERROR_PRICE
+                errorCode = errPrice
                 return null
             }
 
@@ -110,20 +114,14 @@ class ExampleActivity: Activity() {
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
 
-            if(result == null){
+            if(result == null) {
                 when (errorCode) {
-                    ERROR_PRICE_CODE -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
-                    ERROR_PRICE -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                    errPriceCode -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
+                    errPrice -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                 }
-            }else{
+            } else {
                 coffeePriceView.get()?.text = result
             }
-        }
-
-        companion object {
-            const val ERROR_DEFAULT = 0
-            const val ERROR_PRICE_CODE = 2
-            const val ERROR_PRICE = 3
         }
     }
 
