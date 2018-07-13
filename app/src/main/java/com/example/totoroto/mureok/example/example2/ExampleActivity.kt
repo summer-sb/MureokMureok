@@ -20,6 +20,8 @@ import java.lang.ref.WeakReference
  * @author Changwoo Hong(chawoo@hpcnt.com)
  * @since 05 - 7월 - 2018
  */
+
+
 class ExampleActivity: Activity() {
     private var disposable : Disposable ?= null
 
@@ -84,11 +86,7 @@ class ExampleActivity: Activity() {
     }
 
     private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String) : AsyncTask<Void, Void, String?>(){
-        val errDefault = 0
-        val errPriceCode = 2
-        val errPrice = 3
-
-        var errorCode = errDefault
+        var errorCode = ERROR_DEFAULT
 
         override fun doInBackground(vararg params: Void?): String? {
             val price: String?
@@ -100,11 +98,11 @@ class ExampleActivity: Activity() {
                 try {
                     price = ApiServer.getPrice(priceCode).toString()
                 } catch (e: IllegalArgumentException) {
-                    errorCode = errPriceCode
+                    errorCode = ERROR_PRICE_CODE
                     return null
                 }
             } catch (e: IllegalArgumentException) {
-                errorCode = errPrice
+                errorCode = ERROR_PRICE
                 return null
             }
 
@@ -116,12 +114,18 @@ class ExampleActivity: Activity() {
 
             if(result == null) {
                 when (errorCode) {
-                    errPriceCode -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
-                    errPrice -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                    ERROR_PRICE_CODE -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
+                    ERROR_PRICE -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 coffeePriceView.get()?.text = result
             }
+        }
+
+        companion object {
+            const val ERROR_DEFAULT = 0
+            const val ERROR_PRICE_CODE = 2
+            const val ERROR_PRICE = 3
         }
     }
 
