@@ -38,28 +38,30 @@ class ExampleActivity: Activity() {
         IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
 
-    private class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, String?>() {
+    private class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, List<String>?>() {
         private val context = WeakReference(context)
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
 
-        override fun doInBackground(vararg params: Void?): String? {
+        override fun doInBackground(vararg params: Void?): List<String>? {
+            val itemList = mutableListOf<String>()
             val idList = ApiServer.getCoffeeIds()
 
+
             for (i in 0 until idList.size) {
-                if (idList[i] == ApiServer.ID_AMERICANO) {
-                    return idList[i]
+                when (idList[i]) {
+                    ApiServer.ID_AMERICANO, ApiServer.ID_LATTE -> itemList.add(idList[i])
                 }
             }
 
-            return null
+            return if (itemList.size != 0) itemList else null
         }
 
-        override fun onPostExecute(result: String?) {
+        override fun onPostExecute(result: List<String>?) {
             super.onPostExecute(result)
 
             if (result != null) {
-                NameTask(context, coffeeNameView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                NameTask(context, coffeeNameView, result[0]).executeOnExecutor(THREAD_POOL_EXECUTOR)
                 PriceTask(context, coffeePriceView, result , 0).executeOnExecutor(THREAD_POOL_EXECUTOR)
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
@@ -85,18 +87,22 @@ class ExampleActivity: Activity() {
         }
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int) : AsyncTask<Void, Void, String?>(){
+    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val idList: List<String>, val count: Int) : AsyncTask<Void, Void, String?>(){
         var errorCode = DEFAULT
 
         override fun doInBackground(vararg params: Void?): String? {
-            val price: String
-            val priceCode: String
+            var price = 0
+            val priceCode: MutableList<String> = mutableListOf()
 
             try {
-                priceCode = ApiServer.getPriceCode(id)
-
+                for(i in 0 until idList.size) {
+                    priceCode.add(ApiServer.getPriceCode(idList[i]))
+                }
                 try {
-                    price = ApiServer.getPrice(priceCode).toString()
+                    for(i in 0 until idList.size) {
+                        price += ApiServer.getPrice(priceCode[i])
+                    }
+
                 } catch (e: IllegalArgumentException) {
                     errorCode = ERROR_PRICE
                     return null
@@ -107,7 +113,7 @@ class ExampleActivity: Activity() {
                 return null
             }
 
-            return price
+            return price.toString()
         }
 
         override fun onPostExecute(result: String?) {
@@ -119,7 +125,7 @@ class ExampleActivity: Activity() {
                     ERROR_PRICE -> {
 
                         if (count < RETRY_COUNT) {
-                            PriceTask(context, coffeePriceView, id, count+1).execute()
+                            PriceTask(context, coffeePriceView, idList, count+1).execute()
                         } else {
                             Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                         }
