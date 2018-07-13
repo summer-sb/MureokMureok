@@ -1,12 +1,17 @@
 package com.example.totoroto.mureok.example.example2
 
 import android.app.Activity
+import android.content.Context
+import android.os.AsyncTask
 import android.os.Bundle
+import android.widget.TextView
+import android.widget.Toast
 import com.example.totoroto.mureok.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_example.*
+import java.lang.ref.WeakReference
 
 /**
  *
@@ -27,6 +32,72 @@ class ExampleActivity: Activity() {
                                .subscribe{
                                    textView.text = it.toString()
                                }
+
+        val printTask = PrintTask(applicationContext, coffeeNameView, coffeePriceView)
+        printTask.execute()
+    }
+
+    private class PrintTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, Pair<String, String>?>() {
+        private val context = WeakReference(context)
+        private val coffeeNameView = WeakReference(coffeeNameView)
+        private val coffeePriceView = WeakReference(coffeePriceView)
+        private var errorNum = 0
+
+        override fun doInBackground(vararg params: Void?): Pair<String, String>? {
+            val idList = ApiServer.getCoffeeIds()
+
+            for (i in 0 until idList.size) {
+                if (idList[i] == ApiServer.ID_AMERICANO) {
+                    var name = ""
+                    var price = ""
+                    var priceCode = ""
+
+                    try {
+                        name = ApiServer.getName(idList[i])
+                    } catch (e: IllegalArgumentException) {
+                        errorNum = 1
+                        return null
+                    }
+
+                    try {
+                        priceCode = ApiServer.getPriceCode(idList[i])
+
+                        try {
+                            price = ApiServer.getPrice(priceCode).toString()
+                        } catch (e: IllegalArgumentException) {
+                            errorNum = 2
+                            return null
+                        }
+
+                    } catch (e: IllegalArgumentException) {
+                        errorNum = 3
+                        return null
+                    }
+
+                    return Pair(name, price)
+                }
+            }
+
+            return null
+        }
+
+        override fun onPostExecute(result: Pair<String, String>?) {
+            super.onPostExecute(result)
+
+            if (result == null) {
+
+                when (errorNum) {
+                    0 -> Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
+                    1 -> Toast.makeText(context.get(), "getName 에러 발생", Toast.LENGTH_SHORT).show()
+                    2 -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
+                    3 -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                }
+
+            } else {
+                coffeeNameView.get()?.text = result.first
+                coffeePriceView.get()?.text = result.second
+            }
+        }
     }
 
     override fun onDestroy() {
