@@ -41,22 +41,22 @@ class ExampleActivity: Activity() {
         private val context = WeakReference(context)
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
+        private var errorNum = 0
 
         override fun doInBackground(vararg params: Void?): Pair<String, String>? {
             val idList = ApiServer.getCoffeeIds()
 
-            for(i in 0 until idList.size) {
+            for (i in 0 until idList.size) {
                 if (idList[i] == ApiServer.ID_AMERICANO) {
                     var name = ""
                     var price = ""
                     var priceCode = ""
-                    var errorNum = ""
 
                     try {
                         name = ApiServer.getName(idList[i])
                     } catch (e: IllegalArgumentException) {
-                        errorNum = "1"
-                        return Pair(errorNum, "")
+                        errorNum = 1
+                        return null
                     }
 
                     try {
@@ -65,16 +65,16 @@ class ExampleActivity: Activity() {
                         try {
                             price = ApiServer.getPrice(priceCode).toString()
                         } catch (e: IllegalArgumentException) {
-                            errorNum = "2"
-                            return Pair(errorNum, "")
+                            errorNum = 2
+                            return null
                         }
 
                     } catch (e: IllegalArgumentException) {
-                        errorNum = "3"
-                        return Pair(errorNum, "")
+                        errorNum = 3
+                        return null
                     }
 
-                    return Pair(name , price)
+                    return Pair(name, price)
                 }
             }
 
@@ -85,20 +85,19 @@ class ExampleActivity: Activity() {
             super.onPostExecute(result)
 
             if (result == null) {
-                Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
-            } else {
-                when (result.first) {
-                    "1" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
-                    "2" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
-                    "3" -> Toast.makeText(context.get(), result.first, Toast.LENGTH_SHORT).show()
-                    else -> {
-                        coffeeNameView.get()?.text = result.first
-                        coffeePriceView.get()?.text = result.second
-                    }
+
+                when (errorNum) {
+                    0 -> Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
+                    1 -> Toast.makeText(context.get(), "getName 에러 발생", Toast.LENGTH_SHORT).show()
+                    2 -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
+                    3 -> Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                 }
+
+            } else {
+                coffeeNameView.get()?.text = result.first
+                coffeePriceView.get()?.text = result.second
             }
         }
-
     }
 
     override fun onDestroy() {
