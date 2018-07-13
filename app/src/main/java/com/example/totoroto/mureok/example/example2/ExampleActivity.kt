@@ -60,7 +60,7 @@ class ExampleActivity: Activity() {
 
             if (result != null) {
                 NameTask(context, coffeeNameView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
-                PriceTask(context, coffeePriceView, result, 0).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                PriceTask(context, coffeePriceView, result , DEFAULT_COUNT).executeOnExecutor(THREAD_POOL_EXECUTOR)
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
@@ -117,8 +117,11 @@ class ExampleActivity: Activity() {
                 when (errorCode) {
                     ERROR_PRICE_CODE -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
                     ERROR_PRICE -> {
+
                         if (count < 100) {
-                            Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                            if (count == DEFAULT_COUNT) {
+                                Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
+                            }
                             PriceTask(context, coffeePriceView, id, count+1).execute()
                         }
                     }
@@ -127,16 +130,17 @@ class ExampleActivity: Activity() {
                 coffeePriceView.get()?.text = result
             }
         }
-
-        companion object {
-            const val ERROR_DEFAULT = 0
-            const val ERROR_PRICE_CODE = 2
-            const val ERROR_PRICE = 3
-        }
     }
 
     override fun onDestroy() {
         disposable?.dispose()
         super.onDestroy()
+    }
+
+    companion object {
+        const val ERROR_DEFAULT = 0
+        const val ERROR_PRICE_CODE = 2
+        const val ERROR_PRICE = 3
+        const val DEFAULT_COUNT = 0
     }
 }
