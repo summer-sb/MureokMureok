@@ -26,6 +26,7 @@ class ExampleActivity: Activity() {
     private var disposable : Disposable ?= null
     private var sum = 0
     private var priceTask: AsyncTask<Void, Void, Int?> ?= null
+    private var priceTaskSize = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +65,8 @@ class ExampleActivity: Activity() {
 
             if (result != null) {
                 NameTask(context, coffeeNameView, result[0]).executeOnExecutor(THREAD_POOL_EXECUTOR)
+
+                priceTaskSize = result.size
                 for (i in 0 until result.size) {
                     priceTask = PriceTask(context, coffeePriceView, result[i],0).executeOnExecutor(THREAD_POOL_EXECUTOR)
                 }
@@ -155,8 +158,11 @@ class ExampleActivity: Activity() {
 
     override fun onDestroy() {
         disposable?.dispose()
-        priceTask?.cancel(true)
 
+        for(i in 0 until priceTaskSize) {
+            priceTask?.cancel(true)
+        }
+        
         super.onDestroy()
     }
 }
