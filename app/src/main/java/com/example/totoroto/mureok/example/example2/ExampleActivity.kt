@@ -66,7 +66,7 @@ class ExampleActivity: Activity() {
                 val priceList = mutableListOf<Int>()
 
                 for (i in 0 until result.size) {
-                    PriceTask(context, coffeePriceView, result[i], 0, priceList).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                    PriceTask(context, coffeePriceView, result[i], result.size,0, priceList).executeOnExecutor(THREAD_POOL_EXECUTOR)
                 }
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
@@ -94,7 +94,7 @@ class ExampleActivity: Activity() {
 
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int, var priceList: MutableList<Int>) : AsyncTask<Void, Void, Int?>(){
+    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val idSize: Int, val count: Int, var priceList: MutableList<Int>) : AsyncTask<Void, Void, Int?>(){
         var errorCode = DEFAULT
 
         override fun doInBackground(vararg params: Void?): Int? {
@@ -118,11 +118,17 @@ class ExampleActivity: Activity() {
                 return null
             }
 
-            priceList.add(price)
-
             var sum = 0
 
-            for(i in 0 until priceList.size){
+            synchronized(priceList) {
+                priceList.add(price)
+            }
+            
+            while(priceList.size != idSize){
+                Thread.sleep(1000)
+            }
+
+            for (i in 0 until priceList.size) {
                 sum += priceList[i]
             }
 
@@ -141,7 +147,7 @@ class ExampleActivity: Activity() {
                     ERROR_PRICE -> {
 
                         if (count < RETRY_COUNT) {
-                            PriceTask(context, coffeePriceView, id, count+1, priceList).execute()
+                            PriceTask(context, coffeePriceView, id, idSize, count+1, priceList).execute()
                         } else {
                             Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                         }
