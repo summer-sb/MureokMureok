@@ -24,6 +24,8 @@ import java.lang.ref.WeakReference
 
 class ExampleActivity: Activity() {
     private var disposable : Disposable ?= null
+    private var sum = 0
+    private var priceTask: AsyncTask<Void, Void, Int?> ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class ExampleActivity: Activity() {
         IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
 
-    private class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, List<String>?>() {
+    private inner class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, List<String>?>() {
         private val context = WeakReference(context)
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
@@ -62,12 +64,9 @@ class ExampleActivity: Activity() {
 
             if (result != null) {
                 NameTask(context, coffeeNameView, result[0]).executeOnExecutor(THREAD_POOL_EXECUTOR)
-
-                val priceList = mutableListOf<Int>()
                 for (i in 0 until result.size) {
-                    PriceTask(context, coffeePriceView, result[i],0, priceList).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                    priceTask = PriceTask(context, coffeePriceView, result[i],0).executeOnExecutor(THREAD_POOL_EXECUTOR)
                 }
-
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
@@ -94,9 +93,8 @@ class ExampleActivity: Activity() {
 
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int, val priceList: MutableList<Int>) : AsyncTask<Void, Void, Int?>(){
+    private inner class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int) : AsyncTask<Void, Void, Int?>(){
         var errorCode = DEFAULT
-        var sum: Int = 0
 
         override fun doInBackground(vararg params: Void?): Int? {
             val price: Int
@@ -134,7 +132,7 @@ class ExampleActivity: Activity() {
                     ERROR_PRICE -> {
 
                         if (count < RETRY_COUNT) {
-                            PriceTask(context, coffeePriceView, id, count+1, priceList).execute()
+                            PriceTask(context, coffeePriceView, id, count+1).execute()
                         } else {
                             Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                         }
@@ -142,25 +140,23 @@ class ExampleActivity: Activity() {
                 }
 
             } else {
-                priceList.add(result)
-
-                for(i in 0 until priceList.size) {
-                    sum += priceList[i]
-                }
+                sum += result
                 coffeePriceView.get()?.text = sum.toString()
             }
         }
+    }
 
-        companion object {
-            const val DEFAULT = 0
-            const val ERROR_PRICE_CODE = 2
-            const val ERROR_PRICE = 3
-            const val RETRY_COUNT = 100
-        }
+    companion object {
+        const val DEFAULT = 0
+        const val ERROR_PRICE_CODE = 2
+        const val ERROR_PRICE = 3
+        const val RETRY_COUNT = 100
     }
 
     override fun onDestroy() {
         disposable?.dispose()
+        priceTask?.cancel(true)
+
         super.onDestroy()
     }
 }
