@@ -64,10 +64,10 @@ class ExampleActivity: Activity() {
                 NameTask(context, coffeeNameView, result[0]).executeOnExecutor(THREAD_POOL_EXECUTOR)
 
                 val priceList = mutableListOf<Int>()
-
                 for (i in 0 until result.size) {
-                    PriceTask(context, coffeePriceView, result[i], result.size,0, priceList).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                    PriceTask(context, coffeePriceView, result[i],0, priceList).executeOnExecutor(THREAD_POOL_EXECUTOR)
                 }
+
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
@@ -94,8 +94,9 @@ class ExampleActivity: Activity() {
 
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val idSize: Int, val count: Int, var priceList: MutableList<Int>) : AsyncTask<Void, Void, Int?>(){
+    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int, val priceList: MutableList<Int>) : AsyncTask<Void, Void, Int?>(){
         var errorCode = DEFAULT
+        var sum: Int = 0
 
         override fun doInBackground(vararg params: Void?): Int? {
             val price: Int
@@ -118,21 +119,7 @@ class ExampleActivity: Activity() {
                 return null
             }
 
-            var sum = 0
-
-            synchronized(priceList) {
-                priceList.add(price)
-            }
-            
-            while(priceList.size != idSize){
-                Thread.sleep(1000)
-            }
-
-            for (i in 0 until priceList.size) {
-                sum += priceList[i]
-            }
-
-            return sum
+            return price
         }
 
 
@@ -147,7 +134,7 @@ class ExampleActivity: Activity() {
                     ERROR_PRICE -> {
 
                         if (count < RETRY_COUNT) {
-                            PriceTask(context, coffeePriceView, id, idSize, count+1, priceList).execute()
+                            PriceTask(context, coffeePriceView, id, count+1, priceList).execute()
                         } else {
                             Toast.makeText(context.get(), "getPrice 에러 발생", Toast.LENGTH_SHORT).show()
                         }
@@ -155,8 +142,12 @@ class ExampleActivity: Activity() {
                 }
 
             } else {
-                coffeePriceView.get()?.text = result.toString()
+                priceList.add(result)
 
+                for(i in 0 until priceList.size) {
+                    sum += priceList[i]
+                }
+                coffeePriceView.get()?.text = sum.toString()
             }
         }
 
