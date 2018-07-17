@@ -25,7 +25,7 @@ import java.lang.ref.WeakReference
 class ExampleActivity: Activity() {
     private var disposable : Disposable ?= null
     private var sum = 0
-    private var priceTask: MutableList<AsyncTask<Void, Void, Int?>> = mutableListOf()
+    private var priceTaskList: MutableList<AsyncTask<Void, Void, Int?>> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +66,8 @@ class ExampleActivity: Activity() {
                 NameTask(context, coffeeNameView, result[0]).executeOnExecutor(THREAD_POOL_EXECUTOR)
 
                 for (i in 0 until result.size) {
-                    priceTask.add(PriceTask(context, coffeePriceView, result[i],0))
-                    priceTask[i].executeOnExecutor(THREAD_POOL_EXECUTOR)
+                    priceTaskList.add(PriceTask(context, coffeePriceView, result[i],0))
+                    priceTaskList[i].executeOnExecutor(THREAD_POOL_EXECUTOR)
                 }
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
@@ -158,8 +158,8 @@ class ExampleActivity: Activity() {
     override fun onDestroy() {
         disposable?.dispose()
 
-        for(i in 0 until priceTask.size) {
-            priceTask[i].cancel(true)
+        for(i in 0 until priceTaskList.size) {
+            priceTaskList[i].cancel(true)
         }
 
         super.onDestroy()
