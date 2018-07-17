@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference
 
 /**
  *
- * TODO ApiServer로부터 데이터를 받아와서 coffeeNameView와 coffeePriceView에 아메리카노의 이름과 가격이 출력되게 하세요 (AsyncTask를 사용할 것)
+ * TODO ApiServer로부터 데이터를 받아와서 coffeeNameView와 coffeePriceView에 아메리카노의 이름과 가격이 출력되게 하세요
  *
  * @author Changwoo Hong(chawoo@hpcnt.com)
  * @since 05 - 7월 - 2018
@@ -23,7 +23,6 @@ import java.lang.ref.WeakReference
 
 
 class ExampleActivity: Activity() {
-    private var disposable : Disposable ?= null
     private var sum = 0
     private var priceTaskList: MutableList<AsyncTask<Void, Void, Int?>> = mutableListOf()
 
@@ -31,13 +30,7 @@ class ExampleActivity: Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
 
-        disposable = ApiServer.observeItem().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe{
-                    textView.text = it.toString()
-                }
-
-        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
+//        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
 
     private inner class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, List<String>?>() {
@@ -156,8 +149,6 @@ class ExampleActivity: Activity() {
     }
 
     override fun onDestroy() {
-        disposable?.dispose()
-
         for(i in 0 until priceTaskList.size) {
             priceTaskList[i].cancel(true)
         }

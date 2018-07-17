@@ -35,7 +35,7 @@ class ExampleActivity: Activity() {
     private fun loadByAsyncTask() {
         // TODO AsyncTask를 이용하여 textView에 ApiServer로부터 받아온 데이터를 출력하세요
 
-        ExampleTask().execute()
+        ExampleTask().get().execute()
     }
 
     internal inner class ExampleTask : AsyncTask<Void, Void, String>() {

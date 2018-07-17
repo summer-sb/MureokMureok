@@ -3,6 +3,7 @@ package com.example.totoroto.mureok.example.example2
 import android.os.Looper
 import android.os.NetworkOnMainThreadException
 import io.reactivex.Observable
+import io.reactivex.Single
 
 /**
  * 데이터를 제공하는 서버라고 가정합니다
@@ -17,13 +18,20 @@ object ApiServer {
     const val PRICE_CODE_2000 = "PRICE_CODE_2000"
     const val PRICE_CODE_2500 = "PRICE_CODE_2500"
 
-    fun observeItem(): Observable<Int> {
-        return Observable.create {
-            checkThread()
-            Thread.sleep(5000)
-            it.onNext(0)
-            it.onComplete()
-        }
+    fun loadCoffeeIds(): Single<List<String>> = Single.fromCallable {
+        return@fromCallable getCoffeeIds()
+    }
+
+    fun loadPriceCode(id: String): Single<String> = Single.fromCallable {
+        return@fromCallable getPriceCode(id)
+    }
+
+    fun loadPrice(priceCode: String): Single<Int> = Single.fromCallable {
+        return@fromCallable getPrice(priceCode)
+    }
+
+    fun loadName(id: String): Single<String> = Single.fromCallable {
+        return@fromCallable getName(id)
     }
 
     fun getCoffeeIds(): List<String> {
