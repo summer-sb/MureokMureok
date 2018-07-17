@@ -24,6 +24,8 @@ import java.lang.ref.WeakReference
 
 class ExampleActivity: Activity() {
     private var disposable : Disposable ?= null
+    private var sum = 0
+    private var priceTaskList: MutableList<AsyncTask<Void, Void, Int?>> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,33 +40,40 @@ class ExampleActivity: Activity() {
         IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
 
-    private class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, String?>() {
+    private inner class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, List<String>?>() {
         private val context = WeakReference(context)
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
 
-        override fun doInBackground(vararg params: Void?): String? {
+        override fun doInBackground(vararg params: Void?): List<String>? {
+            val itemList = mutableListOf<String>()
             val idList = ApiServer.getCoffeeIds()
 
+
             for (i in 0 until idList.size) {
-                if (idList[i] == ApiServer.ID_AMERICANO) {
-                    return idList[i]
+                when (idList[i]) {
+                    ApiServer.ID_AMERICANO, ApiServer.ID_LATTE -> itemList.add(idList[i])
                 }
             }
 
-            return null
+            return if (itemList.size != 0) itemList else null
         }
 
-        override fun onPostExecute(result: String?) {
+        override fun onPostExecute(result: List<String>?) {
             super.onPostExecute(result)
 
             if (result != null) {
-                NameTask(context, coffeeNameView, result).executeOnExecutor(THREAD_POOL_EXECUTOR)
-                PriceTask(context, coffeePriceView, result , 0).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                NameTask(context, coffeeNameView, result[0]).executeOnExecutor(THREAD_POOL_EXECUTOR)
+
+                for (i in 0 until result.size) {
+                    priceTaskList.add(PriceTask(context, coffeePriceView, result[i],0))
+                    priceTaskList[i].executeOnExecutor(THREAD_POOL_EXECUTOR)
+                }
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     private class NameTask(val context : WeakReference<Context>, val coffeeNameView : WeakReference<TextView>, val id : String) : AsyncTask<Void, Void, String>() {
@@ -83,39 +92,45 @@ class ExampleActivity: Activity() {
                 Toast.makeText(context.get(), "getName 에러 발생", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
-    private class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int) : AsyncTask<Void, Void, String?>(){
+    private inner class PriceTask(val context : WeakReference<Context>, val coffeePriceView: WeakReference<TextView>, val id: String, val count: Int) : AsyncTask<Void, Void, Int?>(){
         var errorCode = DEFAULT
 
-        override fun doInBackground(vararg params: Void?): String? {
-            val price: String
+        override fun doInBackground(vararg params: Void?): Int? {
+            val price: Int
             val priceCode: String
 
             try {
                 priceCode = ApiServer.getPriceCode(id)
 
                 try {
-                    price = ApiServer.getPrice(priceCode).toString()
+                    price = ApiServer.getPrice(priceCode)
                 } catch (e: IllegalArgumentException) {
                     errorCode = ERROR_PRICE
+
                     return null
                 }
 
             } catch (e: IllegalArgumentException) {
                 errorCode = ERROR_PRICE_CODE
+
                 return null
             }
 
             return price
         }
 
-        override fun onPostExecute(result: String?) {
+
+        override fun onPostExecute(result: Int?) {
             super.onPostExecute(result)
 
             if(result == null) {
+
                 when (errorCode) {
                     ERROR_PRICE_CODE -> Toast.makeText(context.get(), "getPriceCode 에러 발생", Toast.LENGTH_SHORT).show()
+
                     ERROR_PRICE -> {
 
                         if (count < RETRY_COUNT) {
@@ -125,20 +140,28 @@ class ExampleActivity: Activity() {
                         }
                     }
                 }
+
             } else {
-                coffeePriceView.get()?.text = result
+                sum += result
+                coffeePriceView.get()?.text = sum.toString()
             }
         }
-        companion object {
-            const val DEFAULT = 0
-            const val ERROR_PRICE_CODE = 2
-            const val ERROR_PRICE = 3
-            const val RETRY_COUNT = 100
-        }
+    }
+
+    companion object {
+        const val DEFAULT = 0
+        const val ERROR_PRICE_CODE = 2
+        const val ERROR_PRICE = 3
+        const val RETRY_COUNT = 100
     }
 
     override fun onDestroy() {
         disposable?.dispose()
+
+        for(i in 0 until priceTaskList.size) {
+            priceTaskList[i].cancel(true)
+        }
+
         super.onDestroy()
     }
 }
