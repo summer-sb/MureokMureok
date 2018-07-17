@@ -25,8 +25,8 @@ import java.lang.ref.WeakReference
 class ExampleActivity: Activity() {
     private var disposable : Disposable ?= null
     private var sum = 0
-    private var priceTask: MutableList<AsyncTask<Void, Void, Int?>> = mutableListOf()
-    private var priceTaskSize = 0
+    private var americanoPriceTask: AsyncTask<Void, Void, Int?> ?= null
+    private var lattePriceTask: AsyncTask<Void, Void, Int?> ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,11 +66,8 @@ class ExampleActivity: Activity() {
             if (result != null) {
                 NameTask(context, coffeeNameView, result[0]).executeOnExecutor(THREAD_POOL_EXECUTOR)
 
-                priceTaskSize = result.size
-                for (i in 0 until result.size) {
-                    priceTask.add(PriceTask(context, coffeePriceView, result[i],0))
-                    priceTask[i].executeOnExecutor(THREAD_POOL_EXECUTOR)
-                }
+                americanoPriceTask = PriceTask(context, coffeePriceView, result[0],0).executeOnExecutor(THREAD_POOL_EXECUTOR)
+                lattePriceTask = PriceTask(context, coffeePriceView, result[1],0).executeOnExecutor(THREAD_POOL_EXECUTOR)
             } else {
                 Toast.makeText(context.get(), "데이터 없음", Toast.LENGTH_SHORT).show()
             }
@@ -160,9 +157,8 @@ class ExampleActivity: Activity() {
     override fun onDestroy() {
         disposable?.dispose()
 
-        for(i in 0 until priceTaskSize) {
-            priceTask[i].cancel(true)
-        }
+        americanoPriceTask?.cancel(true)
+        lattePriceTask?.cancel(true)
 
         super.onDestroy()
     }
