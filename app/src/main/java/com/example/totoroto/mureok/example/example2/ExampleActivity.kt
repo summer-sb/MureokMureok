@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import com.example.totoroto.mureok.R
+import com.example.totoroto.mureok.R.id.coffeeNameView
+import com.example.totoroto.mureok.R.id.coffeePriceView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -31,18 +33,16 @@ class ExampleActivity: Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
 
-        val observable = ApiServer.loadCoffeeIds().toObservable()
+        val americanoId = ApiServer.loadCoffeeIds().flatMapObservable { Observable.fromIterable(it) }
+                                                                  .filter { it == ApiServer.ID_AMERICANO }.single("default value")
 
-        val americanoId = observable.flatMap { it -> Observable.fromIterable(it) }
-                .filter { it -> it == ApiServer.ID_AMERICANO }.single("")
-
-        americanoId.flatMap { it -> ApiServer.loadName(it) }
+        americanoId.flatMap { ApiServer.loadName(it) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe{it -> coffeeNameView.text = it}
 
-        americanoId.flatMap { it -> ApiServer.loadPriceCode(it) }
-                .flatMap { it -> ApiServer.loadPrice(it) }
+        americanoId.flatMap { ApiServer.loadPriceCode(it) }
+                .flatMap { ApiServer.loadPrice(it) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe{it -> coffeePriceView.text = it.toString()}
