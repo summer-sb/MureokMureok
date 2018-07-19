@@ -7,11 +7,10 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import com.example.totoroto.mureok.R
-import com.example.totoroto.mureok.R.id.coffeeNameView
-import com.example.totoroto.mureok.R.id.coffeePriceView
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_example.*
 import java.lang.ref.WeakReference
@@ -34,19 +33,18 @@ class ExampleActivity: Activity() {
         setContentView(R.layout.activity_example)
 
         val americanoId = ApiServer.loadCoffeeIds().flatMapObservable { Observable.fromIterable(it) }
-                                                                  .filter { it == ApiServer.ID_AMERICANO }.single("default value")
+                                                                  .filter { it == ApiServer.ID_AMERICANO }.firstOrError()
 
-        americanoId.flatMap { ApiServer.loadName(it) }
+        val name = americanoId.flatMap { ApiServer.loadName(it) }
+        val price = americanoId.flatMap { ApiServer.loadPriceCode(it) }.flatMap { ApiServer.loadPrice(it) }
+
+        Single.zip(name, price, BiFunction { t1: String, t2: Int -> Pair(t1, t2) })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe{it -> coffeeNameView.text = it}
-
-        americanoId.flatMap { ApiServer.loadPriceCode(it) }
-                .flatMap { ApiServer.loadPrice(it) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe{it -> coffeePriceView.text = it.toString()}
-
+                .subscribe { pair -> coffeeNameView.text = pair.first
+                    coffeePriceView.text = pair.second.toString()
+        }
+        
 //        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
 
