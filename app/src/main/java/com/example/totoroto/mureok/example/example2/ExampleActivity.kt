@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import com.example.totoroto.mureok.R
@@ -33,18 +34,29 @@ class ExampleActivity: Activity() {
         setContentView(R.layout.activity_example)
 
         val americanoId = ApiServer.loadCoffeeIds().flatMapObservable { Observable.fromIterable(it) }
-                                                                  .filter { it == ApiServer.ID_AMERICANO }.firstOrError()
+                .filter { it == ApiServer.ID_AMERICANO }.firstOrError()
 
-        val name = americanoId.flatMap { ApiServer.loadName(it) }
-        val price = americanoId.flatMap { ApiServer.loadPriceCode(it) }.flatMap { ApiServer.loadPrice(it) }
-
-        Single.zip(name, price, BiFunction { t1: String, t2: Int -> Pair(t1, t2) })
-                .subscribeOn(Schedulers.io())
+        americanoId.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { pair -> coffeeNameView.text = pair.first
-                    coffeePriceView.text = pair.second.toString()
-        }
-        
+                .subscribe({
+
+                    Log.d("SUMM", "onSuccess")
+
+                    val name = ApiServer.loadName(it)
+                    val price = ApiServer.loadPriceCode(it).flatMap { ApiServer.loadPrice(it) }
+
+                    Single.zip(name, price, BiFunction { t1: String, t2: Int -> Pair(t1, t2) })
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { pair -> coffeeNameView.text = pair.first
+                                coffeePriceView.text = pair.second.toString()
+                            }
+
+                },{
+                    Log.d("SUMM","onError")
+                })
+
+
 //        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
 
