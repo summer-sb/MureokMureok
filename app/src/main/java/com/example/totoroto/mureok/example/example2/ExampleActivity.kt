@@ -4,12 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import com.example.totoroto.mureok.R
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
@@ -33,29 +31,16 @@ class ExampleActivity: Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
 
-        val americanoId = ApiServer.loadCoffeeIds().flatMapObservable { Observable.fromIterable(it) }
+        ApiServer.loadCoffeeIds().flatMapObservable { Observable.fromIterable(it) }
                 .filter { it == ApiServer.ID_AMERICANO }.firstOrError()
-
-        americanoId.subscribeOn(Schedulers.io())
+                .flatMap { ApiServer.loadName(it).zipWith (
+                        ApiServer.loadPriceCode(it).flatMap { ApiServer.loadPrice(it) },
+                        BiFunction { name: String, price: Int ->  Pair(name, price) } ) }
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-
-                    Log.d("SUMM", "onSuccess")
-
-                    val name = ApiServer.loadName(it)
-                    val price = ApiServer.loadPriceCode(it).flatMap { ApiServer.loadPrice(it) }
-
-                    Single.zip(name, price, BiFunction { t1: String, t2: Int -> Pair(t1, t2) })
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe { pair -> coffeeNameView.text = pair.first
-                                coffeePriceView.text = pair.second.toString()
-                            }
-
-                },{
-                    Log.d("SUMM","onError")
-                })
-
+                .subscribe { pair -> coffeeNameView.text = pair.first
+                    coffeePriceView.text = pair.second.toString()
+                }
 
 //        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
