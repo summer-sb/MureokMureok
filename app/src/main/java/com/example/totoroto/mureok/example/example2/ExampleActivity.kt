@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.totoroto.mureok.R
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
@@ -33,9 +34,11 @@ class ExampleActivity: Activity() {
 
         ApiServer.loadCoffeeIds().flatMapObservable { Observable.fromIterable(it) }
                 .filter { it == ApiServer.ID_AMERICANO }.firstOrError()
-                .flatMap { ApiServer.loadName(it).zipWith (
-                        ApiServer.loadPriceCode(it).flatMap { ApiServer.loadPrice(it) },
-                        BiFunction { name: String, price: Int ->  Pair(name, price) } ) }
+                .flatMap {
+                    Single.zip(ApiServer.loadName(it),
+                            ApiServer.loadPriceCode(it).flatMap { ApiServer.loadPrice(it) },
+                            BiFunction { a: String, b: Int ->  Pair(a, b) })
+                }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { pair -> coffeeNameView.text = pair.first
