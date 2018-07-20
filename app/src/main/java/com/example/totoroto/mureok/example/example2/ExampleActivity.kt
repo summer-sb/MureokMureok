@@ -30,18 +30,18 @@ class ExampleActivity: Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
 
-        val idConnectableObservable = ApiServer.loadCoffeeIds().subscribeOn(Schedulers.io()).toObservable().replay(1)
+        val idConnectableObservable = ApiServer.loadCoffeeIds().subscribeOn(Schedulers.io()).toObservable().publish()
 
         val id = idConnectableObservable.flatMap { Observable.fromIterable(it) }
                 .filter{ it == ApiServer.ID_AMERICANO}.firstOrError()
-
-        idConnectableObservable.connect()
 
         id.flatMap { ApiServer.loadName(it) }.observeOn(AndroidSchedulers.mainThread())
                 .subscribe { name -> coffeeNameView.text = name }
 
         id.flatMap { ApiServer.loadPriceCode(it) }.flatMap { ApiServer.loadPrice(it) }.observeOn(AndroidSchedulers.mainThread())
                 .subscribe { price -> coffeePriceView.text = price.toString() }
+
+        idConnectableObservable.connect()
 
 //        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
