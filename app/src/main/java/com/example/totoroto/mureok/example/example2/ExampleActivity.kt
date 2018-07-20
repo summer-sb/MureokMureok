@@ -36,10 +36,23 @@ class ExampleActivity: Activity() {
                 .filter{ it == ApiServer.ID_AMERICANO}.firstOrError()
 
         id.flatMap { ApiServer.loadName(it) }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe { name -> coffeeNameView.text = name }
+                .subscribe ({ name -> coffeeNameView.text = name },
+                        { Toast.makeText(applicationContext, "getName() 에러", Toast.LENGTH_SHORT).show() } )
 
-        id.flatMap { ApiServer.loadPriceCode(it) }.flatMap { ApiServer.loadPrice(it) }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe { price -> coffeePriceView.text = price.toString() }
+        var situation = DEFAULT
+
+        id.flatMap { situation = ERROR_PRICE_CODE
+            ApiServer.loadPriceCode(it)
+        }.flatMap { situation = ERROR_PRICE
+            ApiServer.loadPrice(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe ({ price -> coffeePriceView.text = price.toString() }
+                        , {
+                    when(situation) {
+                        ERROR_PRICE_CODE -> Toast.makeText(applicationContext, "getPriceCode() 에러", Toast.LENGTH_SHORT).show()
+                        ERROR_PRICE -> Toast.makeText(applicationContext, "getPrice() 에러", Toast.LENGTH_SHORT).show()
+                    }
+                })
 
         idConnectableObservable.connect()
 
