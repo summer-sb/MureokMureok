@@ -32,25 +32,25 @@ class ExampleActivity: Activity() {
 
         val idConnectableObservable = ApiServer.loadCoffeeIds().subscribeOn(Schedulers.io()).toObservable().publish()
 
-        val id = idConnectableObservable.observeOn(AndroidSchedulers.mainThread()).flatMap { Observable.fromIterable(it) }
+        val id = idConnectableObservable.flatMap { Observable.fromIterable(it) }
                 .filter{ it == ApiServer.ID_AMERICANO}.firstOrError()
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnError { Toast.makeText(applicationContext, "데이터 없음", Toast.LENGTH_SHORT).show() }
 
-        id.flatMap { ApiServer.loadName(it) }.observeOn(AndroidSchedulers.mainThread())
+        id.observeOn(Schedulers.io()).flatMap { ApiServer.loadName(it) }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ({ name -> coffeeNameView.text = name },
                         { Toast.makeText(applicationContext, "getName() 에러", Toast.LENGTH_SHORT).show() } )
 
-        id.observeOn(AndroidSchedulers.mainThread()
-        ).flatMap {
-            ApiServer.loadPriceCode(it)
-        }.doOnError {
-             Toast.makeText(applicationContext, "getPriceCode() 에러", Toast.LENGTH_SHORT).show()
-        }.flatMap {
-            ApiServer.loadPrice(it)
-        }.doOnError {
+        id.observeOn(Schedulers.io()).flatMap { ApiServer.loadPriceCode(it)
+        }.observeOn(AndroidSchedulers.mainThread()
+        ).doOnError {
+            Toast.makeText(applicationContext, "getPriceCode() 에러", Toast.LENGTH_SHORT).show()
+        }.observeOn(Schedulers.io()).flatMap { ApiServer.loadPrice(it)
+        }.observeOn(AndroidSchedulers.mainThread()
+        ).doOnError {
             Toast.makeText(applicationContext, "getPrice() 에러", Toast.LENGTH_SHORT).show()
-        }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({ price -> coffeePriceView.text = price.toString() }, {})
+        }.subscribe ({ price -> coffeePriceView.text = price.toString() }, {})
 
         idConnectableObservable.connect()
 
