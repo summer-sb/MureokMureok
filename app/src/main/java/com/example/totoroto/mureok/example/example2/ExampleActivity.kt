@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import com.example.totoroto.mureok.R
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_example.*
 import java.lang.ref.WeakReference
@@ -29,6 +29,19 @@ class ExampleActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
+
+        val idConnectableObservable = ApiServer.loadCoffeeIds().subscribeOn(Schedulers.io()).toObservable().publish()
+
+        val id = idConnectableObservable.flatMap { Observable.fromIterable(it) }
+                .filter{ it == ApiServer.ID_AMERICANO}.firstOrError()
+
+        id.flatMap { ApiServer.loadName(it) }.observeOn(AndroidSchedulers.mainThread())
+                .subscribe { name -> coffeeNameView.text = name }
+
+        id.flatMap { ApiServer.loadPriceCode(it) }.flatMap { ApiServer.loadPrice(it) }.observeOn(AndroidSchedulers.mainThread())
+                .subscribe { price -> coffeePriceView.text = price.toString() }
+
+        idConnectableObservable.connect()
 
 //        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
