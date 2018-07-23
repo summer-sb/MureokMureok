@@ -10,6 +10,7 @@ import com.example.totoroto.mureok.R
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_example.*
 import java.lang.ref.WeakReference
@@ -33,17 +34,21 @@ class ExampleActivity: Activity() {
 
         val idConnectableObservable = ApiServer.loadCoffeeIds().subscribeOn(Schedulers.io()).toObservable().publish()
 
-        val id = idConnectableObservable.flatMap { Observable.fromIterable(it) }
-                .filter{ it == ApiServer.ID_AMERICANO}.firstOrError()
+        val americanoId = idConnectableObservable.flatMap { Observable.fromIterable(it) }
+                .filter { it == ApiServer.ID_AMERICANO }.firstOrError()
                 .onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
 
-        id.flatMap { ApiServer.loadName(it)
-                .onErrorResumeNext { Single.error(CoffeeException(ERROR_NAME)) }
+        val latteId = idConnectableObservable.flatMap { Observable.fromIterable(it) }
+                .filter { it == ApiServer.ID_LATTE }.firstOrError()
+                .onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
 
+        americanoId.flatMap {
+            ApiServer.loadName(it)
+                    .onErrorResumeNext { Single.error(CoffeeException(ERROR_NAME)) }
         }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({ name -> coffeeNameView.text = name },
+                .subscribe({ name -> coffeeNameView.text = name },
                         {
-                            if ( it is CoffeeException) {
+                            if (it is CoffeeException) {
                                 when (it.errorCode) {
                                     ERROR_ID -> Toast.makeText(applicationContext, "데이터 없음", Toast.LENGTH_SHORT).show()
                                     ERROR_NAME -> Toast.makeText(applicationContext, "getName() 에러", Toast.LENGTH_SHORT).show()
@@ -52,32 +57,67 @@ class ExampleActivity: Activity() {
                         }
                 )
 
-        id.flatMap { ApiServer.loadPriceCode(it)
-                .onErrorResumeNext {
-                    Single.error(CoffeeException(ERROR_PRICE_CODE))
+        latteId.flatMap {
+            ApiServer.loadName(it)
+                    .onErrorResumeNext { Single.error(CoffeeException(ERROR_NAME)) }
+
+        }.observeOn(AndroidSchedulers.mainThread())
+                .subscribe({}, {
+                    if (it is CoffeeException) {
+                        when (it.errorCode) {
+                            ERROR_ID -> Toast.makeText(applicationContext, "데이터 없음", Toast.LENGTH_SHORT).show()
+                            ERROR_NAME -> Toast.makeText(applicationContext, "getName() 에러", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
-        }.flatMap { ApiServer.loadPrice(it)
-                .onErrorResumeNext {
-                    Single.error(CoffeeException(ERROR_PRICE))
-                }
-        }.observeOn(AndroidSchedulers.mainThread()
-        ).subscribe({ price -> coffeePriceView.text = price.toString() }, {
-            if (it is CoffeeException) {
-                when (it.errorCode) {
-                    ERROR_PRICE_CODE -> Toast.makeText(applicationContext, "getPriceCode() 에러", Toast.LENGTH_SHORT).show()
-                    ERROR_PRICE -> Toast.makeText(applicationContext, "getPrice() 에러", Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
+                )
+
+        val americanoPriceSingle = americanoId.flatMap {
+            ApiServer.loadPriceCode(it)
+                    .onErrorResumeNext {
+                        Single.error(CoffeeException(ERROR_PRICE_CODE))
+                    }
+        }.flatMap {
+            ApiServer.loadPrice(it)
+                    .onErrorResumeNext {
+                        Single.error(CoffeeException(ERROR_PRICE))
+                    }
+        }
+
+        val lattePriceSingle = latteId.flatMap {
+            ApiServer.loadPriceCode(it)
+                    .onErrorResumeNext {
+                        Single.error(CoffeeException(ERROR_PRICE_CODE))
+                    }
+        }.flatMap {
+            ApiServer.loadPrice(it)
+                    .onErrorResumeNext {
+                        Single.error(CoffeeException(ERROR_PRICE))
+                    }
+        }
+
+        Single.zip(americanoPriceSingle, lattePriceSingle,
+                BiFunction { americanoPrice: Int, lattePrice: Int -> Pair(americanoPrice, lattePrice) })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ pair -> coffeePriceView.text = (pair.first + pair.second).toString() }
+                        , {
+                    if (it is CoffeeException) {
+                        when (it.errorCode) {
+                            ERROR_PRICE_CODE -> Toast.makeText(applicationContext, "getPriceCode() 에러", Toast.LENGTH_SHORT).show()
+                            ERROR_PRICE -> Toast.makeText(applicationContext, "getPrice() 에러", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                })
+
 
         idConnectableObservable.connect()
 
 //        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
 
-    private class CoffeeException(val errorCode: Int = DEFAULT): IllegalArgumentException()
+    private class CoffeeException(val errorCode: Int = DEFAULT) : IllegalArgumentException()
 
-    private inner class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, List<String>?>() {
+    private inner class IdTask(context: Context, coffeeNameView: TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, List<String>?>() {
         private val context = WeakReference(context)
         private val coffeeNameView = WeakReference(coffeeNameView)
         private val coffeePriceView = WeakReference(coffeePriceView)
