@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.totoroto.mureok.R
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_example.*
@@ -34,17 +35,47 @@ class ExampleActivity: Activity() {
 
         val id = idConnectableObservable.flatMap { Observable.fromIterable(it) }
                 .filter{ it == ApiServer.ID_AMERICANO}.firstOrError()
+                .onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
 
-        id.flatMap { ApiServer.loadName(it) }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe { name -> coffeeNameView.text = name }
+        id.flatMap { ApiServer.loadName(it)
+                .onErrorResumeNext { Single.error(CoffeeException(ERROR_NAME)) }
 
-        id.flatMap { ApiServer.loadPriceCode(it) }.flatMap { ApiServer.loadPrice(it) }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe { price -> coffeePriceView.text = price.toString() }
+        }.observeOn(AndroidSchedulers.mainThread())
+                .subscribe ({ name -> coffeeNameView.text = name },
+                        {
+                            if ( it is CoffeeException) {
+                                when (it.errorCode) {
+                                    ERROR_ID -> Toast.makeText(applicationContext, "데이터 없음", Toast.LENGTH_SHORT).show()
+                                    ERROR_NAME -> Toast.makeText(applicationContext, "getName() 에러", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                )
+
+        id.flatMap { ApiServer.loadPriceCode(it)
+                .onErrorResumeNext {
+                    Single.error(CoffeeException(ERROR_PRICE_CODE))
+                }
+        }.flatMap { ApiServer.loadPrice(it)
+                .onErrorResumeNext {
+                    Single.error(CoffeeException(ERROR_PRICE))
+                }
+        }.observeOn(AndroidSchedulers.mainThread()
+        ).subscribe({ price -> coffeePriceView.text = price.toString() }, {
+            if (it is CoffeeException) {
+                when (it.errorCode) {
+                    ERROR_PRICE_CODE -> Toast.makeText(applicationContext, "getPriceCode() 에러", Toast.LENGTH_SHORT).show()
+                    ERROR_PRICE -> Toast.makeText(applicationContext, "getPrice() 에러", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
 
         idConnectableObservable.connect()
 
 //        IdTask(applicationContext, coffeeNameView, coffeePriceView).execute()
     }
+
+    private class CoffeeException(val errorCode: Int = DEFAULT): IllegalArgumentException()
 
     private inner class IdTask(context : Context, coffeeNameView : TextView, coffeePriceView: TextView) : AsyncTask<Void, Void, List<String>?>() {
         private val context = WeakReference(context)
@@ -156,8 +187,10 @@ class ExampleActivity: Activity() {
 
     companion object {
         const val DEFAULT = 0
-        const val ERROR_PRICE_CODE = 2
-        const val ERROR_PRICE = 3
+        const val ERROR_ID = 1
+        const val ERROR_NAME = 2
+        const val ERROR_PRICE_CODE = 3
+        const val ERROR_PRICE = 4
         const val RETRY_COUNT = 100
     }
 
