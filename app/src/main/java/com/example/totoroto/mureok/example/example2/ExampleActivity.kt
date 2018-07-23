@@ -29,28 +29,46 @@ class ExampleActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
+        var errorCode = DEFAULT
 
         val idConnectableObservable = ApiServer.loadCoffeeIds().subscribeOn(Schedulers.io()).toObservable().publish()
 
         val id = idConnectableObservable.flatMap { Observable.fromIterable(it) }
                 .filter{ it == ApiServer.ID_AMERICANO}.firstOrError()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError { Toast.makeText(applicationContext, "데이터 없음", Toast.LENGTH_SHORT).show() }
+                .doOnError {
+                    errorCode = ERROR_ID
+                }
 
-        id.observeOn(Schedulers.io()).flatMap { ApiServer.loadName(it) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({ name -> coffeeNameView.text = name },
-                        { Toast.makeText(applicationContext, "getName() 에러", Toast.LENGTH_SHORT).show() } )
+        id.flatMap { ApiServer.loadName(it)
+                .doOnError{
+                    errorCode = ERROR_NAME
+                }
+        }.observeOn(AndroidSchedulers.mainThread())
+                .subscribe (
+                        { name -> coffeeNameView.text = name },
+                        {
+                            when (errorCode) {
+                                ERROR_ID -> Toast.makeText(applicationContext, "데이터 없음", Toast.LENGTH_SHORT).show()
+                                ERROR_NAME -> Toast.makeText(applicationContext, "getName() 에러", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                )
 
-        id.observeOn(Schedulers.io()).flatMap { ApiServer.loadPriceCode(it)
+        id.flatMap { ApiServer.loadPriceCode(it)
+                .doOnError {
+                    errorCode = ERROR_PRICE_CODE
+                }
+        }.flatMap { ApiServer.loadPrice(it)
+                .doOnError {
+                    errorCode = ERROR_PRICE
+                }
         }.observeOn(AndroidSchedulers.mainThread()
-        ).doOnError {
-            Toast.makeText(applicationContext, "getPriceCode() 에러", Toast.LENGTH_SHORT).show()
-        }.observeOn(Schedulers.io()).flatMap { ApiServer.loadPrice(it)
-        }.observeOn(AndroidSchedulers.mainThread()
-        ).doOnError {
-            Toast.makeText(applicationContext, "getPrice() 에러", Toast.LENGTH_SHORT).show()
-        }.subscribe ({ price -> coffeePriceView.text = price.toString() }, {})
+        ).subscribe({ price -> coffeePriceView.text = price.toString() }, {
+            when (errorCode) {
+                ERROR_PRICE_CODE -> Toast.makeText(applicationContext, "getPriceCode() 에러", Toast.LENGTH_SHORT).show()
+                ERROR_PRICE -> Toast.makeText(applicationContext, "getPrice() 에러", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         idConnectableObservable.connect()
 
@@ -167,8 +185,10 @@ class ExampleActivity: Activity() {
 
     companion object {
         const val DEFAULT = 0
-        const val ERROR_PRICE_CODE = 2
-        const val ERROR_PRICE = 3
+        const val ERROR_ID = 1
+        const val ERROR_NAME = 2
+        const val ERROR_PRICE_CODE = 3
+        const val ERROR_PRICE = 4
         const val RETRY_COUNT = 100
     }
 
