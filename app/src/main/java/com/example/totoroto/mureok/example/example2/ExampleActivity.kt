@@ -10,6 +10,7 @@ import com.example.totoroto.mureok.R
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_example.*
@@ -27,6 +28,8 @@ import java.lang.ref.WeakReference
 class ExampleActivity: Activity() {
     private var sum = 0
     private var priceTaskList: MutableList<AsyncTask<Void, Void, Int?>> = mutableListOf()
+    private var nameDisposable: Disposable ?= null
+    private var priceDisposable: Disposable ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +56,7 @@ class ExampleActivity: Activity() {
                     .onErrorResumeNext { Single.error(CoffeeException(ERROR_NAME)) }
         }
 
-        Single.zip(americanoName, latteName, BiFunction { americano: String, latte: String -> Pair(americano, latte) }
+        nameDisposable = Single.zip(americanoName, latteName, BiFunction { americano: String, latte: String -> Pair(americano, latte) }
         ).observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     val nameConcat = "${it.first} + ${it.second}"
@@ -92,7 +95,7 @@ class ExampleActivity: Activity() {
                     }
         }
 
-        Single.zip(americanoPriceSingle, lattePriceSingle,
+        priceDisposable = Single.zip(americanoPriceSingle, lattePriceSingle,
                 BiFunction { americanoPrice: Int, lattePrice: Int -> Pair(americanoPrice, lattePrice) })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ coffeePriceView.text = (it.first + it.second).toString() }
@@ -231,6 +234,13 @@ class ExampleActivity: Activity() {
     }
 
     override fun onDestroy() {
+        if (nameDisposable?.isDisposed == false) {
+            nameDisposable?.dispose()
+        }
+        if (priceDisposable?.isDisposed == false) {
+            priceDisposable?.dispose()
+        }
+
         for(i in 0 until priceTaskList.size) {
             priceTaskList[i].cancel(true)
         }
