@@ -38,12 +38,12 @@ class ExampleActivity: Activity() {
         val idConnectableObservable = ApiServer.loadCoffeeIds().subscribeOn(Schedulers.io()).toObservable().publish()
 
         val americanoId = idConnectableObservable.flatMap { Observable.fromIterable(it) }
-                .filter { it == ApiServer.ID_AMERICANO }.firstOrError()
-                .onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
+                .filter { it == ApiServer.ID_AMERICANO }.takeUntil { it == ApiServer.ID_AMERICANO }
+                .firstOrError().onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
 
-        val latteId = idConnectableObservable.flatMap { Observable.fromIterable(it) }
-                .filter { it == ApiServer.ID_LATTE }.firstOrError()
-                .onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
+        val latteId = idConnectableObservable.flatMap{ Observable.fromIterable(it) }
+                .filter { it == ApiServer.ID_LATTE }.takeUntil { it == ApiServer.ID_LATTE }
+                .firstOrError().onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
 
 
         val americanoName = americanoId.flatMap {
@@ -234,15 +234,11 @@ class ExampleActivity: Activity() {
     }
 
     override fun onDestroy() {
-        var disposable = nameDisposable ?: return
-
-        if (!disposable.isDisposed) {
-            disposable.dispose()
+        if (nameDisposable?.isDisposed == false) {
+            nameDisposable?.dispose()
         }
-
-        disposable = priceDisposable ?: return
-        if (!disposable.isDisposed) {
-            disposable.dispose()
+        if (priceDisposable?.isDisposed == false) {
+            priceDisposable?.dispose()
         }
 
         for (i in 0 until priceTaskList.size) {
