@@ -1,12 +1,14 @@
 package com.example.totoroto.mureok.example.example2
 
-import android.app.Activity
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import com.example.totoroto.mureok.R
+import com.trello.rxlifecycle2.android.ActivityEvent
+import com.trello.rxlifecycle2.components.RxActivity
+import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,9 +26,10 @@ import java.lang.ref.WeakReference
  */
 
 
-class ExampleActivity: Activity() {
+class ExampleActivity: RxActivity() {
     private var sum = 0
     private var priceTaskList: MutableList<AsyncTask<Void, Void, Int?>> = mutableListOf()
+    //private var stopSingle = Observable.never<String>().firstOrError()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +38,12 @@ class ExampleActivity: Activity() {
         val idConnectableObservable = ApiServer.loadCoffeeIds().subscribeOn(Schedulers.io()).toObservable().publish()
 
         val americanoId = idConnectableObservable.flatMap { Observable.fromIterable(it) }
-                .filter { it == ApiServer.ID_AMERICANO }.firstOrError()
-                .onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
+                .filter { it == ApiServer.ID_AMERICANO }
+                .firstOrError().onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
 
         val latteId = idConnectableObservable.flatMap { Observable.fromIterable(it) }
-                .filter { it == ApiServer.ID_LATTE }.firstOrError()
-                .onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
+                .filter { it == ApiServer.ID_LATTE }
+                .firstOrError().onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
 
 
         val americanoName = americanoId.flatMap {
@@ -53,8 +56,11 @@ class ExampleActivity: Activity() {
                     .onErrorResumeNext { Single.error(CoffeeException(ERROR_NAME)) }
         }
 
-        Single.zip(americanoName, latteName, BiFunction { americano: String, latte: String -> Pair(americano, latte) }
-        ).observeOn(AndroidSchedulers.mainThread())
+        Single.zip(americanoName, latteName,
+                BiFunction { americano: String, latte: String -> Pair(americano, latte) })
+                .observeOn(AndroidSchedulers.mainThread())
+                //.takeUntil(stopSingle)
+                .bindUntilEvent(this, ActivityEvent.DESTROY)
                 .subscribe({
                     val nameConcat = "${it.first} + ${it.second}"
                     coffeeNameView.text = nameConcat
@@ -95,6 +101,8 @@ class ExampleActivity: Activity() {
         Single.zip(americanoPriceSingle, lattePriceSingle,
                 BiFunction { americanoPrice: Int, lattePrice: Int -> Pair(americanoPrice, lattePrice) })
                 .observeOn(AndroidSchedulers.mainThread())
+                //.takeUntil(stopSingle)
+                .bindUntilEvent(this, ActivityEvent.DESTROY)
                 .subscribe({ coffeePriceView.text = (it.first + it.second).toString() }
                         , {
                     if (it is CoffeeException) {
@@ -231,7 +239,9 @@ class ExampleActivity: Activity() {
     }
 
     override fun onDestroy() {
-        for(i in 0 until priceTaskList.size) {
+       // stopSingle = Single.just("stop")
+
+        for (i in 0 until priceTaskList.size) {
             priceTaskList[i].cancel(true)
         }
 
