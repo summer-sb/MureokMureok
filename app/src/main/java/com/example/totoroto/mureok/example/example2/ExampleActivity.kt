@@ -42,35 +42,31 @@ class ExampleActivity: Activity() {
                 .filter { it == ApiServer.ID_LATTE }.firstOrError()
                 .onErrorResumeNext { Single.error(CoffeeException(ERROR_ID)) }
 
-        americanoId.flatMap {
+
+        val americanoName = americanoId.flatMap {
             ApiServer.loadName(it)
                     .onErrorResumeNext { Single.error(CoffeeException(ERROR_NAME)) }
-        }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ name -> coffeeNameView.text = name },
-                        {
-                            if (it is CoffeeException) {
-                                when (it.errorCode) {
-                                    ERROR_ID -> Toast.makeText(applicationContext, "데이터 없음", Toast.LENGTH_SHORT).show()
-                                    ERROR_NAME -> Toast.makeText(applicationContext, "getName() 에러", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                )
+        }
 
-        latteId.flatMap {
+        val latteName = latteId.flatMap {
             ApiServer.loadName(it)
                     .onErrorResumeNext { Single.error(CoffeeException(ERROR_NAME)) }
+        }
 
-        }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe({}, {
+        Single.zip(americanoName, latteName, BiFunction { americano: String, latte: String -> Pair(americano, latte) }
+        ).observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    val nameConcat = "${it.first} + ${it.second}"
+                    coffeeNameView.text = nameConcat
+                }, {
                     if (it is CoffeeException) {
                         when (it.errorCode) {
                             ERROR_ID -> Toast.makeText(applicationContext, "데이터 없음", Toast.LENGTH_SHORT).show()
                             ERROR_NAME -> Toast.makeText(applicationContext, "getName() 에러", Toast.LENGTH_SHORT).show()
                         }
                     }
-                }
-                )
+                })
+
 
         val americanoPriceSingle = americanoId.flatMap {
             ApiServer.loadPriceCode(it)
@@ -99,7 +95,7 @@ class ExampleActivity: Activity() {
         Single.zip(americanoPriceSingle, lattePriceSingle,
                 BiFunction { americanoPrice: Int, lattePrice: Int -> Pair(americanoPrice, lattePrice) })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ pair -> coffeePriceView.text = (pair.first + pair.second).toString() }
+                .subscribe({ coffeePriceView.text = (it.first + it.second).toString() }
                         , {
                     if (it is CoffeeException) {
                         when (it.errorCode) {
