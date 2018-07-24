@@ -234,14 +234,18 @@ class ExampleActivity: Activity() {
     }
 
     override fun onDestroy() {
-        if (nameDisposable?.isDisposed == false) {
-            nameDisposable?.dispose()
-        }
-        if (priceDisposable?.isDisposed == false) {
-            priceDisposable?.dispose()
+        var disposable = nameDisposable ?: return
+
+        if (!disposable.isDisposed) {
+            disposable.dispose()
         }
 
-        for(i in 0 until priceTaskList.size) {
+        disposable = priceDisposable ?: return
+        if (!disposable.isDisposed) {
+            disposable.dispose()
+        }
+
+        for (i in 0 until priceTaskList.size) {
             priceTaskList[i].cancel(true)
         }
 
