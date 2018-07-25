@@ -83,7 +83,7 @@ class ExampleActivity: RxActivity() {
             ApiServer.loadPrice(it)
                     .onErrorResumeNext {
                         Single.error(CoffeeException(ERROR_PRICE))
-                    }
+                    }.retry(3)
         }
 
         val lattePriceSingle = latteId.flatMap {
@@ -95,7 +95,7 @@ class ExampleActivity: RxActivity() {
             ApiServer.loadPrice(it)
                     .onErrorResumeNext {
                         Single.error(CoffeeException(ERROR_PRICE))
-                    }
+                    }.retry(3)
         }
 
         Single.zip(americanoPriceSingle, lattePriceSingle,
